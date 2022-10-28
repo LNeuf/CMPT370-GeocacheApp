@@ -1,4 +1,4 @@
-# AndroidStudioTest
+# CMPT370
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://git.cs.usask.ca/xgm608/androidstudiotest.git
+git remote add origin https://git.cs.usask.ca/acf879/cmpt370.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://git.cs.usask.ca/xgm608/androidstudiotest/-/settings/integrations)
+- [ ] [Set up project integrations](https://git.cs.usask.ca/acf879/cmpt370/-/settings/integrations)
 
 ## Collaborate with your team
 
