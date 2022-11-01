@@ -12,7 +12,7 @@ public class ApplicationModel {
     // Geocache attributes
     private ArrayList<GeoCache> nearbyCacheList;
     private ArrayList<GeoCache> filteredCacheList;
-    private GeoCache reccomendedCache;
+    private GeoCache recommendedCache;
 
     /**
      * Constructor of the applications model
@@ -52,7 +52,7 @@ public class ApplicationModel {
     public void updateNearbyCacheList(float latitude, float longitude, float distance) {
         // TODO: query database and update nearby cache list based on location and distance
         // clear recommended cache
-        this.reccomendedCache = null;
+        this.recommendedCache = null;
         if (this.facade != null)
             modelHasChanged();
     }
