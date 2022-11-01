@@ -19,7 +19,7 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFragment(new ListFragment());
+        replaceFragment(new MapFragment());
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
