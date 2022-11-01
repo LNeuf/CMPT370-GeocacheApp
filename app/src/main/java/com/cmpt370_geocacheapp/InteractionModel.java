@@ -1,12 +1,14 @@
 package com.cmpt370_geocacheapp;
 
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public class InteractionModel {
     // Geocache attributes
     private GeoCache currentlySelectedCache;
     private float currentLongitude;
     private float currentLatitude;
+    private ArrayList<Predicate<GeoCache>> currentFilters;
     // MVC attributes
     private ArrayList<IModelListener> subscribers;
 
@@ -16,6 +18,7 @@ public class InteractionModel {
     public InteractionModel() {
         this.subscribers = new ArrayList<>();
         this.currentlySelectedCache = null;
+        this.currentFilters = new ArrayList<Predicate<GeoCache>>();
     }
 
     /**
@@ -43,6 +46,11 @@ public class InteractionModel {
     public void setCurrentlySelectedCache(GeoCache newlySelectedCache) {
         this.currentlySelectedCache = newlySelectedCache;
         this.notifySubscribers();
+    }
+
+    public void clearFilters()
+    {
+        this.currentFilters.clear();
     }
 
 
