@@ -2,8 +2,8 @@ package com.cmpt370_geocacheapp;
 
 public class SampleView implements ModelListener, IModelListener {
     // attributes
-    ApplicationModel model;
     InteractionModel iModel;
+    ModelFacade modelFacade;
 
     /**
      * Constructor for this Sample View
@@ -15,12 +15,12 @@ public class SampleView implements ModelListener, IModelListener {
     }
 
     /**
-     * Sets the SampleView's model
+     * Sets the SampleView's facade
      *
-     * @param model - The model
+     * @param newFacade - The backend facade
      */
-    public void setModel(ApplicationModel model) {
-        this.model = model;
+    public void setFacade(ModelFacade newFacade) {
+        this.modelFacade = newFacade;
     }
 
     /**

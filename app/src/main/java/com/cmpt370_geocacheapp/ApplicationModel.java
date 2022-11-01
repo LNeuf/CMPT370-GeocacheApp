@@ -1,10 +1,13 @@
 package com.cmpt370_geocacheapp;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class ApplicationModel {
-    // MVC attributes
-    private ArrayList<ModelListener> subscribers;
+    // models facade
+    private ModelFacade facade;
     // Geocache attributes
     private ArrayList<GeoCache> nearbyCacheList;
     private ArrayList<GeoCache> filteredCacheList;
@@ -15,27 +18,46 @@ public class ApplicationModel {
     public ApplicationModel() {
         this.nearbyCacheList = new ArrayList<>();
         this.filteredCacheList = new ArrayList<>();
-        this.subscribers = new ArrayList<>();
+    }
+
+    public void setFacade(ModelFacade facade) {
+        this.facade = facade;
     }
 
     /**
-     * Adds a new subscriber to the list of subscribers
-     *
-     * @param sub - The new subscriber
+     * Method to make facade notify model subscribers whenever the model has changed
      */
-    public void addSubscriber(ModelListener sub) {
-        this.subscribers.add(sub);
+    private void modelHasChanged()
+    {
+        this.facade.notifyModelSubscribers();
+    }
+
+    public void updateNearbyCacheList(float latitude, float longitude, float distance)
+    {
+        // placeholder for interacting with the database and updating the nearby cache list
+        // query database and update
     }
 
     /**
-     * Notifies all subscribers that the model has changed
+     * Method to update the filtered cache list based on a list of predicates
+     * @param filterList - The list of filters/predicates to filter the cache list by
      */
-    private void notifySubscribers() {
-        for (int i = 0; i < subscribers.size(); i++) {
-            subscribers.get(i).modelChanged();
+    public void updateFilteredCacheList(ArrayList<Predicate<GeoCache>> filterList)
+    {
+        List<GeoCache> result = this.nearbyCacheList;
+        for (Predicate<GeoCache> filter : filterList)
+        {
+            result = result.stream().filter(filter).collect(Collectors.toList()); // filter list by each predicate
         }
-        //subscribers.forEach(ModelListener::modelChanged); // Need API version 24, current minimum is version 23
+
+        // convert filtered caches to arraylist and update
+        this.filteredCacheList = (ArrayList<GeoCache>) result;
+        modelHasChanged();
     }
 
+    public static void main(String[] args)
+    {
+        // main for method testing
+    }
 
 }

@@ -89,4 +89,15 @@ public class GeoCache {
     public float getLongitude() {
         return longitude;
     }
+
+    @Override
+    public String toString() {
+        return  "["+cacheName + "]:" +
+                " Type:" + cacheType +
+                ", Difficulty:" + cacheDif +
+                ", Terrain:" + terrainDif +
+                ", Created By:'" + creator +
+                ", Lat:" + latitude +
+                ", Long:" + longitude;
+    }
 }
