@@ -88,6 +88,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
     private void infoWindowClicked(Marker marker) {
         // TODO: Make a click on info window bring up cache detail fragment or window
         Toast.makeText(this.getContext(), "Show cache details for marker: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
+        GeoCache clickedCache = null;
+        for (GeoCache cache : model.getFilteredCacheList())
+        {
+            if (cache.getCacheID().equals(marker.getSnippet()))
+                clickedCache = cache;
+        }
+        if (clickedCache != null)
+            controller.setSelectedCache(clickedCache);
     }
 
     private boolean markerCLicked(Marker marker) {
