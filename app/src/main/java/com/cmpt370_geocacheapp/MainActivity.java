@@ -19,10 +19,27 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // setup MVC stuff
+        ApplicationModel model = new ApplicationModel();
+        InteractionModel iModel = new InteractionModel();
+        ApplicationController controller = new ApplicationController();
+
+        controller.setModel(model);
+        controller.setInteractionModel(iModel);
+
         // Create all fragments
         MapFragment mapFragment = new MapFragment();
         ListFragment listFragment = new ListFragment();
         CacheCreateFragment cacheCreateFragment = new CacheCreateFragment();
+
+        // MVC linking
+        mapFragment.setController(controller);
+        listFragment.setController(controller);
+        cacheCreateFragment.setController(controller);
+        model.addSubscriber(mapFragment);
+        model.addSubscriber(listFragment);
+        iModel.addSubscriber(mapFragment);
+        iModel.addSubscriber(listFragment);
 
         // add all fragments
         FragmentManager fragmentManager = getSupportFragmentManager();

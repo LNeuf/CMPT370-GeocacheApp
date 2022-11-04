@@ -21,11 +21,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, ModelListener, IModelListener {
 
     GoogleMap gMap;
     MapView mapView;
     View view;
+    ApplicationController controller;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,5 +71,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Campus));
     }
 
+    public void setController(ApplicationController controller) {
+        this.controller = controller;
+    }
 
+    @Override
+    public void iModelChanged() {
+
+    }
+
+    @Override
+    public void modelChanged() {
+
+    }
 }

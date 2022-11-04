@@ -7,12 +7,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ApplicationModel {
-    // models facade
-    private ModelFacade facade;
     // Geocache attributes
     private ArrayList<GeoCache> nearbyCacheList;
     private ArrayList<GeoCache> filteredCacheList;
     private GeoCache recommendedCache;
+    ArrayList<ModelListener> subscribers;
 
     /**
      * Constructor of the applications model
@@ -38,23 +37,12 @@ public class ApplicationModel {
         return filteredCacheList;
     }
 
-    public void setFacade(ModelFacade facade) {
-        this.facade = facade;
-    }
-
-    /**
-     * Method to make facade notify model subscribers whenever the model has changed
-     */
-    private void modelHasChanged() {
-        this.facade.notifyModelSubscribers();
-    }
 
     public void updateNearbyCacheList(float latitude, float longitude, float distance) {
         // TODO: query database and update nearby cache list based on location and distance
         // clear recommended cache
         this.recommendedCache = null;
-        if (this.facade != null)
-            modelHasChanged();
+        notifySubscribers();
     }
 
     /**
@@ -70,8 +58,7 @@ public class ApplicationModel {
 
         // convert filtered caches to arraylist and update
         this.filteredCacheList = (ArrayList<GeoCache>) result;
-        if (this.facade != null)
-            modelHasChanged();
+        notifySubscribers();
     }
 
     /**
@@ -101,5 +88,24 @@ public class ApplicationModel {
     public GeoCache SearchByID(String cacheID) {
         // TODO: search whole DB for specific cache ID
         return null;
+    }
+
+    /**
+     * Adds a new subscriber to the list of subscribers
+     *
+     * @param sub - The new subscriber
+     */
+    public void addSubscriber(ModelListener sub) {
+        this.subscribers.add(sub);
+    }
+
+    /**
+     * Notifies all subscribers that the model has changed
+     */
+    public void notifySubscribers() {
+        for (ModelListener sub : subscribers)
+        {
+            sub.modelChanged();
+        }
     }
 }

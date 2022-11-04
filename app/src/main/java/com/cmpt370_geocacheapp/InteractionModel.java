@@ -33,10 +33,10 @@ public class InteractionModel {
      * Notifies all subscribers that the Interaction Model has changed
      */
     private void notifySubscribers() {
-        for (int i = 0; i < subscribers.size(); i++) {
-            subscribers.get(0).iModelChanged();
+        for (IModelListener sub : subscribers)
+        {
+            sub.iModelChanged();
         }
-        //subscribers.forEach(IModelListener::iModelChanged); // API version 24 needed, currently set to minimum 23
     }
 
     public GeoCache getCurrentlySelectedCache() {

@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class CacheCreateFragment extends Fragment {
+public class CacheCreateFragment extends Fragment{
+
+    ApplicationController controller;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -17,5 +19,9 @@ public class CacheCreateFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cache_create, container, false);
 
         return view;
+    }
+
+    public void setController(ApplicationController controller) {
+        this.controller = controller;
     }
 }

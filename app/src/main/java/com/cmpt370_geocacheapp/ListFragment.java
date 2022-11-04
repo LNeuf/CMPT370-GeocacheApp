@@ -11,11 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements ModelListener, IModelListener{
     ListView lv;
 
     ArrayAdapter<String> adapter;
     String[] testData = {"Cache 1", "Cache 2", "Cache 3", "Cache 4", "Cache 5"};
+
+    ApplicationController controller;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,5 +29,20 @@ public class ListFragment extends Fragment {
         lv.setAdapter(adapter);
 
         return view;
+    }
+
+
+    public void setController(ApplicationController controller) {
+        this.controller = controller;
+    }
+
+    @Override
+    public void iModelChanged() {
+
+    }
+
+    @Override
+    public void modelChanged() {
+
     }
 }
