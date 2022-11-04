@@ -13,7 +13,7 @@ public class GeoCache {
     private float latitude;     // latitude
     private float longitude;    // longitude
 
-    /**
+        /**
      * Constructor for a new cache
      */
     public GeoCache(String cacheName, int cacheType, int cacheDif, int terrainDif, String creator, float latitude, float longitude) {
@@ -24,6 +24,9 @@ public class GeoCache {
         this.creator = creator;
         this.latitude = latitude;
         this.longitude = longitude;
+        // TODO: Placeholder for cacheID
+        this.cacheID = cacheName+cacheDif+cacheType+terrainDif;
+
     }
 
     public void setCacheID(String cacheID) {

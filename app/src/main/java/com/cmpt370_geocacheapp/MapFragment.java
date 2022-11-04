@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
@@ -58,19 +60,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
         gMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        LatLng uSask = new LatLng(52.1334, -106.6314); //Set coordinates @Usask
-        //Init marker options
-        MarkerOptions markerOptions = new MarkerOptions();
-        //set position of marker
-        markerOptions.position(uSask);
-        //set title of marker
-        markerOptions.title("Usask Campus");
-        //add marker on map
-        googleMap.addMarker(markerOptions);
-        //Animating to zoom the marker
-        CameraPosition Campus = CameraPosition.builder().target(uSask).zoom(16).build();
+        gMap.getUiSettings().setZoomControlsEnabled(true);
+        gMap.getUiSettings().setZoomGesturesEnabled(true);
+        gMap.setInfoWindowAdapter(new CustomInfoWindow(this.getContext()));
 
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Campus));
+        //Animating to zoom the marker
+        // TODO: Have map zoom to user location if available, otherwise zoom to default location of USASK
+        LatLng usask = new LatLng(52.1334, -106.6314); //Set coordinates @Usask
+        CameraPosition currentPos = CameraPosition.builder().target(usask).zoom(18).build();
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
+
+        // populate map with location markers
+        for (GeoCache cache : this.model.getFilteredCacheList())
+        {
+            gMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(cache.getLatitude(), cache.getLongitude()))
+                    .title(cache.getCacheName())
+                    .snippet(cache.getCacheID()));
+
+        }
+
+        gMap.setOnMarkerClickListener(this::markerCLicked);
+
+    }
+
+    private boolean markerCLicked(Marker marker) {
+        //TODO: Make click on marker bring to cache detail page? Toast placeholder below
+        Toast.makeText(this.getContext(), "MarkerID: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     public void setController(ApplicationController controller) {
@@ -94,7 +111,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
         {
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(iModel.getCurrentlySelectedCache().getLatitude(),
-                            iModel.getCurrentlySelectedCache().getLongitude()), 15));
+                            iModel.getCurrentlySelectedCache().getLongitude()), 17));
+
         }
     }
 
