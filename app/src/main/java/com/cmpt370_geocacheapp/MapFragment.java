@@ -28,6 +28,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
     View view;
     ApplicationController controller;
     ApplicationModel model;
+    InteractionModel iModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,9 +82,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
         this.model = newModel;
     }
 
+    public void setIModel(InteractionModel newIModel)
+    {
+        this.iModel = newIModel;
+    }
+
     @Override
     public void iModelChanged() {
-
+        // selected new cache, move map to cache and zoom in on it
+        if (iModel.getCurrentlySelectedCache() != null)
+        {
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(iModel.getCurrentlySelectedCache().getLatitude(),
+                            iModel.getCurrentlySelectedCache().getLongitude()), 15));
+        }
     }
 
     @Override

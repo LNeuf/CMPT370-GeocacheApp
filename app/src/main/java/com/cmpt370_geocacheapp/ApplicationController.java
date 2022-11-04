@@ -31,4 +31,7 @@ public class ApplicationController {
         this.iModel = iModel;
     }
 
+    public void setSelectedCache(GeoCache selectedCache) {
+        iModel.setCurrentlySelectedCache(selectedCache);
+    }
 }

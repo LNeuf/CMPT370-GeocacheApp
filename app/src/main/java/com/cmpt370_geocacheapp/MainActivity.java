@@ -9,9 +9,12 @@ import android.os.Bundle;
 
 import com.cmpt370_geocacheapp.databinding.ActivityHomeBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IModelListener{
 
     ActivityHomeBinding binding;
+    MapFragment mapFragment;
+    ListFragment listFragment;
+    CacheCreateFragment cacheCreateFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +31,16 @@ public class MainActivity extends AppCompatActivity {
         controller.setInteractionModel(iModel);
 
         // Create all fragments
-        MapFragment mapFragment = new MapFragment();
-        ListFragment listFragment = new ListFragment();
-        CacheCreateFragment cacheCreateFragment = new CacheCreateFragment();
+        mapFragment = new MapFragment();
+        listFragment = new ListFragment();
+        cacheCreateFragment = new CacheCreateFragment();
 
         mapFragment.setModel(model);
         listFragment.setModel(model);
         cacheCreateFragment.setModel(model);
+
+        mapFragment.setIModel(iModel);
+        listFragment.setIModel(iModel);
 
         // MVC linking
         mapFragment.setController(controller);
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         model.addSubscriber(listFragment);
         iModel.addSubscriber(mapFragment);
         iModel.addSubscriber(listFragment);
+        iModel.addSubscriber(this);
 
         // initialize model
         model.init();
@@ -100,5 +107,14 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.hide(fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void iModelChanged() {
+        // if the selected cache cached has changed, hide all fragments except mapfragment
+        hideFragment(listFragment);
+        hideFragment(cacheCreateFragment);
+        showFragment(mapFragment);
+        binding.bottomNavigationView.setSelectedItemId(R.id.nav_map);
     }
 }
