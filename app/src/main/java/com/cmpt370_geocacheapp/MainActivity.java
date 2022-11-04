@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
         listFragment = new ListFragment();
         cacheCreateFragment = new CacheCreateFragment();
 
+        // MVC linking
         mapFragment.setModel(model);
         listFragment.setModel(model);
         cacheCreateFragment.setModel(model);
@@ -53,12 +54,14 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
         mapFragment.setIModel(iModel);
         listFragment.setIModel(iModel);
 
-        // MVC linking
+
         mapFragment.setController(controller);
         listFragment.setController(controller);
         cacheCreateFragment.setController(controller);
+
         model.addSubscriber(mapFragment);
         model.addSubscriber(listFragment);
+
         iModel.addSubscriber(mapFragment);
         iModel.addSubscriber(listFragment);
         iModel.addSubscriber(this);
@@ -131,14 +134,14 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
 
     public void createCache(View view) {
 
-        EditText textInput = (EditText)findViewById(R.id.cacheNameEditText);
+        EditText textInput = findViewById(R.id.cacheNameEditText);
         String cacheName = textInput.getText().toString();
         if (cacheName.equals("")) {
             Toast.makeText(this, "Please enter a cache name", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        textInput = (EditText)findViewById(R.id.latitudeEditText);
+        textInput = findViewById(R.id.latitudeEditText);
         float latitude;
         try {
             latitude = Float.parseFloat(textInput.getText().toString());
@@ -147,8 +150,10 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
             Toast.makeText(this, "Improper latitude entered", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (latitude < -90 || latitude > 90)
+            Toast.makeText(this, "Improper latitude entered", Toast.LENGTH_SHORT).show();
 
-        textInput = (EditText)findViewById(R.id.longitudeEditText);
+        textInput = findViewById(R.id.longitudeEditText);
         float longitude;
         try {
             longitude = Float.parseFloat(textInput.getText().toString());
@@ -157,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
             Toast.makeText(this, "Improper longitude entered", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (longitude < -180 || longitude > 180)
+            Toast.makeText(this, "Improper longitude entered", Toast.LENGTH_SHORT).show();
 
         // TODO fix cache size names
         int cacheSize = -1;

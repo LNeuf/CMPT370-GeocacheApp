@@ -54,7 +54,7 @@
                     android:id="@+id/latitudeEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="numberSigned|numberDecimal"
                     tools:ignore="SpeakableTextPresentCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,7 +75,7 @@
                     android:id="@+id/longitudeEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="none|numberSigned|numberDecimal"
                     tools:ignore="SpeakableTextPresentCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -137,8 +137,8 @@
                 android:id="@+id/createCacheButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Create Cache"
-                android:onClick="createCache"/>
+                android:onClick="createCache"
+                android:text="@string/createCache" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

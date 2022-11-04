@@ -16,5 +16,6 @@
     <string name="mediumRadio">Medium</string>
     <string name="largeRadio">Large</string>
     <string name="difficulty">Difficulty</string>
+    <string name="createCache">Create New Cache</string>
 
 </resources>
