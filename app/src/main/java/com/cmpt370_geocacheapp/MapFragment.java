@@ -81,11 +81,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
         }
 
         gMap.setOnMarkerClickListener(this::markerCLicked);
+        gMap.setOnInfoWindowClickListener(this::infoWindowClicked);
 
     }
 
+    private void infoWindowClicked(Marker marker) {
+        // TODO: Make a click on info window bring up cache detail fragment or window
+        Toast.makeText(this.getContext(), "Show cache details for marker: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
+    }
+
     private boolean markerCLicked(Marker marker) {
-        //TODO: Make click on marker bring to cache detail page? Toast placeholder below
         Toast.makeText(this.getContext(), "MarkerID: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
         return false;
     }

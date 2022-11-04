@@ -85,6 +85,20 @@ public class GeoCache {
         return creator;
     }
 
+    public String getCacheSize()
+    {
+        if (this.cacheType == 1)
+            return "Micro";
+        else if (this.cacheType == 2)
+            return "Small";
+        else if (this.cacheType == 3)
+            return "Regular";
+        else if (this.cacheType == 4)
+            return "Other";
+        else
+            return "Unknown";
+    }
+
     public float getLatitude() {
         return latitude;
     }
@@ -102,5 +116,12 @@ public class GeoCache {
                 ", Created By:'" + creator +
                 ", Lat:" + latitude +
                 ", Long:" + longitude;
+    }
+
+    public String getQuickCacheInfo()
+    {
+        return  cacheName + ":" +
+                " Size: " + this.getCacheSize() +
+                ", Difficulty: " + cacheDif;
     }
 }

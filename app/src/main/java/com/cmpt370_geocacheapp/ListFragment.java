@@ -65,6 +65,6 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
     @Override
     public void modelChanged() {
         // update list of filtered cache names from model
-        this.cacheNames = this.model.getFilteredCacheList().stream().map(GeoCache::getCacheName).toArray(String[]::new);
+        this.cacheNames = this.model.getFilteredCacheList().stream().map(GeoCache::getQuickCacheInfo).toArray(String[]::new);
     }
 }
