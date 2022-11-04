@@ -105,8 +105,7 @@ public class ApplicationModel {
      * Notifies all subscribers that the model has changed
      */
     public void notifySubscribers() {
-        for (ModelListener sub : subscribers)
-        {
+        for (ModelListener sub : subscribers) {
             sub.modelChanged();
         }
     }
@@ -155,8 +154,7 @@ public class ApplicationModel {
 
     }
 
-    public void init()
-    {
+    public void init() {
         notifySubscribers();
     }
 
