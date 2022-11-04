@@ -32,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
         ListFragment listFragment = new ListFragment();
         CacheCreateFragment cacheCreateFragment = new CacheCreateFragment();
 
+        mapFragment.setModel(model);
+        listFragment.setModel(model);
+        cacheCreateFragment.setModel(model);
+
         // MVC linking
         mapFragment.setController(controller);
         listFragment.setController(controller);
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         model.addSubscriber(listFragment);
         iModel.addSubscriber(mapFragment);
         iModel.addSubscriber(listFragment);
+
+        // initialize model
+        model.init();
 
         // add all fragments
         FragmentManager fragmentManager = getSupportFragmentManager();

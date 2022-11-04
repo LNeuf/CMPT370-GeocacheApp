@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 public class CacheCreateFragment extends Fragment{
 
     ApplicationController controller;
+    ApplicationModel model;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -21,7 +22,12 @@ public class CacheCreateFragment extends Fragment{
         return view;
     }
 
-    public void setController(ApplicationController controller) {
-        this.controller = controller;
+    public void setController(ApplicationController newController) {
+        this.controller = newController;
+    }
+
+    public void setModel(ApplicationModel newModel)
+    {
+        this.model = newModel;
     }
 }

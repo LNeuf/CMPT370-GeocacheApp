@@ -27,6 +27,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
     MapView mapView;
     View view;
     ApplicationController controller;
+    ApplicationModel model;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,6 +74,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
 
     public void setController(ApplicationController controller) {
         this.controller = controller;
+    }
+
+    public void setModel(ApplicationModel newModel)
+    {
+        this.model = newModel;
     }
 
     @Override

@@ -10,14 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class ListFragment extends Fragment implements ModelListener, IModelListener{
     ListView lv;
 
     ArrayAdapter<String> adapter;
-    String[] testData = {"Cache 1", "Cache 2", "Cache 3", "Cache 4", "Cache 5"};
+    String[] cacheNames = {};
 
     ApplicationController controller;
+    ApplicationModel model;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -25,15 +29,20 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         //Initialize view
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         lv = view.findViewById(R.id.cacheListView);
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, testData);
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, cacheNames);
         lv.setAdapter(adapter);
 
         return view;
     }
 
 
-    public void setController(ApplicationController controller) {
-        this.controller = controller;
+    public void setController(ApplicationController newController) {
+        this.controller = newController;
+    }
+
+    public void setModel(ApplicationModel newModel)
+    {
+        this.model = newModel;
     }
 
     @Override
@@ -43,6 +52,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
 
     @Override
     public void modelChanged() {
-
+        // update list of filtered cache names from model
+        this.cacheNames = this.model.getFilteredCacheList().stream().map(GeoCache::getCacheName).toArray(String[]::new);
     }
 }
