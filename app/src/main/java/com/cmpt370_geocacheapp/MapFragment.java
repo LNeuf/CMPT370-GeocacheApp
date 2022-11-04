@@ -19,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -63,6 +64,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
         gMap.getUiSettings().setZoomControlsEnabled(true);
         gMap.getUiSettings().setZoomGesturesEnabled(true);
         gMap.setInfoWindowAdapter(new CustomInfoWindow(this.getContext()));
+        gMap.getUiSettings().setMapToolbarEnabled(false);
+        gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
 
         //Animating to zoom the marker
         // TODO: Have map zoom to user location if available, otherwise zoom to default location of USASK

@@ -140,6 +140,8 @@
                 android:onClick="createCache"
                 android:text="@string/createCache" />
 
+<!--            TODO: Button to get current location, so you dont have to type in the long/lat-->
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </FrameLayout>
