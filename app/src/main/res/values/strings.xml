@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">CMPT370_GeocacheApp</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+
+    //Cache creation strings
+    <string name="cache_name">Cache Name</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="size">Cache Size</string>
+    <string name="smallRadio">Small</string>
+    <string name="mediumRadio">Medium</string>
+    <string name="largeRadio">Large</string>
+    <string name="difficulty">Difficulty</string>
+
 </resources>
