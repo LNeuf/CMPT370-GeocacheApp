@@ -159,4 +159,11 @@ public class ApplicationModel {
     {
         notifySubscribers();
     }
+
+    public void addNewCache(GeoCache newCache) {
+        // TODO: Add cache to DB
+        // for now will just add it to the unfiltered cache list, and re-run filters
+        this.unfilteredCacheList.add(newCache);
+        this.updateFilteredCacheList(new ArrayList<>());
+    }
 }

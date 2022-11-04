@@ -6,8 +6,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmpt370_geocacheapp.databinding.ActivityHomeBinding;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements IModelListener{
 
@@ -15,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
     MapFragment mapFragment;
     ListFragment listFragment;
     CacheCreateFragment cacheCreateFragment;
+    ApplicationController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
         // setup MVC stuff
         ApplicationModel model = new ApplicationModel();
         InteractionModel iModel = new InteractionModel();
-        ApplicationController controller = new ApplicationController();
+        controller = new ApplicationController();
 
         controller.setModel(model);
         controller.setInteractionModel(iModel);
@@ -116,5 +127,62 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
         hideFragment(cacheCreateFragment);
         showFragment(mapFragment);
         binding.bottomNavigationView.setSelectedItemId(R.id.nav_map);
+    }
+
+    public void createCache(View view) {
+
+        EditText textInput = (EditText)findViewById(R.id.cacheNameEditText);
+        String cacheName = textInput.getText().toString();
+        if (cacheName.equals("")) {
+            Toast.makeText(this, "Please enter a cache name", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        textInput = (EditText)findViewById(R.id.latitudeEditText);
+        float latitude;
+        try {
+            latitude = Float.parseFloat(textInput.getText().toString());
+        } catch (NumberFormatException e)
+        {
+            Toast.makeText(this, "Improper latitude entered", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        textInput = (EditText)findViewById(R.id.longitudeEditText);
+        float longitude;
+        try {
+            longitude = Float.parseFloat(textInput.getText().toString());
+        } catch (NumberFormatException e)
+        {
+            Toast.makeText(this, "Improper longitude entered", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // TODO fix cache size names
+        int cacheSize = -1;
+        RadioGroup group = findViewById(R.id.cacheSizeRadioGroup);
+
+        int selectedId = group.getCheckedRadioButtonId();
+        if (selectedId == R.id.cacheRadioSizeSmall)
+            cacheSize = 1;
+        else if (selectedId == R.id.cacheRadioSizeMed)
+            cacheSize = 2;
+        else if (selectedId == R.id.cacheRadioSizeLarge)
+            cacheSize = 3;
+
+        if (cacheSize == -1)
+        {
+            Toast.makeText(this, "Invalid cache size", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // TODO make sure difficulty is correct for real geocache object
+        SeekBar cacheDifficultySeekBar = findViewById(R.id.cacheDifficultySeekBar);
+        int cacheDifficulty = cacheDifficultySeekBar.getProgress();
+
+        // TODO: Assign creator name based on who is logged in
+        String cacheCreator = "Test Creator";
+
+        controller.createCache(cacheName, cacheSize, cacheDifficulty, 1, cacheCreator, latitude, longitude);
     }
 }

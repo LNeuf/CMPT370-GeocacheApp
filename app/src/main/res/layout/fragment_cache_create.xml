@@ -30,6 +30,7 @@
                 android:layout_margin="6dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cacheNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
@@ -50,6 +51,7 @@
                 android:layout_margin="6dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/latitudeEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
@@ -70,6 +72,7 @@
                 android:layout_margin="6dp">
 
                 <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/longitudeEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
@@ -84,6 +87,7 @@
                 android:textSize="16sp" />
 
             <RadioGroup
+                android:id="@+id/cacheSizeRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -128,6 +132,13 @@
                 android:progress="1"
                 android:scaleX="2"
                 android:scaleY="2" />
+
+            <Button
+                android:id="@+id/createCacheButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Cache"
+                android:onClick="createCache"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

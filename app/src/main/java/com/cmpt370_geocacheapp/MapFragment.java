@@ -131,6 +131,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, ModelLi
 
     @Override
     public void modelChanged() {
+        // populate map with location markers
+        if (gMap != null) {
+            for (GeoCache cache : this.model.getFilteredCacheList()) {
+                gMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(cache.getLatitude(), cache.getLongitude()))
+                        .title(cache.getCacheName())
+                        .snippet(cache.getCacheID()));
 
+            }
+        }
     }
 }

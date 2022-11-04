@@ -66,5 +66,9 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
     public void modelChanged() {
         // update list of filtered cache names from model
         this.cacheNames = this.model.getFilteredCacheList().stream().map(GeoCache::getQuickCacheInfo).toArray(String[]::new);
+        if (adapter != null) {
+            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, cacheNames);
+            lv.setAdapter(adapter);
+        }
     }
 }

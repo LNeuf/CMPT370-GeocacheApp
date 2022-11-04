@@ -54,4 +54,7 @@ public class InteractionModel {
     }
 
 
+    public ArrayList<Predicate<GeoCache>> getCurrentFilters() {
+        return new ArrayList<>(); // no filters yet
+    }
 }
