@@ -1,3 +1,5 @@
+package com.cmpt370_geocacheapp;
+
 import java.util.Date;
 
 public class CacheComment {

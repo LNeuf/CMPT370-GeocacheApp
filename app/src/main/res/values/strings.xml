@@ -17,5 +17,8 @@
     <string name="largeRadio">Large</string>
     <string name="difficulty">Difficulty</string>
     <string name="createCache">Create New Cache</string>
+    <string name="location_permission_denied">Location Permission Denied</string>
+    <string name="permission_required_toast">Location Permission Required</string>
+    <string name="permission_rationale_location">Location Required To Use Current Location</string>
 
 </resources>

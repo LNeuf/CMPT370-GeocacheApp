@@ -1,3 +1,5 @@
+package com.cmpt370_geocacheapp;
+
 import java.util.ArrayList;
 
 public class CacheCreator extends User {

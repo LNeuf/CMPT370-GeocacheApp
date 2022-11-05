@@ -1,3 +1,5 @@
+package com.cmpt370_geocacheapp;
+
 public class PhysicalCacheBuilder implements CacheBuilder {
     private CacheObject cache;
 

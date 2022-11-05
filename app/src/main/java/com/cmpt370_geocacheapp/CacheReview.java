@@ -1,3 +1,5 @@
+package com.cmpt370_geocacheapp;
+
 public class CacheReview extends CacheComment {
     private int rating;
     public CacheReview(String commentBody, User author, long reviewID, int rating) {

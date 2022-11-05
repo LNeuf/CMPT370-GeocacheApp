@@ -1,3 +1,5 @@
+package com.cmpt370_geocacheapp;
+
 public class User {
     private int userID;
     private String password;

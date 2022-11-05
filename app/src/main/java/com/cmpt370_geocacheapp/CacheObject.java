@@ -1,4 +1,6 @@
-import javax.xml.stream.events.Comment;
+package com.cmpt370_geocacheapp;
+
+//import javax.xml.stream.events.Comment;
 import java.util.Date;
 import java.util.ArrayList;
 

@@ -8,7 +8,8 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/cacheCreateNestedScrollID"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
 
         <LinearLayout
             android:id="@+id/cacheCreateLinearID"
@@ -140,7 +141,7 @@
                 android:onClick="createCache"
                 android:text="@string/createCache" />
 
-<!--            TODO: Button to get current location, so you dont have to type in the long/lat-->
+            <!--            TODO: Button to get current location, so you dont have to type in the long/lat-->
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

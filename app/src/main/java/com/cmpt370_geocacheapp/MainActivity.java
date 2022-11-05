@@ -10,22 +10,59 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cmpt370_geocacheapp.databinding.ActivityHomeBinding;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements IModelListener{
+import android.Manifest.permission;
+import android.annotation.SuppressLint;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
+public class MainActivity extends AppCompatActivity implements IModelListener, ModelListener, OnMyLocationButtonClickListener,
+        OnMyLocationClickListener,
+        OnMapReadyCallback,
+        ActivityCompat.OnRequestPermissionsResultCallback{
 
     ActivityHomeBinding binding;
-    MapFragment mapFragment;
     ListFragment listFragment;
     CacheCreateFragment cacheCreateFragment;
     ApplicationController controller;
+    ApplicationModel model;
+    InteractionModel iModel;
+    /**
+     * Request code for location permission request.
+     *
+     * @see #onRequestPermissionsResult(int, String[], int[])
+     */
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+    /**
+     * Flag indicating whether a requested permission has been denied after returning in {@link
+     * #onRequestPermissionsResult(int, String[], int[])}.
+     */
+    private boolean permissionDenied = false;
+
+    private GoogleMap gMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,36 +70,34 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        SupportMapFragment supportMapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        supportMapFragment.getMapAsync(this);
+
         // setup MVC stuff
-        ApplicationModel model = new ApplicationModel();
-        InteractionModel iModel = new InteractionModel();
+        model = new ApplicationModel();
+        iModel = new InteractionModel();
         controller = new ApplicationController();
 
         controller.setModel(model);
         controller.setInteractionModel(iModel);
 
         // Create all fragments
-        mapFragment = new MapFragment();
         listFragment = new ListFragment();
         cacheCreateFragment = new CacheCreateFragment();
 
         // MVC linking
-        mapFragment.setModel(model);
         listFragment.setModel(model);
         cacheCreateFragment.setModel(model);
 
-        mapFragment.setIModel(iModel);
         listFragment.setIModel(iModel);
 
 
-        mapFragment.setController(controller);
         listFragment.setController(controller);
         cacheCreateFragment.setController(controller);
 
-        model.addSubscriber(mapFragment);
         model.addSubscriber(listFragment);
 
-        iModel.addSubscriber(mapFragment);
         iModel.addSubscriber(listFragment);
         iModel.addSubscriber(this);
 
@@ -72,13 +107,11 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
         // add all fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.frame_layout, mapFragment);
         fragmentTransaction.add(R.id.frame_layout, listFragment);
         fragmentTransaction.add(R.id.frame_layout, cacheCreateFragment);
         fragmentTransaction.commit();
 
         // show map fragment by default on startup
-        showFragment(mapFragment);
         hideFragment(listFragment);
         hideFragment(cacheCreateFragment);
 
@@ -86,18 +119,15 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
             switch (item.getItemId())
             {
                 case R.id.nav_map:
-                    showFragment(mapFragment);
                     hideFragment(listFragment);
                     hideFragment(cacheCreateFragment);
                     break;
                 case R.id.nav_list:
                     showFragment(listFragment);
-                    hideFragment(mapFragment);
                     hideFragment(cacheCreateFragment);
                     break;
                 case R.id.nav_create:
                     showFragment(cacheCreateFragment);
-                    hideFragment(mapFragment);
                     hideFragment(listFragment);
                     break;
             }
@@ -106,6 +136,117 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
         });
     }
 
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        gMap = googleMap;
+
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        gMap.getUiSettings().setZoomControlsEnabled(true);
+        gMap.getUiSettings().setZoomGesturesEnabled(true);
+        gMap.setInfoWindowAdapter(new CustomInfoWindow(this));
+        gMap.getUiSettings().setMapToolbarEnabled(false);
+        gMap.getUiSettings().setMyLocationButtonEnabled(true);
+        gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+
+        //Animating to zoom the marker
+        // TODO: Have map zoom to user location if available, otherwise zoom to default location of USASK
+        LatLng usask = new LatLng(52.1334, -106.6314); //Set coordinates @Usask
+        CameraPosition currentPos = CameraPosition.builder().target(usask).zoom(18).build();
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
+
+        // populate map with location markers
+        for (GeoCache cache : this.model.getFilteredCacheList())
+        {
+            gMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(cache.getLatitude(), cache.getLongitude()))
+                    .title(cache.getCacheName())
+                    .snippet(cache.getCacheID()));
+
+        }
+
+        gMap.setOnMarkerClickListener(this::markerCLicked);
+        gMap.setOnInfoWindowClickListener(this::infoWindowClicked);
+        gMap.setOnMyLocationButtonClickListener(this);
+        gMap.setOnMyLocationClickListener(this);
+        enableMyLocation();
+    }
+
+    /**
+     * Enables the My Location layer if the fine location permission has been granted.
+     */
+    @SuppressLint("MissingPermission")
+    private void enableMyLocation() {
+        // [START maps_check_location_permission]
+        // 1. Check if permissions are granted, if so, enable the my location layer
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            gMap.setMyLocationEnabled(true);
+            return;
+        }
+
+        // 2. Otherwise, request location permissions from the user.
+        PermissionUtils.requestLocationPermissions(this, LOCATION_PERMISSION_REQUEST_CODE, true);
+        // [END maps_check_location_permission]
+    }
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+    }
+
+    // [START maps_check_location_permission_result]
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+
+        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                Manifest.permission.ACCESS_FINE_LOCATION) || PermissionUtils
+                .isPermissionGranted(permissions, grantResults,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            // Enable the my location layer if the permission has been granted.
+            enableMyLocation();
+        } else {
+            // Permission was denied. Display an error message
+            // [START_EXCLUDE]
+            // Display the missing permission error dialog when the fragments resume.
+            permissionDenied = true;
+            // [END_EXCLUDE]
+        }
+    }
+    // [END maps_check_location_permission_result]
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (permissionDenied) {
+            // Permission was not granted, display error dialog.
+            showMissingPermissionError();
+            permissionDenied = false;
+        }
+    }
+
+    /**
+     * Displays a dialog with error message explaining that the location permission is missing.
+     */
+    private void showMissingPermissionError() {
+        PermissionUtils.PermissionDeniedDialog
+                .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
 
     private void showFragment(Fragment fragment)
     {
@@ -125,11 +266,17 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
 
     @Override
     public void iModelChanged() {
-        // if the selected cache cached has changed, hide all fragments except mapfragment
+        // selected new cache, move map to cache and zoom in on it
+        if (iModel.getCurrentlySelectedCache() != null)
+        {
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(iModel.getCurrentlySelectedCache().getLatitude(),
+                            iModel.getCurrentlySelectedCache().getLongitude()), 17));
+
+        }
+        // hide other fragments
         hideFragment(listFragment);
         hideFragment(cacheCreateFragment);
-        showFragment(mapFragment);
-        binding.bottomNavigationView.setSelectedItemId(R.id.nav_map);
     }
 
     public void createCache(View view) {
@@ -191,5 +338,37 @@ public class MainActivity extends AppCompatActivity implements IModelListener{
         String cacheCreator = "Test Creator";
 
         controller.createCache(cacheName, cacheSize, cacheDifficulty, 1, cacheCreator, latitude, longitude);
+    }
+
+    private void infoWindowClicked(Marker marker) {
+        // TODO: Make a click on info window bring up cache detail fragment or window
+        Toast.makeText(this, "Show cache details for marker: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
+        GeoCache clickedCache = null;
+        for (GeoCache cache : model.getFilteredCacheList())
+        {
+            if (cache.getCacheID().equals(marker.getSnippet()))
+                clickedCache = cache;
+        }
+        if (clickedCache != null)
+            controller.setSelectedCache(clickedCache);
+    }
+
+    private boolean markerCLicked(Marker marker) {
+        Toast.makeText(this, "MarkerID: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
+    @Override
+    public void modelChanged() {
+        // populate map with location markers
+        if (gMap != null) {
+            for (GeoCache cache : this.model.getFilteredCacheList()) {
+                gMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(cache.getLatitude(), cache.getLongitude()))
+                        .title(cache.getCacheName())
+                        .snippet(cache.getCacheID()));
+
+            }
+        }
     }
 }
