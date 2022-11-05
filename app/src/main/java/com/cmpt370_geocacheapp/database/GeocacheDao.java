@@ -6,7 +6,7 @@ import java.util.List;
 
 @Dao
 public interface GeocacheDao {
-    @Query("SELECT * FROM geocache")
+    @Query("SELECT * FROM Geocache")
     List<Geocache> getAll();
 
     @Query("SELECT * FROM geocache WHERE id IN (:cacheIds)")
@@ -16,6 +16,6 @@ public interface GeocacheDao {
     void insertAll(Geocache... caches);
 
     @Delete
-    void delete(Geocache cache);
+    void deleteAll(Geocache... cache);
 }
 

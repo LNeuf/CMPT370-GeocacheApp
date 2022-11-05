@@ -6,11 +6,16 @@ import androidx.room.*;
 public class Geocache {
 
     @PrimaryKey
-    public int id;
+    public long id;
 
-    @ColumnInfo(name = "latitude")
+    public String name;
+
+    public String author;
+
+    public String creationDate;
+
     public float latitude;
 
-    @ColumnInfo(name = "longitude")
     public float longitude;
+
 }
