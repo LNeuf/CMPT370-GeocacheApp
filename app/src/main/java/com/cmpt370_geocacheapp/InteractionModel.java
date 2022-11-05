@@ -1,5 +1,9 @@
 package com.cmpt370_geocacheapp;
 
+import android.location.Location;
+
+import com.google.android.gms.maps.model.Polyline;
+
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
@@ -11,6 +15,9 @@ public class InteractionModel {
     private ArrayList<Predicate<GeoCache>> currentFilters;
     // MVC attributes
     private ArrayList<IModelListener> subscribers;
+    private boolean selectedCachedChanged = false;
+    private Location currentLocation;
+    private Polyline currentCacheLine;
 
     /**
      * Constructor of the Interaction Model
@@ -45,7 +52,9 @@ public class InteractionModel {
 
     public void setCurrentlySelectedCache(GeoCache newlySelectedCache) {
         this.currentlySelectedCache = newlySelectedCache;
+        selectedCachedChanged = true;
         this.notifySubscribers();
+        selectedCachedChanged = false;
     }
 
     public void clearFilters()
@@ -56,5 +65,26 @@ public class InteractionModel {
 
     public ArrayList<Predicate<GeoCache>> getCurrentFilters() {
         return new ArrayList<>(); // no filters yet
+    }
+
+    public boolean isSelectedCachedChanged() {
+        return selectedCachedChanged;
+    }
+
+    public void setCurrentLocation(Location currentLocation) {
+        this.currentLocation = currentLocation;
+        notifySubscribers();
+    }
+
+    public void setCurrentCacheLine(Polyline currentCacheLine) {
+        this.currentCacheLine = currentCacheLine;
+    }
+
+    public Location getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public Polyline getCurrentCacheLine() {
+        return currentCacheLine;
     }
 }

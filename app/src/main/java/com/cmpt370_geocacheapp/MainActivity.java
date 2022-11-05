@@ -13,6 +13,9 @@ import android.widget.Toast;
 import com.cmpt370_geocacheapp.databinding.ActivityHomeBinding;
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
+
+
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -23,12 +26,19 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.SphericalUtil;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements IModelListener, ModelListener, OnMyLocationButtonClickListener, OnMyLocationClickListener, OnMapReadyCallback,ActivityCompat.OnRequestPermissionsResultCallback{
@@ -122,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         gMap = googleMap;
 
         // Map setup with default settings
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         gMap.getUiSettings().setZoomControlsEnabled(true);
         gMap.getUiSettings().setZoomGesturesEnabled(true);
         gMap.setInfoWindowAdapter(new CustomInfoWindow(this));
@@ -147,12 +156,48 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
         }
 
+        // Initialize empty cache poly line
+        Polyline lineToCache = gMap.addPolyline(new PolylineOptions()
+                .clickable(true));
+        iModel.setCurrentCacheLine(lineToCache);
+
         // Google map event handling & location enabling
         gMap.setOnMarkerClickListener(this::markerCLicked);
         gMap.setOnInfoWindowClickListener(this::infoWindowClicked);
         gMap.setOnMyLocationButtonClickListener(this);
         gMap.setOnMyLocationClickListener(this);
+        gMap.setOnMapLongClickListener(this::mapLongPress);
+        gMap.setOnMyLocationChangeListener(this::locationChanged); // Temp way to get location updates
+
+        gMap.setOnPolylineClickListener(this::lineClicked);
         enableMyLocation();
+    }
+
+    /**
+     * On polyline clicked show distance to cache
+     * @param polyline
+     */
+    private void lineClicked(Polyline polyline) {
+        double d = SphericalUtil.computeDistanceBetween(polyline.getPoints().get(0), polyline.getPoints().get(1));
+        Toast.makeText(this, "Distance to cache: " + (int)d + " meters", Toast.LENGTH_SHORT).show();
+    }
+
+    private void locationChanged(Location location) {
+        if (location != null)
+            iModel.setCurrentLocation(location);
+    }
+
+    /**
+     * Handles long presses on the map - cycles between map styles
+     * @param latLng - Location of press - unused
+     */
+    private void mapLongPress(LatLng latLng) {
+        if (gMap.getMapType() == GoogleMap.MAP_TYPE_TERRAIN)
+            gMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        else if (gMap.getMapType() == GoogleMap.MAP_TYPE_SATELLITE)
+            gMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        else if (gMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID)
+            gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
     }
 
     /**
@@ -271,17 +316,29 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     @Override
     public void iModelChanged() {
-        // selected new cache, move map to cache and zoom in on it
-        if (iModel.getCurrentlySelectedCache() != null)
+        // New cache was selected, move map to cache and zoom in on it
+        if (iModel.getCurrentlySelectedCache() != null && iModel.isSelectedCachedChanged())
         {
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(iModel.getCurrentlySelectedCache().getLatitude(),
                             iModel.getCurrentlySelectedCache().getLongitude()), 17));
+            // hide other fragments
+            hideFragment(listFragment);
+            hideFragment(cacheCreateFragment);
+        }
+
+        if (iModel.getCurrentLocation() != null && iModel.getCurrentlySelectedCache() != null)
+        {
+            // update polyline points
+            List<LatLng> newPoints = new ArrayList<LatLng>() {
+                {
+                    add(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()));
+                    add(new LatLng(iModel.getCurrentlySelectedCache().getLatitude(), iModel.getCurrentlySelectedCache().getLongitude()));
+                }
+            };
+            iModel.getCurrentCacheLine().setPoints(newPoints);
 
         }
-        // hide other fragments
-        hideFragment(listFragment);
-        hideFragment(cacheCreateFragment);
     }
 
     @Override
