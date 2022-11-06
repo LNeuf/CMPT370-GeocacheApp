@@ -42,14 +42,14 @@ public interface GeocacheDao {
     @Query(
             "SELECT * FROM Geocache " +
                     "JOIN Comment ON Geocache.id = Comment.geocacheId " +
-                    "WHERE Geocache.id = :geocacheId_"
+                    "AND Geocache.id = :geocacheId_"
     )
     Map<Geocache, List<Comment>> __PRIVATE_getComments(long geocacheId_);
 
     @Query(
             "SELECT * FROM Geocache " +
                     "JOIN RatingReview ON Geocache.id = RatingReview.geocacheId " +
-                    "WHERE Geocache.id = :geocacheId_"
+                    "AND Geocache.id = :geocacheId_"
     )
     Map<Geocache, List<RatingReview>> __PRIVATE_getReviews(long geocacheId_);
 }

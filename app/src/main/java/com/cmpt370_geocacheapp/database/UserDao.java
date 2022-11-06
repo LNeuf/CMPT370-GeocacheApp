@@ -9,6 +9,15 @@ import java.util.Map;
 @Dao
 public interface UserDao {
 
+    static List<Geocache> getCaches(UserDao dao, User user) {
+        Map<User, List<Geocache>> res = dao.__PRIVATE_getGeocaches(user.username);
+        List<Geocache> acc = new ArrayList(res.size());
+        for (List<Geocache> wrappedGeocache : res.values()) {
+            acc.addAll(wrappedGeocache);
+        }
+        return acc;
+    }
+
     static List<Comment> getComments(UserDao dao, User user) {
         Map<User, List<Comment>> res = dao.__PRIVATE_getComments(user.username);
         List<Comment> acc = new ArrayList(res.size());
@@ -42,14 +51,21 @@ public interface UserDao {
     @Query(
             "SELECT * FROM User " +
                     "JOIN Comment ON User.username = Comment.userUsername " +
-                    "WHERE username = :username_"
+                    "AND User.username = :username_"
     )
     Map<User, List<Comment>> __PRIVATE_getComments(String username_);
 
     @Query(
             "SELECT * FROM User " +
                     "JOIN RatingReview ON User.username = RatingReview.userUsername " +
-                    "WHERE username = :username_ "
+                    "AND User.username = :username_ "
     )
     Map<User, List<RatingReview>> __PRIVATE_getReviews(String username_);
+
+    @Query(
+            "SELECT * FROM User " +
+                    "JOIN Geocache ON User.username = Geocache.userUsername " +
+                    "AND User.username = :username_"
+    )
+    Map<User, List<Geocache>> __PRIVATE_getGeocaches(String username_);
 }

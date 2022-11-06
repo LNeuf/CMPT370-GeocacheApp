@@ -20,4 +20,5 @@ public class Geocache {
 
     public float longitude;
 
+    public String userUsername; // each geocache has one user
 }
