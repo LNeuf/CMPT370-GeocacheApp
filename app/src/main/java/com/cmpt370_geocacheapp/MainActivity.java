@@ -57,14 +57,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     boolean requestingLocationUpdates = false;
     private FusedLocationProviderClient client;
     private LocationCallback locationCallback;
-    /**
-     * Request code for location permission request.
-     */
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    /**
-     * Flag indicating whether a requested permission has been denied after returning in {@link
-     * #onRequestPermissionsResult(int, String[], int[])}.
-     */
     private boolean permissionDenied = false;
 
     @Override
@@ -75,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
         SupportMapFragment supportMapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        assert supportMapFragment != null;
         supportMapFragment.getMapAsync(this);
 
         client = new FusedLocationProviderClient(this);
@@ -136,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             return true;
         });
 
-        // setup location callback
+        // setup location update callback
         locationCallback = new LocationCallback() {
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null) {
@@ -161,9 +155,12 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         gMap.getUiSettings().setMyLocationButtonEnabled(true);
         gMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
+        enableMyLocation();
+        if (requestingLocationUpdates) {
+            startLocationUpdates();
+        }
 
-        //Animating to zoom the marker
-        // TODO: Have map zoom to user location if available, otherwise zoom to default location of USASK
+        // Starting at default location at USASK
         LatLng usask = new LatLng(52.1334, -106.6314); //Set coordinates @Usask
         CameraPosition currentPos = CameraPosition.builder().target(usask).zoom(18).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
@@ -181,52 +178,39 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         Polyline lineToCache = gMap.addPolyline(new PolylineOptions().clickable(true));
         iModel.setCurrentCacheLine(lineToCache);
 
-        // Google map event handling & location enabling
+        // Google map event handling
         gMap.setOnMarkerClickListener(this::markerCLicked);
         gMap.setOnInfoWindowClickListener(this::infoWindowClicked);
         gMap.setOnMyLocationButtonClickListener(this);
         gMap.setOnMyLocationClickListener(this);
         gMap.setOnMapLongClickListener(this::mapLongPress);
-
         gMap.setOnPolylineClickListener(this::lineClicked);
-        enableMyLocation();
-        if (requestingLocationUpdates) {
-            startLocationUpdates();
-        }
-    }
+        gMap.setOnMapClickListener(this::mapClicked);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // resumes getting location updates if app regains focus
-        if (requestingLocationUpdates) {
-            startLocationUpdates();
-        }
+
     }
 
     /**
-     * Starts getting location requests after-rechecking permissions
+     * Handles when map background is clicked
+     *
+     * @param latLng - The unused position of the click
      */
-    private void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        LocationRequest locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(5000);
-        client.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    private void mapClicked(LatLng latLng) {
+        // unselect cache
+        controller.setSelectedCache(null);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        // stops location updates from running when app doesn't have focus
-        stopLocationUpdates();
+    public boolean onMyLocationButtonClick() {
+        //Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
     }
 
-    /**
-     * Stops app from getting location updates
-     */
-    private void stopLocationUpdates() {
-        client.removeLocationUpdates(locationCallback);
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -238,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         double d = SphericalUtil.computeDistanceBetween(polyline.getPoints().get(0), polyline.getPoints().get(1));
         Toast.makeText(this, "Distance to cache: " + (int) d + " meters", Toast.LENGTH_SHORT).show();
     }
-
 
     /**
      * Handles long presses on the map - cycles between map styles
@@ -365,14 +348,19 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     @Override
     public void iModelChanged() {
-        // New cache was selected, move map to cache and zoom in on it
         if (iModel.getCurrentlySelectedCache() != null && iModel.isSelectedCachedChanged()) {
+            // New cache was selected, move map to cache and zoom in on it
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(iModel.getCurrentlySelectedCache().getLatitude(),
                             iModel.getCurrentlySelectedCache().getLongitude()), 17));
             // hide other fragments
             hideFragment(listFragment);
             hideFragment(cacheCreateFragment);
+        }
+
+        if (iModel.getCurrentlySelectedCache() == null && iModel.isSelectedCachedChanged()) {
+            // deselected cache, remove polyline
+            iModel.getCurrentCacheLine().setPoints(new ArrayList<>());
         }
 
         if (iModel.getCurrentLocation() != null && iModel.getCurrentlySelectedCache() != null) {
@@ -426,18 +414,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         // [END maps_check_location_permission]
     }
 
-    @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
-
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -478,6 +454,40 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    /**
+     * Starts getting location requests after-rechecking permissions
+     */
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationRequest locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(5000);
+        client.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    /**
+     * Stops app from getting location updates
+     */
+    private void stopLocationUpdates() {
+        client.removeLocationUpdates(locationCallback);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // resumes getting location updates if app regains focus
+        if (requestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // stops location updates from running when app doesn't have focus
+        stopLocationUpdates();
     }
 
 }

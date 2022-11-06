@@ -23,18 +23,6 @@ public class ApplicationModel {
         generateFakeCacheData();
     }
 
-    public void setUnfilteredCacheList(ArrayList<GeoCache> unfilteredCacheList) {
-        this.unfilteredCacheList = unfilteredCacheList;
-    }
-
-    public void setFilteredCacheList(ArrayList<GeoCache> filteredCacheList) {
-        this.filteredCacheList = filteredCacheList;
-    }
-
-    public ArrayList<GeoCache> getUnfilteredCacheList() {
-        return unfilteredCacheList;
-    }
-
     public ArrayList<GeoCache> getFilteredCacheList() {
         return filteredCacheList;
     }
