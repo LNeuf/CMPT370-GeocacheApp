@@ -85,30 +85,38 @@ public class SimpleEntityReadWriteTest {
     @Test
     public void testManyToOne() {
         // the user
-        User u = new User();
-        u.username = "fungi2000";
-        u.password = "abc123";
-        userDao.insertAll(u);
-        u = userDao.getAll().get(0);
+        User fungi2000 = new User();
+        fungi2000.username = "fungi2000";
+        fungi2000.password = "abc123";
+        userDao.insertAll(fungi2000);
+        fungi2000 = userDao.getAll().get(0);
 
         // the geocache
         Geocache g = new Geocache();
         g.longitude = 180F;
         g.latitude = -90F;
+        g.userUsername = "tha_creator666";
         geocacheDao.insertAll(g);
         g = geocacheDao.getAll().get(0);
+
+        // the geocache's creator
+        User thaCreator = new User();
+        thaCreator.username = "tha_creator666";
+        thaCreator.password = "asdf";
+        userDao.insertAll(thaCreator);
+        thaCreator = userDao.getByUsername("tha_creator666");
 
         // this comment belongs to: same geocache, same username
         Comment c1 = new Comment();
         c1.contents = "comment 1 fungi2000";
-        c1.userUsername = u.username;
+        c1.userUsername = fungi2000.username;
         c1.geocacheId = g.id;
         commentDao.insertAll(c1);
 
         // this comment belongs to: a different geocache
         Comment c2 = new Comment();
         c2.contents = "comment 2 fungi2000";
-        c2.userUsername = u.username;
+        c2.userUsername = fungi2000.username;
         c2.geocacheId = g.id + 1;
         commentDao.insertAll(c2);
 
@@ -125,20 +133,31 @@ public class SimpleEntityReadWriteTest {
         c4.userUsername = "random username";
         c4.geocacheId = g.id + 1;
         commentDao.insertAll(c4);
-
-        // check that all 4 comments inserted
+        
+        // check that all 4 comments were inserted
         List<Comment> commentQuery = commentDao.getAll();
         assertThat(commentQuery.size(), equalTo(4));
 
         // user fungi2000 has exactly two comments: c1, c2
-        List<Comment> fungi2000Comments = UserDao.getComments(userDao, u.username);
+        List<Comment> fungi2000Comments = userDao.getComments(fungi2000.username);
         assertThat(fungi2000Comments.size(), equalTo(2));
         assertThat(containsComments(fungi2000Comments, c1, c2), equalTo(true));
 
         // the geocache has exactly two comments: c1, c3
-        List<Comment> geocacheComments = GeocacheDao.getComments(geocacheDao, g.id);
+        List<Comment> geocacheComments = geocacheDao.getComments(g.id);
         assertThat(fungi2000Comments.size(), equalTo(2));
         assertThat(containsComments(geocacheComments, c1, c3), equalTo(true));
+        
+        // tha_creator666 created the geocache
+        List<Geocache> thaCreatorCaches = userDao.getGeocaches(thaCreator.username);
+        assertThat(thaCreatorCaches.size(), equalTo(1));
+
+        // fungi2000 created no geocaches
+        List<Geocache> fungi2000Caches = userDao.getGeocaches(fungi2000.username);
+        assertThat(fungi2000Caches.size(), equalTo(0));
+
+        // test GeocacheDao.getUser(): get the creator of the cache
+        assertThat(geocacheDao.getUser(g.id), equalTo("tha_creator666"));
 
     }
 

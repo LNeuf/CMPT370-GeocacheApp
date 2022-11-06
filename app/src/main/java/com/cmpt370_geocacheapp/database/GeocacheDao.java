@@ -8,25 +8,6 @@ import java.util.Map;
 
 @Dao
 public interface GeocacheDao {
-
-    static List<Comment> getComments(GeocacheDao dao, long geocacheId) {
-        Map<Geocache, List<Comment>> res = dao.__PRIVATE_getComments(geocacheId);
-        List<Comment> acc = new ArrayList(res.size());
-        for (List<Comment> wrappedComment : res.values()) {
-            acc.addAll(wrappedComment);
-        }
-        return acc;
-    }
-
-    static List<RatingReview> getReviews(GeocacheDao dao, long geocacheId) {
-        Map<Geocache, List<RatingReview>> res = dao.__PRIVATE_getReviews(geocacheId);
-        List<RatingReview> acc = new ArrayList(res.size());
-        for (List<RatingReview> wrappedRatingReview : res.values()) {
-            acc.addAll(wrappedRatingReview);
-        }
-        return acc;
-    }
-
     @Insert
     void insertAll(Geocache... caches);
 
@@ -41,16 +22,23 @@ public interface GeocacheDao {
 
     @Query(
             "SELECT * FROM Geocache " +
+                    "JOIN User ON Geocache.id = :geocacheId AND " +
+                    "Geocache.userUsername = User.username"
+    )
+    User getUser(long geocacheId);
+
+    @Query(
+            "SELECT * FROM Geocache " +
                     "JOIN Comment ON Geocache.id = Comment.geocacheId " +
                     "AND Geocache.id = :geocacheId_"
     )
-    Map<Geocache, List<Comment>> __PRIVATE_getComments(long geocacheId_);
+    List<Comment> getComments(long geocacheId_);
 
     @Query(
             "SELECT * FROM Geocache " +
                     "JOIN RatingReview ON Geocache.id = RatingReview.geocacheId " +
                     "AND Geocache.id = :geocacheId_"
     )
-    Map<Geocache, List<RatingReview>> __PRIVATE_getReviews(long geocacheId_);
+    List<RatingReview> getReviews(long geocacheId_);
 }
 
