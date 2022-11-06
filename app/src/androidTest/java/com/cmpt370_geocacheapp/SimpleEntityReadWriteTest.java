@@ -131,12 +131,12 @@ public class SimpleEntityReadWriteTest {
         assertThat(commentQuery.size(), equalTo(4));
 
         // user fungi2000 has exactly two comments: c1, c2
-        List<Comment> fungi2000Comments = UserDao.getComments(userDao, u);
+        List<Comment> fungi2000Comments = UserDao.getComments(userDao, u.username);
         assertThat(fungi2000Comments.size(), equalTo(2));
         assertThat(containsComments(fungi2000Comments, c1, c2), equalTo(true));
 
         // the geocache has exactly two comments: c1, c3
-        List<Comment> geocacheComments = GeocacheDao.getComments(geocacheDao, g);
+        List<Comment> geocacheComments = GeocacheDao.getComments(geocacheDao, g.id);
         assertThat(fungi2000Comments.size(), equalTo(2));
         assertThat(containsComments(geocacheComments, c1, c3), equalTo(true));
 

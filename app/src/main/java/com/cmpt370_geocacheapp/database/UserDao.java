@@ -9,8 +9,8 @@ import java.util.Map;
 @Dao
 public interface UserDao {
 
-    static List<Geocache> getCaches(UserDao dao, User user) {
-        Map<User, List<Geocache>> res = dao.__PRIVATE_getGeocaches(user.username);
+    static List<Geocache> getCaches(UserDao dao, String username) {
+        Map<User, List<Geocache>> res = dao.__PRIVATE_getGeocaches(username);
         List<Geocache> acc = new ArrayList(res.size());
         for (List<Geocache> wrappedGeocache : res.values()) {
             acc.addAll(wrappedGeocache);
@@ -18,8 +18,8 @@ public interface UserDao {
         return acc;
     }
 
-    static List<Comment> getComments(UserDao dao, User user) {
-        Map<User, List<Comment>> res = dao.__PRIVATE_getComments(user.username);
+    static List<Comment> getComments(UserDao dao, String username) {
+        Map<User, List<Comment>> res = dao.__PRIVATE_getComments(username);
         List<Comment> acc = new ArrayList(res.size());
         for (List<Comment> wrappedComment : res.values()) {
             acc.addAll(wrappedComment);
@@ -27,8 +27,8 @@ public interface UserDao {
         return acc;
     }
 
-    static List<RatingReview> getReviews(UserDao dao, User user) {
-        Map<User, List<RatingReview>> res = dao.__PRIVATE_getReviews(user.username);
+    static List<RatingReview> getReviews(UserDao dao, String username) {
+        Map<User, List<RatingReview>> res = dao.__PRIVATE_getReviews(username);
         List<RatingReview> acc = new ArrayList(res.size());
         for (List<RatingReview> wrappedRatingReview : res.values()) {
             acc.addAll(wrappedRatingReview);

@@ -9,8 +9,8 @@ import java.util.Map;
 @Dao
 public interface GeocacheDao {
 
-    static List<Comment> getComments(GeocacheDao dao, Geocache geocache) {
-        Map<Geocache, List<Comment>> res = dao.__PRIVATE_getComments(geocache.id);
+    static List<Comment> getComments(GeocacheDao dao, long geocacheId) {
+        Map<Geocache, List<Comment>> res = dao.__PRIVATE_getComments(geocacheId);
         List<Comment> acc = new ArrayList(res.size());
         for (List<Comment> wrappedComment : res.values()) {
             acc.addAll(wrappedComment);
@@ -18,8 +18,8 @@ public interface GeocacheDao {
         return acc;
     }
 
-    static List<RatingReview> getReviews(GeocacheDao dao, Geocache geocache) {
-        Map<Geocache, List<RatingReview>> res = dao.__PRIVATE_getReviews(geocache.id);
+    static List<RatingReview> getReviews(GeocacheDao dao, long geocacheId) {
+        Map<Geocache, List<RatingReview>> res = dao.__PRIVATE_getReviews(geocacheId);
         List<RatingReview> acc = new ArrayList(res.size());
         for (List<RatingReview> wrappedRatingReview : res.values()) {
             acc.addAll(wrappedRatingReview);
