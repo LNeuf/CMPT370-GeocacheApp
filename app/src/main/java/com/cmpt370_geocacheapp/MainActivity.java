@@ -4,18 +4,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
-import com.cmpt370_geocacheapp.databinding.ActivityHomeBinding;
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
+import android.Manifest;
+import android.content.pm.PackageManager;
 
+import com.cmpt370_geocacheapp.databinding.ActivityHomeBinding;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -30,28 +41,24 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements IModelListener, ModelListener, OnMyLocationButtonClickListener, OnMyLocationClickListener, OnMapReadyCallback,ActivityCompat.OnRequestPermissionsResultCallback{
+public class MainActivity extends AppCompatActivity implements IModelListener, ModelListener, OnMyLocationButtonClickListener, OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
-    ActivityHomeBinding binding;
-    ListFragment listFragment;
-    CacheCreateFragment cacheCreateFragment;
-    ApplicationController controller;
-    ApplicationModel model;
-    InteractionModel iModel;
+    private ActivityHomeBinding binding;
+    private ListFragment listFragment;
+    private CacheCreateFragment cacheCreateFragment;
+    private ApplicationController controller;
+    private ApplicationModel model;
+    private InteractionModel iModel;
     private GoogleMap gMap;
+    boolean requestingLocationUpdates = false;
+    private FusedLocationProviderClient client;
+    private LocationCallback locationCallback;
     /**
-     Request code for location permission request.
+     * Request code for location permission request.
      */
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     /**
@@ -69,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         SupportMapFragment supportMapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
+
+        client = new FusedLocationProviderClient(this);
 
         // setup MVC stuff
         model = new ApplicationModel();
@@ -89,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         cacheCreateFragment.setController(controller);
 
         model.addSubscriber(listFragment);
+        model.addSubscriber(this);
         iModel.addSubscriber(listFragment);
         iModel.addSubscriber(this);
 
@@ -106,9 +116,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         hideFragment(listFragment);
         hideFragment(cacheCreateFragment);
 
+        // setup bottom navigation events
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId())
-            {
+            switch (item.getItemId()) {
                 case R.id.nav_map:
                     hideFragment(listFragment);
                     hideFragment(cacheCreateFragment);
@@ -125,6 +135,18 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
             return true;
         });
+
+        // setup location callback
+        locationCallback = new LocationCallback() {
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                iModel.setCurrentLocation(locationResult.getLastLocation());
+            }
+        };
+
+
     }
 
     @Override
@@ -147,8 +169,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
 
         // populate map with test location markers. TODO: replace with nearby caches
-        for (GeoCache cache : this.model.getFilteredCacheList())
-        {
+        for (GeoCache cache : this.model.getFilteredCacheList()) {
             gMap.addMarker(new MarkerOptions()
                     .position(new LatLng(cache.getLatitude(), cache.getLongitude()))
                     .title(cache.getCacheName())
@@ -157,8 +178,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         }
 
         // Initialize empty cache poly line
-        Polyline lineToCache = gMap.addPolyline(new PolylineOptions()
-                .clickable(true));
+        Polyline lineToCache = gMap.addPolyline(new PolylineOptions().clickable(true));
         iModel.setCurrentCacheLine(lineToCache);
 
         // Google map event handling & location enabling
@@ -167,28 +187,62 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         gMap.setOnMyLocationButtonClickListener(this);
         gMap.setOnMyLocationClickListener(this);
         gMap.setOnMapLongClickListener(this::mapLongPress);
-        gMap.setOnMyLocationChangeListener(this::locationChanged); // Temp way to get location updates
 
         gMap.setOnPolylineClickListener(this::lineClicked);
         enableMyLocation();
+        if (requestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // resumes getting location updates if app regains focus
+        if (requestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
+
+    /**
+     * Starts getting location requests after-rechecking permissions
+     */
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationRequest locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setInterval(5000);
+        client.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // stops location updates from running when app doesn't have focus
+        stopLocationUpdates();
+    }
+
+    /**
+     * Stops app from getting location updates
+     */
+    private void stopLocationUpdates() {
+        client.removeLocationUpdates(locationCallback);
     }
 
     /**
      * On polyline clicked show distance to cache
-     * @param polyline
+     *
+     * @param polyline - The Line between current location and current cache on Google Map
      */
     private void lineClicked(Polyline polyline) {
         double d = SphericalUtil.computeDistanceBetween(polyline.getPoints().get(0), polyline.getPoints().get(1));
-        Toast.makeText(this, "Distance to cache: " + (int)d + " meters", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Distance to cache: " + (int) d + " meters", Toast.LENGTH_SHORT).show();
     }
 
-    private void locationChanged(Location location) {
-        if (location != null)
-            iModel.setCurrentLocation(location);
-    }
 
     /**
      * Handles long presses on the map - cycles between map styles
+     *
      * @param latLng - Location of press - unused
      */
     private void mapLongPress(LatLng latLng) {
@@ -203,8 +257,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     /**
      * Shows a fragment
      */
-    private void showFragment(Fragment fragment)
-    {
+    private void showFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.show(fragment);
@@ -214,8 +267,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     /**
      * Hides a fragment
      */
-    private void hideFragment(Fragment fragment)
-    {
+    private void hideFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.hide(fragment);
@@ -224,7 +276,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     /**
      * Handles the input checking for creating a new cache, makes controller create a cache if all inputs are good
-     * @param view
      */
     public void createCache(View view) {
 
@@ -239,8 +290,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         float latitude;
         try {
             latitude = Float.parseFloat(textInput.getText().toString());
-        } catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             Toast.makeText(this, "Improper latitude entered", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -251,8 +301,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         float longitude;
         try {
             longitude = Float.parseFloat(textInput.getText().toString());
-        } catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             Toast.makeText(this, "Improper longitude entered", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -271,8 +320,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         else if (selectedId == R.id.cacheRadioSizeLarge)
             cacheSize = 3;
 
-        if (cacheSize == -1)
-        {
+        if (cacheSize == -1) {
             Toast.makeText(this, "Invalid cache size", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -289,14 +337,14 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     /**
      * Event handling for when the custom Info Window is clicked
+     *
      * @param marker - The marker clicked
      */
     private void infoWindowClicked(Marker marker) {
         // TODO: Make a click on info window bring up cache detail fragment or window
         Toast.makeText(this, "Show cache details for marker: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
         GeoCache clickedCache = null;
-        for (GeoCache cache : model.getFilteredCacheList())
-        {
+        for (GeoCache cache : model.getFilteredCacheList()) {
             if (cache.getCacheID().equals(marker.getSnippet()))
                 clickedCache = cache;
         }
@@ -306,6 +354,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     /**
      * Event handling for when a marker is clicked
+     *
      * @param marker - The marker
      * @return - False to keep default behaviour
      */
@@ -317,8 +366,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     @Override
     public void iModelChanged() {
         // New cache was selected, move map to cache and zoom in on it
-        if (iModel.getCurrentlySelectedCache() != null && iModel.isSelectedCachedChanged())
-        {
+        if (iModel.getCurrentlySelectedCache() != null && iModel.isSelectedCachedChanged()) {
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(iModel.getCurrentlySelectedCache().getLatitude(),
                             iModel.getCurrentlySelectedCache().getLongitude()), 17));
@@ -327,9 +375,8 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             hideFragment(cacheCreateFragment);
         }
 
-        if (iModel.getCurrentLocation() != null && iModel.getCurrentlySelectedCache() != null)
-        {
-            // update polyline points
+        if (iModel.getCurrentLocation() != null && iModel.getCurrentlySelectedCache() != null) {
+            // Redraw current cache line
             List<LatLng> newPoints = new ArrayList<LatLng>() {
                 {
                     add(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()));
@@ -345,6 +392,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     public void modelChanged() {
         // populate map with location markers
         if (gMap != null) {
+            gMap.clear();
+            Polyline lineToCache = gMap.addPolyline(new PolylineOptions().clickable(true));
+            iModel.setCurrentCacheLine(lineToCache);
             for (GeoCache cache : this.model.getFilteredCacheList()) {
                 gMap.addMarker(new MarkerOptions()
                         .position(new LatLng(cache.getLatitude(), cache.getLongitude()))
@@ -367,6 +417,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
                 || ContextCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             gMap.setMyLocationEnabled(true);
+            requestingLocationUpdates = true;
             return;
         }
 
@@ -374,6 +425,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         PermissionUtils.requestLocationPermissions(this, LOCATION_PERMISSION_REQUEST_CODE, true);
         // [END maps_check_location_permission]
     }
+
     @Override
     public boolean onMyLocationButtonClick() {
         Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
@@ -384,10 +436,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
     }
 
-    // [START maps_check_location_permission_result]
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -410,7 +461,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             // [END_EXCLUDE]
         }
     }
-    // [END maps_check_location_permission_result]
 
     @Override
     protected void onResumeFragments() {
