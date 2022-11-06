@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         // MVC linking
         listFragment.setModel(model);
         cacheCreateFragment.setModel(model);
+        cacheCreateFragment.setIModel(iModel);
         listFragment.setIModel(iModel);
         listFragment.setController(controller);
         cacheCreateFragment.setController(controller);
@@ -140,8 +141,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             }
         };
 
-
     }
+
+
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -166,11 +168,11 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
 
         // populate map with test location markers. TODO: replace with nearby caches
-        for (GeoCache cache : this.model.getFilteredCacheList()) {
+        for (PhysicalCacheObject cache : this.model.getFilteredCacheList()) {
             gMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(cache.getLatitude(), cache.getLongitude()))
+                    .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
                     .title(cache.getCacheName())
-                    .snippet(cache.getCacheID()));
+                    .snippet(String.valueOf(cache.getCacheID())));
 
         }
 
@@ -257,66 +259,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         fragmentTransaction.commit();
     }
 
-    /**
-     * Handles the input checking for creating a new cache, makes controller create a cache if all inputs are good
-     */
-    public void createCache(View view) {
-
-        EditText textInput = findViewById(R.id.cacheNameEditText);
-        String cacheName = textInput.getText().toString();
-        if (cacheName.equals("")) {
-            Toast.makeText(this, "Please enter a cache name", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        textInput = findViewById(R.id.latitudeEditText);
-        float latitude;
-        try {
-            latitude = Float.parseFloat(textInput.getText().toString());
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Improper latitude entered", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (latitude < -90 || latitude > 90)
-            Toast.makeText(this, "Improper latitude entered", Toast.LENGTH_SHORT).show();
-
-        textInput = findViewById(R.id.longitudeEditText);
-        float longitude;
-        try {
-            longitude = Float.parseFloat(textInput.getText().toString());
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Improper longitude entered", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (longitude < -180 || longitude > 180)
-            Toast.makeText(this, "Improper longitude entered", Toast.LENGTH_SHORT).show();
-
-        // TODO fix cache size names
-        int cacheSize = -1;
-        RadioGroup group = findViewById(R.id.cacheSizeRadioGroup);
-
-        int selectedId = group.getCheckedRadioButtonId();
-        if (selectedId == R.id.cacheRadioSizeSmall)
-            cacheSize = 1;
-        else if (selectedId == R.id.cacheRadioSizeMed)
-            cacheSize = 2;
-        else if (selectedId == R.id.cacheRadioSizeLarge)
-            cacheSize = 3;
-
-        if (cacheSize == -1) {
-            Toast.makeText(this, "Invalid cache size", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // TODO make sure difficulty is correct for real geocache object
-        SeekBar cacheDifficultySeekBar = findViewById(R.id.cacheDifficultySeekBar);
-        int cacheDifficulty = cacheDifficultySeekBar.getProgress();
-
-        // TODO: Assign creator name based on who is logged in
-        String cacheCreator = "Test Creator";
-
-        controller.createCache(cacheName, cacheSize, cacheDifficulty, 1, cacheCreator, latitude, longitude);
-    }
 
     /**
      * Event handling for when the custom Info Window is clicked
@@ -326,9 +268,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     private void infoWindowClicked(Marker marker) {
         // TODO: Make a click on info window bring up cache detail fragment or window
         Toast.makeText(this, "Show cache details for marker: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
-        GeoCache clickedCache = null;
-        for (GeoCache cache : model.getFilteredCacheList()) {
-            if (cache.getCacheID().equals(marker.getSnippet()))
+        PhysicalCacheObject clickedCache = null;
+        for (PhysicalCacheObject cache : model.getFilteredCacheList()) {
+            if (String.valueOf(cache.getCacheID()).equals(marker.getSnippet()))
                 clickedCache = cache;
         }
         if (clickedCache != null)
@@ -351,8 +293,8 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         if (iModel.getCurrentlySelectedCache() != null && iModel.isSelectedCachedChanged()) {
             // New cache was selected, move map to cache and zoom in on it
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(iModel.getCurrentlySelectedCache().getLatitude(),
-                            iModel.getCurrentlySelectedCache().getLongitude()), 17));
+                    new LatLng(iModel.getCurrentlySelectedCache().getCacheLatitude(),
+                            iModel.getCurrentlySelectedCache().getCacheLongitude()), 17));
             // hide other fragments
             hideFragment(listFragment);
             hideFragment(cacheCreateFragment);
@@ -368,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             List<LatLng> newPoints = new ArrayList<LatLng>() {
                 {
                     add(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()));
-                    add(new LatLng(iModel.getCurrentlySelectedCache().getLatitude(), iModel.getCurrentlySelectedCache().getLongitude()));
+                    add(new LatLng(iModel.getCurrentlySelectedCache().getCacheLatitude(), iModel.getCurrentlySelectedCache().getCacheLongitude()));
                 }
             };
             iModel.getCurrentCacheLine().setPoints(newPoints);
@@ -383,11 +325,11 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             gMap.clear();
             Polyline lineToCache = gMap.addPolyline(new PolylineOptions().clickable(true));
             iModel.setCurrentCacheLine(lineToCache);
-            for (GeoCache cache : this.model.getFilteredCacheList()) {
+            for (PhysicalCacheObject cache : this.model.getFilteredCacheList()) {
                 gMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(cache.getLatitude(), cache.getLongitude()))
+                        .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
                         .title(cache.getCacheName())
-                        .snippet(cache.getCacheID()));
+                        .snippet(String.valueOf(cache.getCacheID())));
 
             }
         }

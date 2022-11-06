@@ -31,14 +31,15 @@ public class ApplicationController {
         this.iModel = iModel;
     }
 
-    public void setSelectedCache(GeoCache selectedCache) {
+    public void setSelectedCache(PhysicalCacheObject selectedCache) {
         iModel.setCurrentlySelectedCache(selectedCache);
     }
 
-    public void createCache(String cacheName, int cacheSize, int cacheDifficulty, int i, String cacheCreator, float latitude, float longitude) {
-        GeoCache newCache = new GeoCache(cacheName,cacheSize,cacheDifficulty,i,cacheCreator,latitude,longitude);
-        model.addNewCache(newCache);
+
+    public void createCache(String cacheName,String cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
+        PhysicalCacheObject newCache = model.createNewCache(cacheName,cacheCreator,latitude,longitude,cacheDifficulty,terrainDifficulty,cacheSize);
         model.updateFilteredCacheList(iModel.getCurrentFilters());
         iModel.setCurrentlySelectedCache(newCache);
     }
+
 }

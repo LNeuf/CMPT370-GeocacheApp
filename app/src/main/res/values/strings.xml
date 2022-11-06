@@ -8,14 +8,17 @@
     <string name="hello_first_fragment">Hello first fragment</string>
 
     //Cache creation strings
-    <string name="cache_name">Cache Name</string>
-    <string name="latitude">Latitude</string>
-    <string name="longitude">Longitude</string>
-    <string name="size">Cache Size</string>
+    <string name="setCacheName">Enter Cache Name</string>
+    <string name="setLatitude">Enter Latitude</string>
+    <string name="setLongitude">Enter Longitude</string>
+    <string name="size">Select Cache Size</string>
+    <string name="microRadio">Micro</string>
     <string name="smallRadio">Small</string>
-    <string name="mediumRadio">Medium</string>
+    <string name="regularRadio">Regular</string>
     <string name="largeRadio">Large</string>
-    <string name="difficulty">Difficulty</string>
+    <string name="otherRadio">Other</string>
+    <string name="cacheDifficulty">Select Cache Difficulty</string>
+    <string name="terrainDifficulty">Select Terrain Difficulty</string>
     <string name="createCache">Create New Cache</string>
     <string name="location_permission_denied">Location Permission Denied</string>
     <string name="permission_required_toast">Location Permission Required</string>

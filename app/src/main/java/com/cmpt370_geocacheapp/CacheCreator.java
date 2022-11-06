@@ -15,8 +15,8 @@ public class CacheCreator extends User {
         createdCaches.add(new CacheObject(name, author, cacheID));
     }
 
-    public void createPhysicalCache(CacheObject cache, double latitude, double longitude, String difficulty, String terrain) {
-        createdPhysicalCaches.add(new PhysicalCacheObject(cache, latitude, longitude, difficulty, terrain ) );
+    public void createPhysicalCache(CacheObject cache, double latitude, double longitude, int difficulty, int terrain, int size) {
+        createdPhysicalCaches.add(new PhysicalCacheObject(cache, latitude, longitude, difficulty, terrain, size ) );
     }
 
     public void deletePhysicalCache(long cacheID) {

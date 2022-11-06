@@ -1,24 +1,23 @@
 package com.cmpt370_geocacheapp;
 
 //import javax.xml.stream.events.Comment;
-import java.util.ArrayList;
 
 public class PhysicalCacheObject {
     CacheObject cache;
     private final double latitude;
     private final double longitude;
-    private final String difficulty;
-    private final String terrain;
+    private final int cacheDifficulty;
+    private final int terrainDifficulty;
+    private final int cacheSize;
+    private final String[] cacheSizeNames = new String[] {"Micro","Small","Regular","Large","Other"};
 
-
-
-    public PhysicalCacheObject(CacheObject cache, double latitude, double longitude, String difficulty,  String terrain) {
+    public PhysicalCacheObject(CacheObject cache, double latitude, double longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.difficulty = difficulty;
-        this.terrain = terrain;
+        this.cacheDifficulty = cacheDifficulty;
+        this.terrainDifficulty = terrainDifficulty;
+        this.cacheSize = cacheSize;
         this.cache = cache;
-
     }
 
     public String getCacheName() {
@@ -27,13 +26,26 @@ public class PhysicalCacheObject {
     public String getCacheAuthor() {
         return this.cache.getAuthor();
     }
-
     public double getCacheLatitude() {
         return this.latitude;
     }
-
     public double getCacheLongitude() {
         return this.longitude;
+    }
+    public int getCacheDifficulty() {
+        return this.cacheDifficulty;
+    }
+    public long getCacheID() {
+        return this.cache.getCacheID();
+    }
+    public int getTerrainDifficulty() {
+        return this.terrainDifficulty;
+    }
+    public int getCacheSize() { return this.cacheSize; }
+
+    public String getCacheSummary()
+    {
+        return String.format("%s: %s | Dif:%d/5 | Ter:%d/5 | ID:%d", cache.getName(), cacheSizeNames[cacheSize-1], cacheDifficulty, terrainDifficulty, cache.getCacheID());
     }
 
     public double[] getCacheCoordinates() {
@@ -44,17 +56,6 @@ public class PhysicalCacheObject {
         cacheCoordinates[0] = this.latitude;
         cacheCoordinates[1] = this.longitude;
         return cacheCoordinates;
-    }
-    public String getCacheDifficulty() {
-        return this.difficulty;
-    }
-
-    public long getCacheID() {
-        return this.cache.getCacheID();
-    }
-
-    public String getTerrain() {
-        return this.terrain;
     }
 
     public void addComment(CacheComment commentToAdd) {
@@ -74,8 +75,6 @@ public class PhysicalCacheObject {
         return null;
     }
 
-
-
     public String getCreationDate() {
         return this.cache.getCreationDate();
     }
@@ -92,12 +91,13 @@ public class PhysicalCacheObject {
         String expectedAuthor = "Ashton";
         double expectedLatitude = 18.329384;
         double expectedLongitude = 14.00343;
-        String expectedDifficulty = "Medium";
+        int expectedDifficulty = 3;
         long expectedCacheID = 1;
-        String expectedTerrain = "Plains";
+        int expectedTerrainDifficulty = 1;
+        int expectedCacheSize = 5;
 
         CacheObject cache = new CacheObject("Saskatoon cache", "Ashton",1);
-        PhysicalCacheObject physicalCache = new PhysicalCacheObject(cache, 18.329384,14.00343,"Medium","Plains");
+        PhysicalCacheObject physicalCache = new PhysicalCacheObject(cache, 18.329384,14.00343,3,1,5 );
 
 
         testsPerformed += 1;
@@ -126,7 +126,7 @@ public class PhysicalCacheObject {
         }
         testsPerformed += 1;
         expectedTests += 1;
-        if (!expectedDifficulty.equals(physicalCache.getCacheDifficulty())) {
+        if (expectedDifficulty != physicalCache.getCacheDifficulty()) {
             testsPerformed -= 1;
             System.out.println("getCacheDifficulty() method failed.");
         }
@@ -138,9 +138,15 @@ public class PhysicalCacheObject {
         }
         testsPerformed += 1;
         expectedTests += 1;
-        if (!expectedTerrain.equals(physicalCache.getTerrain())) {
+        if (expectedTerrainDifficulty != physicalCache.getTerrainDifficulty()) {
             testsPerformed -= 1;
             System.out.println("getTerrain() method failed.");
+        }
+        testsPerformed += 1;
+        expectedTests += 1;
+        if (expectedCacheSize != physicalCache.getCacheSize()) {
+            testsPerformed -= 1;
+            System.out.println("getCacheSize() method failed.");
         }
         testsPerformed += 1;
         expectedTests += 1;

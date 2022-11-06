@@ -9,10 +9,8 @@ import java.util.function.Predicate;
 
 public class InteractionModel {
     // Geocache attributes
-    private GeoCache currentlySelectedCache;
-    private float currentLongitude;
-    private float currentLatitude;
-    private ArrayList<Predicate<GeoCache>> currentFilters;
+    private PhysicalCacheObject currentlySelectedCache;
+    private ArrayList<Predicate<PhysicalCacheObject>> currentFilters;
     // MVC attributes
     private ArrayList<IModelListener> subscribers;
     private boolean selectedCachedChanged = false;
@@ -25,7 +23,7 @@ public class InteractionModel {
     public InteractionModel() {
         this.subscribers = new ArrayList<>();
         this.currentlySelectedCache = null;
-        this.currentFilters = new ArrayList<Predicate<GeoCache>>();
+        this.currentFilters = new ArrayList<>();
     }
 
     /**
@@ -46,11 +44,11 @@ public class InteractionModel {
         }
     }
 
-    public GeoCache getCurrentlySelectedCache() {
+    public PhysicalCacheObject getCurrentlySelectedCache() {
         return this.currentlySelectedCache;
     }
 
-    public void setCurrentlySelectedCache(GeoCache newlySelectedCache) {
+    public void setCurrentlySelectedCache(PhysicalCacheObject newlySelectedCache) {
         this.currentlySelectedCache = newlySelectedCache;
         selectedCachedChanged = true;
         this.notifySubscribers();
@@ -63,7 +61,7 @@ public class InteractionModel {
     }
 
 
-    public ArrayList<Predicate<GeoCache>> getCurrentFilters() {
+    public ArrayList<Predicate<PhysicalCacheObject>> getCurrentFilters() {
         return new ArrayList<>(); // no filters yet
     }
 

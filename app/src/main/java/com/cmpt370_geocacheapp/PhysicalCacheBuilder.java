@@ -12,8 +12,8 @@ public class PhysicalCacheBuilder implements CacheBuilder {
     public void buildCache(String name, String author, long cacheID) {
          this.cache = new CacheObject(name, author, cacheID);
     }
-    public void buildPhysicalCache(double latitude, double longitude, String difficulty, String terrain) {
-        this.database.addPhysicalCache(new PhysicalCacheObject(this.cache, latitude, longitude, difficulty,terrain));
+    public void buildPhysicalCache(double latitude, double longitude, int cacheDif, int terrainDif, int cacheSize) {
+        this.database.addPhysicalCache(new PhysicalCacheObject(this.cache, latitude, longitude, cacheDif,terrainDif, cacheSize));
     }
 
     public static void main(String[] args) {

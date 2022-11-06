@@ -5,7 +5,7 @@ public class Main {
         CacheDatabase database = new CacheDatabase();
         PhysicalCacheBuilder builder = new PhysicalCacheBuilder(database);
         builder.buildCache("Engineering Building Cache", "Ashton", 1);
-        builder.buildPhysicalCache(14.03,18.02,"Easy", "Flat");
+        builder.buildPhysicalCache(14.03,18.02,1, 1, 4);
 
         database.getPhysicalCache(1).addComment(new CacheComment("Hello", new User("Ashton", "pizzapops123",1), 1));
         System.out.println(database.getPhysicalCache(1).readComment(1).getCommentBody());

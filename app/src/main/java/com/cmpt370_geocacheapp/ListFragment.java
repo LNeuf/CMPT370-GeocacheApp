@@ -28,7 +28,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         //Initialize view
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         lv = view.findViewById(R.id.cacheListView);
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, cacheNames);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, cacheNames);
         lv.setAdapter(adapter);
 
         lv.setOnItemClickListener(this::handleCacheNameSelected);
@@ -38,7 +38,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
 
     private void handleCacheNameSelected(AdapterView<?> adapterView, View view, int i, long l) {
         // need to make selected cache the InteractionModels selected cache
-        GeoCache selectedCache = model.getFilteredCacheList().get(i);
+        PhysicalCacheObject selectedCache = model.getFilteredCacheList().get(i);
         controller.setSelectedCache(selectedCache);
     }
 
@@ -65,9 +65,9 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
     @Override
     public void modelChanged() {
         // update list of filtered cache names from model
-        this.cacheNames = this.model.getFilteredCacheList().stream().map(GeoCache::getQuickCacheInfo).toArray(String[]::new);
+        this.cacheNames = this.model.getFilteredCacheList().stream().map(PhysicalCacheObject::getCacheSummary).toArray(String[]::new);
         if (adapter != null) {
-            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, cacheNames);
+            adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, cacheNames);
             lv.setAdapter(adapter);
         }
     }

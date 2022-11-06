@@ -3,15 +3,17 @@ package com.cmpt370_geocacheapp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ApplicationModel {
     // Geocache attributes
-    private ArrayList<GeoCache> unfilteredCacheList;
-    private ArrayList<GeoCache> filteredCacheList;
-    private GeoCache recommendedCache;
+    private ArrayList<PhysicalCacheObject> unfilteredCacheList;
+    private ArrayList<PhysicalCacheObject> filteredCacheList;
+    private PhysicalCacheObject recommendedCache;
     private ArrayList<ModelListener> subscribers;
+    AtomicInteger fakeCacheID = new AtomicInteger(); // TODO: remove when switching to actual cache database
 
     /**
      * Constructor of the applications model
@@ -23,7 +25,7 @@ public class ApplicationModel {
         generateFakeCacheData();
     }
 
-    public ArrayList<GeoCache> getFilteredCacheList() {
+    public ArrayList<PhysicalCacheObject> getFilteredCacheList() {
         return filteredCacheList;
     }
 
@@ -40,14 +42,14 @@ public class ApplicationModel {
      *
      * @param filterList - The list of filters/predicates to filter the cache list by
      */
-    public void updateFilteredCacheList(ArrayList<Predicate<GeoCache>> filterList) {
-        List<GeoCache> result = this.unfilteredCacheList; // gets the current list of nearby caches
-        for (Predicate<GeoCache> filter : filterList) {
+    public void updateFilteredCacheList(ArrayList<Predicate<PhysicalCacheObject>> filterList) {
+        List<PhysicalCacheObject> result = this.unfilteredCacheList; // gets the current list of nearby caches
+        for (Predicate<PhysicalCacheObject> filter : filterList) {
             result = result.stream().filter(filter).collect(Collectors.toList()); // apply each filter
         }
 
         // convert filtered caches to arraylist and update
-        this.filteredCacheList = (ArrayList<GeoCache>) result;
+        this.filteredCacheList = (ArrayList<PhysicalCacheObject>) result;
         notifySubscribers();
     }
 
@@ -57,9 +59,9 @@ public class ApplicationModel {
      * @param filterList - the filter criteria to meet
      * @return - Returns a geocache from the nearby cache list that meets criteria, otherwise returns null if no caches meet criteria
      */
-    public GeoCache getRecommendedCache(ArrayList<Predicate<GeoCache>> filterList) {
-        List<GeoCache> result = this.unfilteredCacheList; // gets the current list of nearby caches
-        for (Predicate<GeoCache> filter : filterList) {
+    public PhysicalCacheObject getRecommendedCache(ArrayList<Predicate<PhysicalCacheObject>> filterList) {
+        List<PhysicalCacheObject> result = this.unfilteredCacheList; // gets the current list of nearby caches
+        for (Predicate<PhysicalCacheObject> filter : filterList) {
             result = result.stream().filter(filter).collect(Collectors.toList()); // apply each filter
         }
 
@@ -75,7 +77,7 @@ public class ApplicationModel {
 
     }
 
-    public GeoCache SearchByID(String cacheID) {
+    public PhysicalCacheObject SearchByID(String cacheID) {
         // TODO: search whole DB for specific cache ID
         return null;
     }
@@ -133,12 +135,13 @@ public class ApplicationModel {
         for (String line : lines) {
             String[] lineData = line.split("\\t");
 
-            GeoCache newCache = new GeoCache(lineData[0], Integer.parseInt(lineData[3]), Integer.parseInt(lineData[4]), Integer.parseInt(lineData[5]), lineData[7], Float.parseFloat(lineData[1]), Float.parseFloat(lineData[2]));
-
-            unfilteredCacheList.add(newCache);
+            PhysicalCacheObject newGeoCache = new PhysicalCacheObject(new CacheObject(lineData[0], "Jesse", fakeCacheID.incrementAndGet()),
+                    Double.parseDouble(lineData[1]), Double.parseDouble(lineData[2]), Integer.parseInt(lineData[3]), Integer.parseInt(lineData[4]),
+                    Integer.parseInt(lineData[5]));
+            unfilteredCacheList.add(newGeoCache);
         }
 
-        updateFilteredCacheList(new ArrayList<Predicate<GeoCache>>());
+        updateFilteredCacheList(new ArrayList<>());
 
     }
 
@@ -146,10 +149,13 @@ public class ApplicationModel {
         notifySubscribers();
     }
 
-    public void addNewCache(GeoCache newCache) {
+    public PhysicalCacheObject createNewCache(String cacheName,String cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
+        PhysicalCacheObject newCache = new PhysicalCacheObject(new CacheObject(cacheName, cacheCreator, fakeCacheID.incrementAndGet()),
+                latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
         // TODO: Add cache to DB
         // for now will just add it to the unfiltered cache list, and re-run filters
         this.unfilteredCacheList.add(newCache);
         this.updateFilteredCacheList(new ArrayList<>());
+        return newCache;
     }
 }
