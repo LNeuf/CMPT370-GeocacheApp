@@ -76,6 +76,7 @@ public class PhysicalCacheObject {
         return null;
     }
 
+
     public String getCreationDate() {
         return this.cache.getCreationDate();
     }
@@ -172,7 +173,14 @@ public class PhysicalCacheObject {
             testsPerformed -= 1;
             System.out.println("Review not stored in review list correctly.");
         }
+        cache.addReview(new CacheReview("Review", author, 2, 5 ));
 
+        testsPerformed += 1;
+        expectedTests += 1;
+        if (cache.getAverageReviews() != 4.0) {
+            testsPerformed -= 1;
+            System.out.println("Average reviews not what was expected.");
+        }
         System.out.println(testsPerformed + " tests were performed out of " + expectedTests);
     }
 }
