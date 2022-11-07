@@ -159,9 +159,62 @@ public class DatabaseTest {
 
     }
 
+    /* asserts that:
+        - GeocacheDao.getByLatLong() works
+          (filters down to caches within min/max latitude and longitude)
+    */
+    @Test
+    public void testGetByLatLong() {
+        // create some geocaches
+        Geocache a = new Geocache();
+        a.latitude = 40F;
+        a.longitude = 180F;
+
+        Geocache b = new Geocache();
+        b.latitude = 60F;
+        b.longitude = 180F;
+
+        Geocache c = new Geocache();
+        c.latitude = 20F;
+        c.longitude = 140F;
+
+        Geocache d = new Geocache();
+        d.latitude = -20F;
+        d.longitude = 360F;
+        
+        geocacheDao.insertAll(a,b,c,d);
+        List<Geocache> filtered;
+
+        // DESC: outside range by at minimum 1 degree of latitude and minimum 1 degree of longitude
+        filtered = geocacheDao.getByLatLong(61, 62, 181, 182);
+        // EXPECT: contains none
+        assertThat(filtered.size(), equalTo(0));
+
+        // DESC: one point, centered on a
+        filtered = geocacheDao.getByLatLong(40, 40, 180, 180);
+        // EXPECT: contains 'a' only
+        assertThat(filtered.size(), equalTo(1));
+        assertThat(containsGeocaches(filtered, a), equalTo(true));
+
+        // DESC: boundary case -- *almost* contains c
+        filtered = geocacheDao.getByLatLong(20.000001, 60, 140, 180);
+        // EXPECT: contains a and b only (not c)
+        assertThat(filtered.size(), equalTo(2));
+        assertThat(containsGeocaches(filtered, a, b), equalTo(true));
+
+    }
+
     private boolean containsComments(List<Comment> comments, Comment... keys) {
         for (Comment k : keys) {
             if (!containsComment(comments, k))
+                return false;
+        }
+        return true;
+    }
+
+    private boolean containsGeocaches(List<Geocache> geocaches, Geocache... keys) {
+        for (Geocache k : keys) {
+            if (!containsGeocache(geocaches, k))
                 return false;
         }
         return true;
@@ -172,6 +225,16 @@ public class DatabaseTest {
             if (    c.contents.equals(key.contents) &&
                     c.geocacheId == key.geocacheId &&
                     c.userUsername.equals(key.userUsername)
+            )
+                return true;
+        }
+        return false;
+    }
+
+    private boolean containsGeocache(List<Geocache> geocaches, Geocache key) {
+        for (Geocache c : geocaches) {
+            if (    c.longitude == key.longitude &&
+                    c.latitude == key.latitude
             )
                 return true;
         }

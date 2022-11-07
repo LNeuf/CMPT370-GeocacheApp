@@ -20,6 +20,23 @@ public interface GeocacheDao {
     @Query("SELECT * FROM Geocache")
     List<Geocache> getAll();
 
+    // -90 <= latitude <= 90
+    // 0 <= longitude <= 360
+    // note that this is really specifying a trapezoidal-shaped region
+    // cause latitude/longitude is weird
+    // TODO: might want to replace this with a more useful way of specifying a
+    //       region on a sphere
+    @Query(
+            "SELECT * FROM Geocache WHERE " +
+                    ":latitudeMin <= latitude AND " +
+                    "latitude <= :latitudeMax AND " +
+                    ":longitudeMin <= longitude AND " +
+                    "longitude <= :longitudeMax"
+
+    )
+    List<Geocache> getByLatLong(double latitudeMin, double latitudeMax,
+                                double longitudeMin, double longitudeMax);
+
     @Query(
             "SELECT * FROM Geocache " +
                     "JOIN User ON Geocache.id = :geocacheId AND " +
