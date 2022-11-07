@@ -14,12 +14,10 @@ import org.junit.runner.RunWith;
 
 import com.cmpt370_geocacheapp.database.*;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
-public class SimpleEntityReadWriteTest {
+public class DatabaseTest {
     private UserDao userDao;
     private GeocacheDao geocacheDao;
     private AppDatabase db;
@@ -157,7 +155,7 @@ public class SimpleEntityReadWriteTest {
         assertThat(fungi2000Caches.size(), equalTo(0));
 
         // test GeocacheDao.getUser(): get the creator of the cache
-        assertThat(geocacheDao.getUser(g.id), equalTo("tha_creator666"));
+        assertThat(geocacheDao.getUser(g.id).username, equalTo("tha_creator666"));
 
     }
 
