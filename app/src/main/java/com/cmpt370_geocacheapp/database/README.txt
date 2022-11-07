@@ -1,3 +1,5 @@
+- database is stored locally on the android phone, for now
+
 - 4 types: Geocache, User, Comment, RatingReview
 
 - I am treating users as uniquely identifiable by their username,
