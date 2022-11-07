@@ -8,3 +8,7 @@
 
 - see DatabaseTest in the java/com/cmpt370_geocacheapp (androidTest)
   to see how to read/write/update/delete stuff. really easy to use
+
+- Lastly, in order to use this in the actual app, I think you need
+  to create a seperate thread from the main app for 
+  accessing the database
