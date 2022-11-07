@@ -1,7 +1,7 @@
 package com.cmpt370_geocacheapp;
 
 public class User {
-    private int userID;
+    private final int userID;
     private String password;
     private String username;
 
@@ -31,5 +31,44 @@ public class User {
 
     public static void main(String[] args) {
         //TODO: testing for user
+        User user = new User("Joel", "Pollak356",240);
+        String username = "Joel";
+        String password = "Pollak356";
+        String newPassword = "Pollak999";
+        long userID = 240;
+
+        int totalTests = 0;
+        int successfulTests = 0;
+        if (!user.getUsername().equals(username)) {
+            successfulTests--;
+            System.out.println("Username not matching expected username");
+        }
+        totalTests++;
+        successfulTests++;
+
+        if (user.getUserID() != userID) {
+            successfulTests--;
+            System.out.println("UserID not matching expected value.");
+        }
+        totalTests++;
+        successfulTests++;
+
+        if (!user.getPassword().equals(password)) {
+            successfulTests--;
+            System.out.println("Password not matching expected password.");
+        }
+        totalTests++;
+        successfulTests++;
+
+        user.changePassword(password ,newPassword);
+
+        if (!user.getPassword().equals(newPassword)) {
+            successfulTests--;
+            System.out.println("new password not matching expected password: possibly not changed");
+        }
+        totalTests++;
+        successfulTests++;
+
+        System.out.println(successfulTests + " out of " + totalTests + " tests were completed.");
     }
 }
