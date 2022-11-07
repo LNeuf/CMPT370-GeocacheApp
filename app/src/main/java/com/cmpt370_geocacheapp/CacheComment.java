@@ -33,8 +33,12 @@ public class CacheComment {
         return this.commentID;
     }
 
-    public User getAuthor() {
+    public User getAuthorObject() {
         return this.author;
+    }
+
+    public String getAuthor() {
+        return this.author.getUsername();
     }
 
     public String getCreationDate() {
@@ -52,6 +56,64 @@ public class CacheComment {
 
 
     public static void main(String[] args) {
-        //TODO: Testing for CacheComment
+        User user = new User("Naomi", "peanutbutter345", 123);
+        CacheComment comment = new CacheComment("Hello world!", user, 333);
+        String creation = comment.getCreationDate();
+        User authorObject = comment.getAuthorObject();
+        String author = "Naomi";
+        int commentID = 333;
+        int userID = 123;
+
+
+        int totalTests = 0;
+        int completedTests = 0;
+        if (authorObject != user) {
+            completedTests--;
+            System.out.println("The user that is the author is not showing as the author.");
+        }
+        completedTests++;
+        totalTests++;
+
+        if (!author.equals(comment.getAuthor())) {
+            completedTests--;
+            System.out.println("authors name is not stored correctly.");
+        }
+        completedTests++;
+        totalTests++;
+
+        if (comment.getCommentID() != commentID) {
+            completedTests--;
+            System.out.println("Comment ID not stored properly.");
+        }
+        completedTests++;
+        totalTests++;
+
+        if (userID != comment.getAuthorObject().getUserID()) {
+            completedTests--;
+            System.out.println("User ID not retrieved properly from comment.");
+        }
+        completedTests++;
+        totalTests++;
+
+
+        if (!comment.getCommentBody().equals("Hello world!")) {
+            completedTests--;
+            System.out.println("Initial body paragraph is not correct.");
+        }
+        completedTests++;
+        totalTests++;
+
+        comment.replaceCommentBody("Hello space!");
+        if (!comment.getCommentBody().equals("Hello space!")) {
+            completedTests--;
+            System.out.println("Updated body paragraph not correct.");
+        }
+        completedTests++;
+        totalTests++;
+
+        System.out.println( completedTests + " out of " + totalTests + " were successful.");
+
+
+
     }
 }
