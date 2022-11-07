@@ -1,12 +1,11 @@
 package com.cmpt370_geocacheapp;
 
-//import javax.xml.stream.events.Comment;
 import java.util.Date;
 import java.util.ArrayList;
 
 public class CacheObject {
     private final String name;
-    private final String author;
+    private final User author;
     private final long cacheID;
     private final String creationDate;
     private String dateLastAccessed;
@@ -15,7 +14,7 @@ public class CacheObject {
 
     final private ArrayList<CacheReview> reviewList = new ArrayList<>();
 
-    public CacheObject(String name, String author, long cacheID) {
+    public CacheObject(String name, User author, long cacheID) {
         this.cacheID = cacheID;
         this.author = author;
         this.name = name;
@@ -27,7 +26,7 @@ public class CacheObject {
         return this.name;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return this.author;
     }
 
@@ -40,7 +39,7 @@ public class CacheObject {
         this.dateLastAccessed = date.toString();
     }
 
-    public CacheComment getComment(int commentID) {
+    public CacheComment getComment(long commentID) {
         int commentIndx = -1;
         for (int i = 0; i < commentList.size(); i++) {
             if (commentList.get(i).getCommentID() == commentID) {
@@ -60,7 +59,7 @@ public class CacheObject {
         reviewList.add(review);
     }
 
-    public CacheReview getReview(int reviewID) {
+    public CacheReview getReview(long reviewID) {
         int reviewIndx = -1;
         for (int i = 0; i < reviewList.size(); i++) {
             if (reviewList.get(i).getCommentID() == reviewID) {
@@ -90,6 +89,14 @@ public class CacheObject {
 
     public String getDateLastAccessed() {
         return this.dateLastAccessed;
+    }
+
+    public double getAverageReviews() {
+        double rating = 0;
+        for (CacheReview cacheReview : reviewList) {
+            rating += cacheReview.getRating();
+        }
+        return rating / reviewList.size();
     }
 }
 

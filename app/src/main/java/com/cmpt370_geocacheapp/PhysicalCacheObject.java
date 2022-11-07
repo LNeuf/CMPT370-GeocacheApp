@@ -23,12 +23,19 @@ public class PhysicalCacheObject {
     public String getCacheName() {
         return this.cache.getName();
     }
-    public String getCacheAuthor() {
+    public User getCacheAuthorObject() {
         return this.cache.getAuthor();
     }
+
+    public String getCacheAuthor() {
+        return this.cache.getAuthor().getUsername();
+    }
+
+
     public double getCacheLatitude() {
         return this.latitude;
     }
+
     public double getCacheLongitude() {
         return this.longitude;
     }
@@ -57,6 +64,7 @@ public class PhysicalCacheObject {
         cacheCoordinates[1] = this.longitude;
         return cacheCoordinates;
     }
+
 
     public void addComment(CacheComment commentToAdd) {
         cache.addComment(commentToAdd);
@@ -96,7 +104,7 @@ public class PhysicalCacheObject {
         int expectedTerrainDifficulty = 1;
         int expectedCacheSize = 5;
 
-        CacheObject cache = new CacheObject("Saskatoon cache", "Ashton",1);
+        CacheObject cache = new CacheObject("Saskatoon cache", new User("Ashton", "password", 123),1);
         PhysicalCacheObject physicalCache = new PhysicalCacheObject(cache, 18.329384,14.00343,3,1,5 );
 
 
@@ -163,10 +171,29 @@ public class PhysicalCacheObject {
         User author = new User("Ashton", "potato", 1);
         CacheComment comment = new CacheComment("Comment body test for a series of characters.", author, 1);
         cache.addComment(comment);
+        CacheReview review = new CacheReview("This is the review's body",author,1,3);
+        cache.addReview(review);
+        testsPerformed += 1;
+        expectedTests += 1;
+        if (comment != cache.getComment(comment.getCommentID())) {
+            testsPerformed -= 1;
+            System.out.println("Comment not stored in comment list correctly.");
+        }
 
-        // TODO: Add testing for comment list with comment object and review object
+        testsPerformed += 1;
+        expectedTests += 1;
+        if (cache.getReview(review.getReviewID()) != review) {
+            testsPerformed -= 1;
+            System.out.println("Review not stored in review list correctly.");
+        }
+        cache.addReview(new CacheReview("Review", author, 2, 5 ));
 
-
+        testsPerformed += 1;
+        expectedTests += 1;
+        if (cache.getAverageReviews() != 4.0) {
+            testsPerformed -= 1;
+            System.out.println("Average reviews not what was expected.");
+        }
         System.out.println(testsPerformed + " tests were performed out of " + expectedTests);
     }
 }

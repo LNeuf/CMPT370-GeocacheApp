@@ -9,7 +9,7 @@ public class InteractionModelTest extends TestCase {
 
     public void testGetAndSetCurrentlySelectedCache() {
         InteractionModel testIModel = new InteractionModel();
-        PhysicalCacheObject testCache = new PhysicalCacheObject(new CacheObject("TestName", "TestAuthor", 123),50,80,1,2,3 );
+        PhysicalCacheObject testCache = new PhysicalCacheObject(new CacheObject("TestName", new User("TestAuthor","TestPass",123), 123),50,80,1,2,3 );
         testIModel.setCurrentlySelectedCache(testCache);
         assertEquals(testCache, testIModel.getCurrentlySelectedCache());
     }

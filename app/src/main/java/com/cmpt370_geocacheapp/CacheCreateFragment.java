@@ -93,7 +93,7 @@ public class CacheCreateFragment extends Fragment{
         int terrainDifficulty = terrainDifficultySeekBar.getProgress() + 1;
 
         // TODO: Assign creator name based on who is logged in
-        String cacheCreator = "Test Creator - Jesse";
+        User cacheCreator = new User("Jesse","TestPass",123);
 
 
         controller.createCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);

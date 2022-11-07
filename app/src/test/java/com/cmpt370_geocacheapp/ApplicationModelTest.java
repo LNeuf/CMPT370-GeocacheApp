@@ -75,7 +75,7 @@ public class ApplicationModelTest extends TestCase {
 
     public void testCreateNewCache() {
         ApplicationModel testModel = new ApplicationModel();
-        PhysicalCacheObject newCache = testModel.createNewCache("TestCache", "FakeAuthor", 50, 80, 1, 2, 3);
+        PhysicalCacheObject newCache = testModel.createNewCache("TestCache", new User("TestAuthor","TEstPass",123), 50, 80, 1, 2, 3);
         assertEquals(newCache, testModel.getFilteredCacheList().get(29)); // At index 29 because we are using some fake test data
     }
 }

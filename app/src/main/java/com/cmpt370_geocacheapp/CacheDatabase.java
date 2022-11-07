@@ -50,6 +50,10 @@ public class CacheDatabase {
         return num * num;
     }
 
+    /*
+    filterCacheDistance has an equivalent with the other filters. It will be removed at a later date with the final
+        product after making sure nothing depends on it.
+     */
     public ArrayList<PhysicalCacheObject> filterCacheDistance(double maxDistance, double currentLatitude, double currentLongitude) {
         ArrayList<PhysicalCacheObject> distanceFilteredCaches = new ArrayList<>();
         double lat;
@@ -68,21 +72,36 @@ public class CacheDatabase {
         }
         return distanceFilteredCaches;
     }
-    public ArrayList<CacheObject> filterTerrain(String allowedTerrain) {
-
-        return null;
-    }
-
-    public ArrayList<CacheObject> filterAuthor (String authorName) {
-        return null;
-    }
-
-    public ArrayList<CacheObject> filterDifficulty(String allowedDifficulty) {
-        return null;
-    }
 
 
     public static void main(String[] args) {
-        //TODO: Make tests for database
+        CacheDatabase database = new CacheDatabase();
+        User user = new User("Hilbert", "Json5",99);
+
+        CacheObject cache1Object = new CacheObject("Saskatoon Cache", user,801);
+        PhysicalCacheObject cache1 = new PhysicalCacheObject(cache1Object,14.007, 14.003, 5, 3, 1);
+        database.addPhysicalCache(cache1);
+
+        CacheObject cache2Object = new CacheObject("Regina Cache", user,802);
+        PhysicalCacheObject cache2 = new PhysicalCacheObject(cache2Object,15.032, 16.704, 1, 1, 2);
+        database.addPhysicalCache(cache2);
+
+        int totalTests = 0;
+        int successfulTests = 0;
+
+        totalTests++;
+        successfulTests++;
+        if (database.getPhysicalCache(cache1.getCacheID()) != cache1) {
+            System.out.println("Cache was unable to be retrieved from the list of caches");
+            successfulTests--;
+        }
+
+        totalTests++;
+        successfulTests++;
+        if (!database.getPhysicalCache(cache2.getCacheID()).getCacheName().equals(cache2.getCacheName())) {
+            System.out.println("Cache was unable to be retrieved from list of cache or retrieving the cache name is not working");
+            successfulTests--;
+        }
+        System.out.println(successfulTests + " tests completed out of " + totalTests);
     }
 }

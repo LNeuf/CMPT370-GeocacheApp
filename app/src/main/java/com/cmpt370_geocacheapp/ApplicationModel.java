@@ -135,7 +135,7 @@ public class ApplicationModel {
         for (String line : lines) {
             String[] lineData = line.split("\\t");
 
-            PhysicalCacheObject newGeoCache = new PhysicalCacheObject(new CacheObject(lineData[0], "Jesse", fakeCacheID.incrementAndGet()),
+            PhysicalCacheObject newGeoCache = new PhysicalCacheObject(new CacheObject(lineData[0], new User("Jesse","testPassword",123), fakeCacheID.incrementAndGet()),
                     Double.parseDouble(lineData[1]), Double.parseDouble(lineData[2]), Integer.parseInt(lineData[3]), Integer.parseInt(lineData[4]),
                     Integer.parseInt(lineData[5]));
             unfilteredCacheList.add(newGeoCache);
@@ -149,7 +149,7 @@ public class ApplicationModel {
         notifySubscribers();
     }
 
-    public PhysicalCacheObject createNewCache(String cacheName,String cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
+    public PhysicalCacheObject createNewCache(String cacheName,User cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
         PhysicalCacheObject newCache = new PhysicalCacheObject(new CacheObject(cacheName, cacheCreator, fakeCacheID.incrementAndGet()),
                 latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
         // TODO: Add cache to DB

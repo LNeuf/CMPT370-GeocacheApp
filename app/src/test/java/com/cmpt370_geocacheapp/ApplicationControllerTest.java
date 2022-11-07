@@ -9,7 +9,7 @@ public class ApplicationControllerTest extends TestCase {
         ApplicationController testController = new ApplicationController();
         InteractionModel testIModel = new InteractionModel();
         testController.setInteractionModel(testIModel);
-        PhysicalCacheObject testCache = new PhysicalCacheObject(new CacheObject("TestName", "TestAuthor", 123),50,80,1,2,3 );
+        PhysicalCacheObject testCache = new PhysicalCacheObject(new CacheObject("TestName", new User("TestAuthor","TEstPass",123), 123),50,80,1,2,3 );
         testController.setSelectedCache(testCache);
         assertEquals(testCache, testIModel.getCurrentlySelectedCache());
     }
@@ -20,7 +20,7 @@ public class ApplicationControllerTest extends TestCase {
         testController.setModel(testModel);
         InteractionModel testIModel = new InteractionModel();
         testController.setInteractionModel(testIModel);
-        testController.createCache("TestName", "TestAuthor", 50,80,1,2,3);
+        testController.createCache("TestName", new User("TestAuthor","TEstPass",123), 50,80,1,2,3);
         assertEquals(testIModel.getCurrentlySelectedCache(), testModel.getFilteredCacheList().get(29)); // Controller makes model create cache, then sets IModel to select that cache
     }
 }
