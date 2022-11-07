@@ -26,6 +26,11 @@ public class InteractionModel {
         this.currentFilters = new ArrayList<>();
     }
 
+    public void updateFilters(ArrayList<Predicate<PhysicalCacheObject>> newFilterList)
+    {
+        this.currentFilters = newFilterList;
+    }
+
     /**
      * Adds a subscriber to the list of subscribers
      * @param sub - a new subscriber
@@ -62,7 +67,7 @@ public class InteractionModel {
 
 
     public ArrayList<Predicate<PhysicalCacheObject>> getCurrentFilters() {
-        return new ArrayList<>(); // no filters yet
+        return this.currentFilters;
     }
 
     public boolean isSelectedCachedChanged() {
