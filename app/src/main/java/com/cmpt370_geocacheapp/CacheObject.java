@@ -90,5 +90,13 @@ public class CacheObject {
     public String getDateLastAccessed() {
         return this.dateLastAccessed;
     }
+
+    public double getAverageReviews() {
+        double rating = 0;
+        for (CacheReview cacheReview : reviewList) {
+            rating += cacheReview.getRating();
+        }
+        return rating / reviewList.size();
+    }
 }
 
