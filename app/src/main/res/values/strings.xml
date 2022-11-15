@@ -9,6 +9,7 @@
 
     //Cache creation strings
     <string name="setCacheName">Enter Cache Name</string>
+    <string name="cache_name">Cache Name</string>
     <string name="setLatitude">Enter Latitude</string>
     <string name="setLongitude">Enter Longitude</string>
     <string name="size">Select Cache Size</string>
@@ -24,4 +25,11 @@
     <string name="permission_required_toast">Location Permission Required</string>
     <string name="permission_rationale_location">Location Required To Use Current Location</string>
 
+
+    //Cache creation strings
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="mediumRadio">Medium</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="cache_distance">Distance</string>
 </resources>
