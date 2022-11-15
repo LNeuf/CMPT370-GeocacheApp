@@ -23,8 +23,11 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoWindow(Marker marker) {
-        TextView txtPickupTitle = myView.findViewById(R.id.txtPickupInfo);
-        txtPickupTitle.setText(marker.getTitle());
+        TextView txtInfoName = myView.findViewById(R.id.txtInfoName);
+        String[] markerTitle = marker.getTitle().split("\n");
+        txtInfoName.setText(markerTitle[0]);
+        TextView txtInfoDesc = myView.findViewById(R.id.txtInfoDesc);
+        txtInfoDesc.setText(markerTitle[1]);
         return myView;
     }
 

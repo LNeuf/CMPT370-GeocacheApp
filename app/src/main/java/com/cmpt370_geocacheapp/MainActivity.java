@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         for (PhysicalCacheObject cache : this.model.getFilteredCacheList()) {
             gMap.addMarker(new MarkerOptions()
                     .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
-                    .title(cache.getCacheName())
+                    .title(cache.getCacheName() + "\n" + cache.getCacheSummary())
                     .snippet(String.valueOf(cache.getCacheID())));
 
         }
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         iModel.setCurrentCacheLine(lineToCache);
 
         // Google map event handling
-        gMap.setOnMarkerClickListener(this::markerCLicked);
+//        gMap.setOnMarkerClickListener(this::markerCLicked);
         gMap.setOnInfoWindowClickListener(this::infoWindowClicked);
         gMap.setOnMyLocationButtonClickListener(this);
         gMap.setOnMyLocationClickListener(this);
@@ -277,16 +277,16 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             controller.setSelectedCache(clickedCache);
     }
 
-    /**
-     * Event handling for when a marker is clicked
-     *
-     * @param marker - The marker
-     * @return - False to keep default behaviour
-     */
-    private boolean markerCLicked(Marker marker) {
-        Toast.makeText(this, "MarkerID: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
-        return false;
-    }
+//    /**
+//     * Event handling for when a marker is clicked
+//     *
+//     * @param marker - The marker
+//     * @return - False to keep default behaviour
+//     */
+//    private boolean markerCLicked(Marker marker) {
+//        Toast.makeText(this, "MarkerID: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
+//        return false;
+//    }
 
     @Override
     public void iModelChanged() {
@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             for (PhysicalCacheObject cache : this.model.getFilteredCacheList()) {
                 gMap.addMarker(new MarkerOptions()
                         .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
-                        .title(cache.getCacheName())
+                        .title(cache.getCacheName() + "\n" + cache.getCacheSummary())
                         .snippet(String.valueOf(cache.getCacheID())));
 
             }

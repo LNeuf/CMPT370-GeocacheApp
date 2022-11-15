@@ -85,19 +85,11 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
     public void modelChanged() {
 
         // create the listview items from current filtered caches - with with or without distance data
-        if (iModel.getCurrentLocation() != null) {
-            this.items = (ArrayList<ListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
-                    new ListItem(cacheObject.getCacheName(), cacheObject.getCacheSummary(), "Time", String.valueOf(cacheObject.getCacheID()),
-                            calculateCacheDistance(cacheObject), cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())
-            ).collect(Collectors.toList());
-        }
-        else
-        {
-            this.items = (ArrayList<ListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
-                    new ListItem(cacheObject.getCacheName(), "Description", "Time", String.valueOf(cacheObject.getCacheID()),
-                            "Distance Not Available", cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())
-            ).collect(Collectors.toList());
-        }
+        this.items = (ArrayList<ListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
+                new ListItem(cacheObject.getCacheName(), cacheObject.getCacheSummary(), "Time", String.valueOf(cacheObject.getCacheID()),
+                        (iModel.getCurrentLocation() != null ? calculateCacheDistance(cacheObject) : "Distance not available."),
+                        cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())).collect(Collectors.toList());
+
 
         if (listViewAdapter != null) {
             listViewAdapter = new ListViewAdapter(this.getContext(),items);

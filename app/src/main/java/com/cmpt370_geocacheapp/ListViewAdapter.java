@@ -58,7 +58,7 @@ public class ListViewAdapter extends BaseAdapter {
         ListItem currentItem = items.get(position);
 
         // assign item data to view
-        // TODO: Assign an image, assign a description, assign a terrain difficulty
+        // TODO: Assign an image
         holder.nameText.setText(currentItem.getCacheName());
         holder.descriptionText.setText(currentItem.getCacheDescription());
         holder.distanceText.setText(currentItem.getCacheDistance());
