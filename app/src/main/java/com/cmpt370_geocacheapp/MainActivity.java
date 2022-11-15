@@ -298,6 +298,8 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             // hide other fragments
             hideFragment(listFragment);
             hideFragment(cacheCreateFragment);
+            // need to select map nav button
+            binding.bottomNavigationView.setSelectedItemId(R.id.nav_map);
         }
 
         if (iModel.getCurrentlySelectedCache() == null && iModel.isSelectedCachedChanged()) {

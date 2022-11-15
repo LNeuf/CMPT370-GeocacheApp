@@ -9,13 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
 public class ListFragment extends Fragment implements ModelListener, IModelListener{
     ListView lv;
 
-    ArrayAdapter<String> adapter;
+    private ListViewAdapter listViewAdapter;
+    private ArrayList<ListItem> items = new ArrayList<>();
     String[] cacheNames = {};
 
     ApplicationController controller;
@@ -28,8 +36,8 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         //Initialize view
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         lv = view.findViewById(R.id.cacheListView);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, cacheNames);
-        lv.setAdapter(adapter);
+        listViewAdapter = new ListViewAdapter(this.getContext(),items);
+        lv.setAdapter(listViewAdapter);
 
         lv.setOnItemClickListener(this::handleCacheNameSelected);
 
@@ -59,16 +67,55 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
 
     @Override
     public void iModelChanged() {
+        // update distances
+        if (iModel.getCurrentLocation() != null)
+        {
+            for(ListItem item : items)
+            {
+                item.setCacheDistance(calculateCacheDistance(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude(), item.getLatitude(), item.getLongitude()));
+            }
 
+            // refresh fragment data
+            ((BaseAdapter) lv.getAdapter()).notifyDataSetChanged();
+
+        }
     }
 
     @Override
     public void modelChanged() {
-        // update list of filtered cache names from model
-        this.cacheNames = this.model.getFilteredCacheList().stream().map(PhysicalCacheObject::getCacheSummary).toArray(String[]::new);
-        if (adapter != null) {
-            adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, cacheNames);
-            lv.setAdapter(adapter);
+
+        // create the listview items from current filtered caches - with with or without distance data
+        if (iModel.getCurrentLocation() != null) {
+            this.items = (ArrayList<ListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
+                    new ListItem(cacheObject.getCacheName(), cacheObject.getCacheSummary(), "Time", String.valueOf(cacheObject.getCacheID()),
+                            calculateCacheDistance(cacheObject), cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())
+            ).collect(Collectors.toList());
         }
+        else
+        {
+            this.items = (ArrayList<ListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
+                    new ListItem(cacheObject.getCacheName(), "Description", "Time", String.valueOf(cacheObject.getCacheID()),
+                            "Distance Not Available", cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())
+            ).collect(Collectors.toList());
+        }
+
+        if (listViewAdapter != null) {
+            listViewAdapter = new ListViewAdapter(this.getContext(),items);
+            lv.setAdapter(listViewAdapter);
+        }
+    }
+
+    private String calculateCacheDistance(PhysicalCacheObject cache)
+    {
+        double calculatedDistance = SphericalUtil.computeDistanceBetween(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()), new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()));
+
+        return (int)calculatedDistance + " m";
+    }
+
+    private String calculateCacheDistance(double lat1, double long1, double lat2, double long2)
+    {
+        double calculatedDistance = SphericalUtil.computeDistanceBetween(new LatLng(lat1, long1), new LatLng(lat2, long2));
+
+        return (int)calculatedDistance + " m";
     }
 }

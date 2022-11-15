@@ -52,7 +52,7 @@ public class PhysicalCacheObject {
 
     public String getCacheSummary()
     {
-        return String.format("%s: %s | Dif:%d/5 | Ter:%d/5 | ID:%d", cache.getName(), cacheSizeNames[cacheSize-1], cacheDifficulty, terrainDifficulty, cache.getCacheID());
+        return String.format("%s | Dif:%d/5 | Ter:%d/5 | ID:%d", cacheSizeNames[cacheSize-1], cacheDifficulty, terrainDifficulty, cache.getCacheID());
     }
 
     public double[] getCacheCoordinates() {

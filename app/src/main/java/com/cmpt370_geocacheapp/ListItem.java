@@ -1,28 +1,40 @@
 package com.cmpt370_geocacheapp;
 
 public class ListItem {
-    private String id;
-    private String itemName;
-    private String difficulty;
+    private String cacheID;
+    private String cacheName;
+    private String cacheDescription;
     private String time;
-    private String distance;
+    private String cacheDistance;
+    private double latitude;
+    private double longitude;
 
 
-    public ListItem(String name, String description, String time, String id, String distance) {
-        this.itemName = name;
-        this.difficulty = description;
+    public ListItem(String name, String description, String time, String id, String distance, double lat, double lon) {
+        this.cacheName = name;
+        this.cacheDescription = description;
         this.time = time;
-        this.id = id;
-        this.distance = distance;
+        this.cacheID = id;
+        this.cacheDistance = distance;
+        this.latitude = lat;
+        this.longitude = lon;
 
     }
 
-    public String getItemName() {
-        return this.itemName;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public String getDifficulty() {
-        return difficulty;
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public String getCacheName() {
+        return this.cacheName;
+    }
+
+    public String getCacheDescription() {
+        return cacheDescription;
     }
 
     public String getTime() {
@@ -30,10 +42,12 @@ public class ListItem {
     }
 
     public String getID() {
-        return this.id;
+        return this.cacheID;
     }
 
-    public String getDistance() {
-        return this.distance;
+    public String getCacheDistance() {
+        return this.cacheDistance;
     }
+
+    public void setCacheDistance(String dist) {this.cacheDistance = dist;}
 }

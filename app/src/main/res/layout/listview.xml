@@ -43,12 +43,12 @@
             android:textColor="@color/Darkblue"/>
 
         <TextView
-            android:id="@+id/item_difficulty"
+            android:id="@+id/item_diff_terrain_id_summary"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:text="@string/difficulty"
+            android:text="@string/description"
             android:textSize="15sp"
             android:textColor="@color/Gray"/>
 

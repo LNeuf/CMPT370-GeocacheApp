@@ -30,6 +30,6 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="mediumRadio">Medium</string>
-    <string name="difficulty">Difficulty</string>
+    <string name="description">Description</string>
     <string name="cache_distance">Distance</string>
 </resources>

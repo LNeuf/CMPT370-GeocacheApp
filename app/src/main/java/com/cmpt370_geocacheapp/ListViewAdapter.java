@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListViewAdapter extends BaseAdapter {
 
@@ -46,7 +45,7 @@ public class ListViewAdapter extends BaseAdapter {
 
             holder.image = convertView.findViewById(R.id.image_item);
             holder.nameText = convertView.findViewById(R.id.item_name);
-            holder.difficultyText = convertView.findViewById(R.id.item_difficulty);
+            holder.descriptionText = convertView.findViewById(R.id.item_diff_terrain_id_summary);
             holder.distanceText = convertView.findViewById(R.id.item_distance);
 
             convertView.setTag(holder);
@@ -58,13 +57,20 @@ public class ListViewAdapter extends BaseAdapter {
         // get current item to be displayed
         ListItem currentItem = items.get(position);
 
+        // assign item data to view
+        // TODO: Assign an image, assign a description, assign a terrain difficulty
+        holder.nameText.setText(currentItem.getCacheName());
+        holder.descriptionText.setText(currentItem.getCacheDescription());
+        holder.distanceText.setText(currentItem.getCacheDistance());
+
+
         // returns the view for the current row
         return convertView;
     }
 
     class ViewHolder{
         TextView nameText;
-        TextView difficultyText;
+        TextView descriptionText;
         TextView distanceText;
         ImageView image;
     }
