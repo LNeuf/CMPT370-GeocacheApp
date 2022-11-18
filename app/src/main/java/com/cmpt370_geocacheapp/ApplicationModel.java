@@ -1,5 +1,8 @@
 package com.cmpt370_geocacheapp;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -52,6 +55,22 @@ public class ApplicationModel {
         this.filteredCacheList = (ArrayList<PhysicalCacheObject>) result;
         notifySubscribers();
     }
+
+    public void filterCachesByDistance(double currentLatitude, double currentLongitude, int distanceInMeters)
+    {
+        List<PhysicalCacheObject> result = this.filteredCacheList; // gets the current already filtered cache list
+        Predicate<PhysicalCacheObject> filter = cacheObject -> distanceInMeters >= calculateCacheDistance(currentLatitude, currentLongitude, cacheObject);
+        result = result.stream().filter(filter).collect(Collectors.toList()); // apply each filter
+
+        // convert filtered caches to arraylist and update
+        this.filteredCacheList = (ArrayList<PhysicalCacheObject>) result;
+        notifySubscribers();
+    }
+
+    private int calculateCacheDistance(double currentLatitude, double currentLongitude, PhysicalCacheObject cacheObject) {
+        return (int) SphericalUtil.computeDistanceBetween(new LatLng(currentLatitude, currentLongitude), new LatLng(cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude()));
+    }
+
 
     /**
      * Sets a randomly selected nearby cache that meets filter criteria to be recommended

@@ -11,6 +11,7 @@ public class InteractionModel {
     // Geocache attributes
     private PhysicalCacheObject currentlySelectedCache;
     private ArrayList<Predicate<PhysicalCacheObject>> currentFilters;
+    private int maxDistance;
     // MVC attributes
     private ArrayList<IModelListener> subscribers;
     private boolean selectedCachedChanged = false;
@@ -29,6 +30,7 @@ public class InteractionModel {
     public void updateFilters(ArrayList<Predicate<PhysicalCacheObject>> newFilterList)
     {
         this.currentFilters = newFilterList;
+        notifySubscribers();
     }
 
     /**
@@ -89,5 +91,13 @@ public class InteractionModel {
 
     public Polyline getCurrentCacheLine() {
         return currentCacheLine;
+    }
+
+    public void setMaxDistance(int distance) {
+        this.maxDistance = distance;
+    }
+
+    public int getMaxDistance() {
+        return maxDistance;
     }
 }

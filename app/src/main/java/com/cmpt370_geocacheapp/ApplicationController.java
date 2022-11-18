@@ -1,5 +1,8 @@
 package com.cmpt370_geocacheapp;
 
+import java.util.ArrayList;
+import java.util.function.Predicate;
+
 public class ApplicationController {
     // MVC attributes
     private ApplicationModel model;
@@ -42,4 +45,16 @@ public class ApplicationController {
         iModel.setCurrentlySelectedCache(newCache);
     }
 
+    public void applyFilters(ArrayList<Predicate<PhysicalCacheObject>> filters) {
+        iModel.clearFilters();
+        iModel.updateFilters(filters);
+        model.updateFilteredCacheList(filters);
+        if (iModel.getCurrentLocation() != null && iModel.getMaxDistance() != -1) {
+            model.filterCachesByDistance(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude(), iModel.getMaxDistance());
+        }
+    }
+
+    public void setMaxDistance(int distance) {
+        iModel.setMaxDistance(distance);
+    }
 }

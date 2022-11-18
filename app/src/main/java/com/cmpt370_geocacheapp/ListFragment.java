@@ -72,7 +72,8 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         {
             for(ListItem item : items)
             {
-                item.setCacheDistance(calculateCacheDistance(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude(), item.getLatitude(), item.getLongitude()));
+                double dist = calculateCacheDistance(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude(), item.getLatitude(), item.getLongitude());
+                item.setCacheDistance(dist + " m");
             }
 
             // refresh fragment data
@@ -87,7 +88,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         // create the listview items from current filtered caches - with with or without distance data
         this.items = (ArrayList<ListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
                 new ListItem(cacheObject.getCacheName(), cacheObject.getCacheSummary(), "Time", String.valueOf(cacheObject.getCacheID()),
-                        (iModel.getCurrentLocation() != null ? calculateCacheDistance(cacheObject) : "Distance not available."),
+                        (iModel.getCurrentLocation() != null ? String.valueOf(calculateCacheDistance(cacheObject)) + " m" : "Distance not available."),
                         cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())).collect(Collectors.toList());
 
 
@@ -97,17 +98,15 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         }
     }
 
-    private String calculateCacheDistance(PhysicalCacheObject cache)
+    private double calculateCacheDistance(PhysicalCacheObject cache)
     {
-        double calculatedDistance = SphericalUtil.computeDistanceBetween(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()), new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()));
 
-        return (int)calculatedDistance + " m";
+        return SphericalUtil.computeDistanceBetween(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()), new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()));
     }
 
-    private String calculateCacheDistance(double lat1, double long1, double lat2, double long2)
+    private double calculateCacheDistance(double lat1, double long1, double lat2, double long2)
     {
-        double calculatedDistance = SphericalUtil.computeDistanceBetween(new LatLng(lat1, long1), new LatLng(lat2, long2));
 
-        return (int)calculatedDistance + " m";
+        return SphericalUtil.computeDistanceBetween(new LatLng(lat1, long1), new LatLng(lat2, long2));
     }
 }

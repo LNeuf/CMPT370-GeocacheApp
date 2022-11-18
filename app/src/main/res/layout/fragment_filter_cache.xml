@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--TODO: This is a temporary file used for the test fragment FilterCacheFragment.java-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CacheCreateFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/cacheCreateNestedScrollID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
+
+        <LinearLayout
+            android:id="@+id/cacheCreateLinearID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/cacheSizeTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cache Sizes"
+                android:textSize="16sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cacheSizeChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/microChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Micro" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/smallChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Small" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/regularChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Regular" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/largeChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Large" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/otherChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Other" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/terrainDifficultyTextID3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Cache Difficulty Range"
+                android:textSize="16sp" />
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/difficultyRangeSlider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:valueFrom="1"
+                android:valueTo="5"
+                android:stepSize="1"
+                app:values="@array/rangeSliderValues"
+                />
+
+            <TextView
+                android:id="@+id/terrainDifficultyTextID4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Terrain Difficulty Range"
+                android:textSize="16sp" />
+
+            <com.google.android.material.slider.RangeSlider
+
+                android:id="@+id/terrainRangeSlider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:valueFrom="1"
+                android:valueTo="5"
+                android:stepSize="1"
+                app:values="@array/rangeSliderValues"/>
+
+            <TextView
+                android:id="@+id/cacheNameTextID2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter max. distance from curent location  (meters)"
+                android:textSize="16sp" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/distanceEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minHeight="48dp"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <Button
+                android:id="@+id/clearFilterButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Clear"
+                android:textColor="#FF0000" />
+
+            <Button
+                android:id="@+id/cacheFilterButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apply Filters" />
+
+            <!--            TODO: Button to get current location, so you dont have to type in the long/lat-->
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>
