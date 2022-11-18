@@ -120,6 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:checked="true"
                     android:includeFontPadding="false"
                     android:text="Walking" />
 
@@ -144,7 +145,7 @@
                 android:id="@+id/clearRecommendationFiltersButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Reset"
+                android:text="Clear Filters"
                 android:textColor="#FF0000" />
 
             <Button

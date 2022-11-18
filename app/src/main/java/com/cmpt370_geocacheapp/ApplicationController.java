@@ -62,6 +62,14 @@ public class ApplicationController {
 
 
     public boolean getRecommendedCache(ArrayList<Predicate<PhysicalCacheObject>> filters, int distance) {
+        // needs to apply filters as well so that the recommended cache is actually shown on the map and in the list
+        model.updateFilteredCacheList(filters);
+        if (iModel.getCurrentLocation() != null)
+        {
+            model.filterCachesByDistance(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude(), distance);
+        }
+
+        // get a recommended cache from the available caches
         PhysicalCacheObject recommendedCache = model.getRecommendedCache(filters,
                 new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()), distance);
         if (recommendedCache != null)

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/filter_caches"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Filter Caches..." />
+
+    <item
+        android:id="@+id/recommend_caches"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="Get Recommendation" />
+
+
+</menu>

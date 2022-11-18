@@ -11,10 +11,6 @@ import androidx.core.content.ContextCompat;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.SeekBar;
 import android.widget.Toast;
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
@@ -51,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     private ListFragment listFragment;
     private CacheCreateFragment cacheCreateFragment;
     private RecommendCacheFragment recommendCacheFragment;
+    private FilterCacheFragment filterCacheFragment;
     private ApplicationController controller;
     private ApplicationModel model;
     private InteractionModel iModel;
@@ -85,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         listFragment = new ListFragment();
         cacheCreateFragment = new CacheCreateFragment();
         recommendCacheFragment = new RecommendCacheFragment();
+        filterCacheFragment = new FilterCacheFragment();
+
 
         // MVC linking
         listFragment.setModel(model);
@@ -94,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         listFragment.setController(controller);
         cacheCreateFragment.setController(controller);
         recommendCacheFragment.setController(controller);
+        filterCacheFragment.setController(controller);
 
         model.addSubscriber(listFragment);
         model.addSubscriber(this);
@@ -107,12 +107,16 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.frame_layout, listFragment);
+        fragmentTransaction.add(R.id.frame_layout, cacheCreateFragment);
         fragmentTransaction.add(R.id.frame_layout, recommendCacheFragment);
+        fragmentTransaction.add(R.id.frame_layout, filterCacheFragment);
         fragmentTransaction.commit();
 
         // hide list and create fragments on startup - Google Map is always shown below
         hideFragment(listFragment);
         hideFragment(cacheCreateFragment);
+        hideFragment(filterCacheFragment);
+        hideFragment(recommendCacheFragment);
 
         // setup bottom navigation events
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -126,11 +130,25 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
                     hideFragment(cacheCreateFragment);
                     break;
                 case R.id.nav_create:
-                    showFragment(recommendCacheFragment);
+                    showFragment(cacheCreateFragment);
                     hideFragment(listFragment);
                     break;
             }
+            return true;
+        });
 
+        // setup toolbar filter and recommend items
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+            switch(item.getItemId()){
+                case R.id.filter_caches:
+                    showFragment(filterCacheFragment);
+                    hideFragment(recommendCacheFragment);
+                    break;
+                case R.id.recommend_caches:
+                    showFragment(recommendCacheFragment);
+                    hideFragment(filterCacheFragment);
+                    break;
+            }
             return true;
         });
 
@@ -302,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             hideFragment(listFragment);
             hideFragment(cacheCreateFragment);
             // need to select map nav button
-            binding.bottomNavigationView.setSelectedItemId(R.id.nav_map);
+            binding.bottomNavigationView.setSelectedItemId(R.id.filter_caches);
         }
 
         if (iModel.getCurrentlySelectedCache() == null && iModel.isSelectedCachedChanged()) {

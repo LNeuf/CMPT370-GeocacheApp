@@ -123,7 +123,7 @@ public class RecommendCacheFragment extends Fragment {
             FragmentManager fm = getParentFragmentManager();
             fm.beginTransaction().hide(this).commit();
         } else {
-            Toast.makeText(this.getContext(), "No cache found that matched criteria! Please adjust filters and try again.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.getContext(), "No caches matching criteria, please adjust filters and try again.", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -120,7 +120,7 @@
                 android:id="@+id/clearFilterButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Clear"
+                android:text="Clear Filters"
                 android:textColor="#FF0000" />
 
             <Button
