@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     private ActivityHomeBinding binding;
     private ListFragment listFragment;
     private CacheCreateFragment cacheCreateFragment;
+    private RecommendCacheFragment recommendCacheFragment;
     private ApplicationController controller;
     private ApplicationModel model;
     private InteractionModel iModel;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         // Create all fragments
         listFragment = new ListFragment();
         cacheCreateFragment = new CacheCreateFragment();
+        recommendCacheFragment = new RecommendCacheFragment();
 
         // MVC linking
         listFragment.setModel(model);
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         listFragment.setIModel(iModel);
         listFragment.setController(controller);
         cacheCreateFragment.setController(controller);
+        recommendCacheFragment.setController(controller);
 
         model.addSubscriber(listFragment);
         model.addSubscriber(this);
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.frame_layout, listFragment);
-        fragmentTransaction.add(R.id.frame_layout, cacheCreateFragment);
+        fragmentTransaction.add(R.id.frame_layout, recommendCacheFragment);
         fragmentTransaction.commit();
 
         // hide list and create fragments on startup - Google Map is always shown below
@@ -123,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
                     hideFragment(cacheCreateFragment);
                     break;
                 case R.id.nav_create:
-                    showFragment(cacheCreateFragment);
+                    showFragment(recommendCacheFragment);
                     hideFragment(listFragment);
                     break;
             }

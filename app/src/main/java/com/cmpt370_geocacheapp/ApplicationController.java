@@ -1,5 +1,7 @@
 package com.cmpt370_geocacheapp;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
@@ -56,5 +58,17 @@ public class ApplicationController {
 
     public void setMaxDistance(int distance) {
         iModel.setMaxDistance(distance);
+    }
+
+
+    public boolean getRecommendedCache(ArrayList<Predicate<PhysicalCacheObject>> filters, int distance) {
+        PhysicalCacheObject recommendedCache = model.getRecommendedCache(filters,
+                new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()), distance);
+        if (recommendedCache != null)
+        {
+            iModel.setCurrentlySelectedCache(recommendedCache);
+            return true;
+        }
+        return false;
     }
 }

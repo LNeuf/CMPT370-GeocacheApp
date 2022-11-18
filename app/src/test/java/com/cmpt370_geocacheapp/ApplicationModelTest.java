@@ -64,7 +64,7 @@ public class ApplicationModelTest extends TestCase {
         ArrayList<Predicate<PhysicalCacheObject>> filterList = new ArrayList<>();
         filterList.add(diffEqualsTwo);
         filterList.add(cacheSizeMicro);
-        PhysicalCacheObject recommendedCache = testModel.getRecommendedCache(filterList);
+        PhysicalCacheObject recommendedCache = testModel.getRecommendedCache(filterList,null, 0); //TODO: fix this test
         assertEquals(recommendedCache.getCacheDifficulty(), 2);
         assertEquals(recommendedCache.getCacheSize(), 1);
     }

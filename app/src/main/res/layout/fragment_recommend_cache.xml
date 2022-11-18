@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--TODO: This is a temporary file used for the test fragment RecommendCacheFragment.java-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CacheCreateFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/cacheCreateNestedScrollID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
+
+        <LinearLayout
+            android:id="@+id/cacheCreateLinearID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/cacheSizeRecommendTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select preferred cache size(s)"
+                android:textSize="16sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cacheSizeRecommendChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/microRecommendChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Micro" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/smallRecommendChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Small" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/regularRecommendChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Regular" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/largeRecommendChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Large" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/otherRecommendChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Other" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/terrainDifficultyTextID3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Cache Difficulty Range"
+                android:textSize="16sp" />
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/difficultyRecommendRangeSlider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:valueFrom="1"
+                android:valueTo="5"
+                android:stepSize="1"
+                app:values="@array/rangeSliderValues"
+                />
+
+            <TextView
+                android:id="@+id/terrainDifficultyTextID4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Terrain Difficulty Range"
+                android:textSize="16sp" />
+
+            <com.google.android.material.slider.RangeSlider
+
+                android:id="@+id/terrainRecommendRangeSlider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:valueFrom="1"
+                android:valueTo="5"
+                android:stepSize="1"
+                app:values="@array/rangeSliderValues"/>
+
+            <TextView
+                android:id="@+id/cacheDistanceRadioText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select your travel method"
+                android:textSize="16sp" />
+
+            <RadioGroup
+                android:id="@+id/cacheDistanceRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/closeRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:includeFontPadding="false"
+                    android:text="Walking" />
+
+                <RadioButton
+                    android:id="@+id/averageRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:includeFontPadding="false"
+                    android:text="Biking" />
+
+                <RadioButton
+                    android:id="@+id/farRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:includeFontPadding="false"
+                    android:text="Vehicle" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/clearRecommendationFiltersButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reset"
+                android:textColor="#FF0000" />
+
+            <Button
+                android:id="@+id/cacheRecommendButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Find me a cache!" />
+
+            <!--            TODO: Button to get current location, so you dont have to type in the long/lat-->
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

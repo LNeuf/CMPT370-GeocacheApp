@@ -14,7 +14,6 @@ public class ApplicationModel {
     // Geocache attributes
     private ArrayList<PhysicalCacheObject> unfilteredCacheList;
     private ArrayList<PhysicalCacheObject> filteredCacheList;
-    private PhysicalCacheObject recommendedCache;
     private ArrayList<ModelListener> subscribers;
     AtomicInteger fakeCacheID = new AtomicInteger(); // TODO: remove when switching to actual cache database
 
@@ -35,8 +34,6 @@ public class ApplicationModel {
 
     public void updateNearbyCacheList(float latitude, float longitude, float distance) {
         // TODO: query database and update nearby cache list based on location and distance
-        // clear recommended cache
-        this.recommendedCache = null;
         notifySubscribers();
     }
 
@@ -78,10 +75,21 @@ public class ApplicationModel {
      * @param filterList - the filter criteria to meet
      * @return - Returns a geocache from the nearby cache list that meets criteria, otherwise returns null if no caches meet criteria
      */
-    public PhysicalCacheObject getRecommendedCache(ArrayList<Predicate<PhysicalCacheObject>> filterList) {
+    public PhysicalCacheObject getRecommendedCache(ArrayList<Predicate<PhysicalCacheObject>> filterList, LatLng currentLocation, int maxDistance) {
         List<PhysicalCacheObject> result = this.unfilteredCacheList; // gets the current list of nearby caches
         for (Predicate<PhysicalCacheObject> filter : filterList) {
             result = result.stream().filter(filter).collect(Collectors.toList()); // apply each filter
+        }
+
+        // factor in distance if provided a location
+        if (currentLocation != null)
+        {
+            List<PhysicalCacheObject> distanceFilteredResult = result; // gets the current already filtered cache list
+            Predicate<PhysicalCacheObject> distanceFilter = cacheObject -> maxDistance >= calculateCacheDistance(currentLocation.latitude, currentLocation.longitude, cacheObject);
+            distanceFilteredResult = distanceFilteredResult.stream().filter(distanceFilter).collect(Collectors.toList()); // apply distance filter
+
+            // convert filtered caches to arraylist and update
+            result = distanceFilteredResult;
         }
 
         // Return random cache that meets criteria, otherwise return null if no caches meet criteria
@@ -120,6 +128,7 @@ public class ApplicationModel {
     }
 
     private void generateFakeCacheData() {
+        // TODO: Add way more data
         String data = "Geology 101\t52.13175\t-106.63485\t1\t4\t3\t6586501\t5430256\n" +
                 "Biology 101\t52.132083\t-106.6344\t1\t3\t1\t6587237\t5430256\n" +
                 "Uni campus\t52.134201\t-106.636116\t2\t3\t1\t8678974\t36978910\n" +
