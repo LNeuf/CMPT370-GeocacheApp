@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements IModelListener, ModelListener, OnMyLocationButtonClickListener, OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity implements IModelListener, ModelListener, OnMyLocationButtonClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private ActivityHomeBinding binding;
     private ListFragment listFragment;
@@ -107,8 +107,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         iModel.addSubscriber(listFragment);
         iModel.addSubscriber(this);
 
-        // initialize model
-        model.init();
         // initialize model database
         model.initDatabase(this.getApplicationContext());
 
@@ -148,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
         // setup toolbar filter and recommend items
         binding.toolbar.setOnMenuItemClickListener(item -> {
-            switch(item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.filter_caches:
                     showFragment(filterCacheFragment);
                     hideFragment(recommendCacheFragment);
@@ -174,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     }
 
 
-
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
@@ -198,14 +195,11 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
 
         // Google map event handling
-//        gMap.setOnMarkerClickListener(this::markerCLicked);
         gMap.setOnInfoWindowClickListener(this::infoWindowClicked);
         gMap.setOnMyLocationButtonClickListener(this);
-        gMap.setOnMyLocationClickListener(this);
         gMap.setOnMapLongClickListener(this::mapLongPress);
         gMap.setOnPolylineClickListener(this::lineClicked);
         gMap.setOnMapClickListener(this::mapClicked);
-
 
     }
 
@@ -215,21 +209,12 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
      * @param latLng - The unused position of the click
      */
     private void mapClicked(LatLng latLng) {
-        // unselect cache
         controller.setSelectedCache(null);
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
-        //Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
         return false;
-    }
-
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -294,28 +279,14 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             controller.setSelectedCache(clickedCache);
     }
 
-//    /**
-//     * Event handling for when a marker is clicked
-//     *
-//     * @param marker - The marker
-//     * @return - False to keep default behaviour
-//     */
-//    private boolean markerCLicked(Marker marker) {
-//        Toast.makeText(this, "MarkerID: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
-//        return false;
-//    }
-
     @Override
     public void iModelChanged() {
-        // if received first location update
-        if (iModel.getCurrentLocation() != null && !receivedFirstLocationUpdate)
-        {
+        if (iModel.getCurrentLocation() != null && !receivedFirstLocationUpdate) {
             setupMapAndCachesFromLocation();
         }
 
         if (iModel.isSelectedCachedChanged()) {
             if (iModel.getCurrentlySelectedCache() != null) {
-                // New cache was selected, move map to cache and zoom in on it
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                         new LatLng(iModel.getCurrentlySelectedCache().getCacheLatitude(),
                                 iModel.getCurrentlySelectedCache().getCacheLongitude()), 17));
@@ -324,16 +295,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
                 hideFragment(cacheCreateFragment);
                 // need to select map nav button
                 binding.bottomNavigationView.setSelectedItemId(R.id.filter_caches);
-            } else {
-                // deselected cache, remove polyline
-                iModel.getCurrentCacheLine().setPoints(new ArrayList<>());
-            }
 
-            // change cache line points
-            if (iModel.getCurrentlySelectedCache() == null)
-            {
-                iModel.getCurrentCacheLine().setPoints(new ArrayList<>());
-            } else if (iModel.getCurrentLocation() != null){
                 List<LatLng> newPoints = new ArrayList<LatLng>() {
                     {
                         add(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()));
@@ -341,17 +303,20 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
                     }
                 };
                 iModel.getCurrentCacheLine().setPoints(newPoints);
+            } else {
+                // deselected cache, remove polyline points
+                iModel.getCurrentCacheLine().setPoints(new ArrayList<>());
             }
+
         }
     }
 
     private void setupMapAndCachesFromLocation() {
-        // Starting at the users current location
+        // Set camera on user position
         CameraPosition currentPos = CameraPosition.builder().target(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude())).zoom(18).build();
         gMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
-
         // populate map with nearby caches
-        model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(),5000);
+        model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(), 5000);
         redrawMapItems();
 
         receivedFirstLocationUpdate = true;
@@ -362,8 +327,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         redrawMapItems();
     }
 
-    private void redrawMapItems()
-    {
+    private void redrawMapItems() {
         // populate map with location markers and cache line
         if (gMap != null) {
             gMap.clear();
@@ -373,13 +337,16 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
                 gMap.addMarker(new MarkerOptions()
                         .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
                         .title(cache.getCacheName() + "\n" + cache.getCacheSummary())
-                                .icon(getBitmapDescriptorFromVector(this, R.drawable.test_icon))
+                        .icon(getBitmapDescriptorFromVector(this, R.drawable.test_icon))
                         .snippet(String.valueOf(cache.getCacheID())));
 
             }
         }
     }
 
+    /**
+     * Takes a context and vector id and generates a BitmapDescriptor for use as an icon in a google map
+     */
     private BitmapDescriptor getBitmapDescriptorFromVector(Context context, int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());

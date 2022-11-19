@@ -51,7 +51,7 @@ public class ApplicationModel {
         userDao = db.userDao();
         commentDao = db.commentDao();
         try {
-            loadFakeData(context);
+            loadFakeData(context); // TODO: currently app creates a new database every time the app is launched; need to make DB persist
         }
         catch (IOException e)
         {
@@ -198,10 +198,6 @@ public class ApplicationModel {
         for (ModelListener sub : subscribers) {
             sub.modelChanged();
         }
-    }
-
-    public void init() {
-        notifySubscribers();
     }
 
     public PhysicalCacheObject createNewCache(String cacheName,User cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
