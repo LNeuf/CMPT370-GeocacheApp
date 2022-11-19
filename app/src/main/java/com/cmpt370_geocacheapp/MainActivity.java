@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     private LocationCallback locationCallback;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
+    private boolean receivedFirstLocationUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
         // initialize model
         model.init();
+        // initialize model database
+        model.initDatabase(this.getApplicationContext());
 
         // add all fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -187,15 +190,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         LatLng usask = new LatLng(52.1334, -106.6314); //Set coordinates @Usask
         CameraPosition currentPos = CameraPosition.builder().target(usask).zoom(18).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
-
-        // populate map with test location markers. TODO: replace with nearby caches
-        for (PhysicalCacheObject cache : this.model.getFilteredCacheList()) {
-            gMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
-                    .title(cache.getCacheName() + "\n" + cache.getCacheSummary())
-                    .snippet(String.valueOf(cache.getCacheID())));
-
-        }
 
         // Initialize empty cache poly line
         Polyline lineToCache = gMap.addPolyline(new PolylineOptions().clickable(true));
@@ -311,6 +305,12 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     @Override
     public void iModelChanged() {
+        // if received first location update
+        if (iModel.getCurrentLocation() != null && !receivedFirstLocationUpdate)
+        {
+            setupMapAndCachesFromLocation();
+        }
+
         if (iModel.getCurrentlySelectedCache() != null && iModel.isSelectedCachedChanged()) {
             // New cache was selected, move map to cache and zoom in on it
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
@@ -339,6 +339,23 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             iModel.getCurrentCacheLine().setPoints(newPoints);
 
         }
+    }
+
+    private void setupMapAndCachesFromLocation() {
+        // Starting at the users current location
+        CameraPosition currentPos = CameraPosition.builder().target(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude())).zoom(18).build();
+        gMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
+
+        // populate map with nearby caches
+        model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(),1000); //TODO: probably make this centered on the current location, and use some default distance to load caches from
+        for (PhysicalCacheObject cache : this.model.getFilteredCacheList()) {
+            gMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
+                    .title(cache.getCacheName() + "\n" + cache.getCacheSummary())
+                    .snippet(String.valueOf(cache.getCacheID())));
+
+        }
+        receivedFirstLocationUpdate = true;
     }
 
     @Override

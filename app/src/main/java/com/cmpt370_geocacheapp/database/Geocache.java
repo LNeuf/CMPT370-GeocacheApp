@@ -14,6 +14,14 @@ public class Geocache {
 
     public float longitude;
 
+    public int cacheDiff;
+
+    public int terrainDiff;
+
+    public int cacheSize;
+
     public String userUsername; // each geocache has one user
+
+    public String cacheName;
 
 }
