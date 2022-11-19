@@ -8,6 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -193,10 +197,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         CameraPosition currentPos = CameraPosition.builder().target(usask).zoom(18).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
 
-        // Initialize empty cache poly line
-        Polyline lineToCache = gMap.addPolyline(new PolylineOptions().clickable(true));
-        iModel.setCurrentCacheLine(lineToCache);
-
         // Google map event handling
 //        gMap.setOnMarkerClickListener(this::markerCLicked);
         gMap.setOnInfoWindowClickListener(this::infoWindowClicked);
@@ -313,33 +313,35 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             setupMapAndCachesFromLocation();
         }
 
-        if (iModel.getCurrentlySelectedCache() != null && iModel.isSelectedCachedChanged()) {
-            // New cache was selected, move map to cache and zoom in on it
-            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(iModel.getCurrentlySelectedCache().getCacheLatitude(),
-                            iModel.getCurrentlySelectedCache().getCacheLongitude()), 17));
-            // hide other fragments
-            hideFragment(listFragment);
-            hideFragment(cacheCreateFragment);
-            // need to select map nav button
-            binding.bottomNavigationView.setSelectedItemId(R.id.filter_caches);
-        }
+        if (iModel.isSelectedCachedChanged()) {
+            if (iModel.getCurrentlySelectedCache() != null) {
+                // New cache was selected, move map to cache and zoom in on it
+                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(iModel.getCurrentlySelectedCache().getCacheLatitude(),
+                                iModel.getCurrentlySelectedCache().getCacheLongitude()), 17));
+                // hide other fragments
+                hideFragment(listFragment);
+                hideFragment(cacheCreateFragment);
+                // need to select map nav button
+                binding.bottomNavigationView.setSelectedItemId(R.id.filter_caches);
+            } else {
+                // deselected cache, remove polyline
+                iModel.getCurrentCacheLine().setPoints(new ArrayList<>());
+            }
 
-        if (iModel.getCurrentlySelectedCache() == null && iModel.isSelectedCachedChanged()) {
-            // deselected cache, remove polyline
-            iModel.getCurrentCacheLine().setPoints(new ArrayList<>());
-        }
-
-        if (iModel.getCurrentLocation() != null && iModel.getCurrentlySelectedCache() != null) {
-            // Redraw current cache line
-            List<LatLng> newPoints = new ArrayList<LatLng>() {
-                {
-                    add(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()));
-                    add(new LatLng(iModel.getCurrentlySelectedCache().getCacheLatitude(), iModel.getCurrentlySelectedCache().getCacheLongitude()));
-                }
-            };
-            iModel.getCurrentCacheLine().setPoints(newPoints);
-
+            // change cache line points
+            if (iModel.getCurrentlySelectedCache() == null)
+            {
+                iModel.getCurrentCacheLine().setPoints(new ArrayList<>());
+            } else if (iModel.getCurrentLocation() != null){
+                List<LatLng> newPoints = new ArrayList<LatLng>() {
+                    {
+                        add(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude()));
+                        add(new LatLng(iModel.getCurrentlySelectedCache().getCacheLatitude(), iModel.getCurrentlySelectedCache().getCacheLongitude()));
+                    }
+                };
+                iModel.getCurrentCacheLine().setPoints(newPoints);
+            }
         }
     }
 
@@ -350,23 +352,19 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
         // populate map with nearby caches
         model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(),5000);
-        if (gMap != null)
-        {
-            gMap.clear();
-        }
-        for (PhysicalCacheObject cache : this.model.getFilteredCacheList()) {
-            gMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
-                    .title(cache.getCacheName() + "\n" + cache.getCacheSummary())
-                    .snippet(String.valueOf(cache.getCacheID())));
+        redrawMapItems();
 
-        }
         receivedFirstLocationUpdate = true;
     }
 
     @Override
     public void modelChanged() {
-        // populate map with location markers
+        redrawMapItems();
+    }
+
+    private void redrawMapItems()
+    {
+        // populate map with location markers and cache line
         if (gMap != null) {
             gMap.clear();
             Polyline lineToCache = gMap.addPolyline(new PolylineOptions().clickable(true));
@@ -375,10 +373,20 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
                 gMap.addMarker(new MarkerOptions()
                         .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))
                         .title(cache.getCacheName() + "\n" + cache.getCacheSummary())
+                                .icon(getBitmapDescriptorFromVector(this, R.drawable.test_icon))
                         .snippet(String.valueOf(cache.getCacheID())));
 
             }
         }
+    }
+
+    private BitmapDescriptor getBitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     /**
