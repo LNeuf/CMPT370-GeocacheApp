@@ -29,6 +29,8 @@ import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -347,7 +349,11 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         gMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPos));
 
         // populate map with nearby caches
-        model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(),1000); //TODO: probably make this centered on the current location, and use some default distance to load caches from
+        model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(),5000);
+        if (gMap != null)
+        {
+            gMap.clear();
+        }
         for (PhysicalCacheObject cache : this.model.getFilteredCacheList()) {
             gMap.addMarker(new MarkerOptions()
                     .position(new LatLng(cache.getCacheLatitude(), cache.getCacheLongitude()))

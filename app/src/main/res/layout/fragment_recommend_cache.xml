@@ -19,6 +19,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ImageButton
+                android:id="@+id/recommendCloseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
             <TextView
                 android:id="@+id/cacheSizeRecommendTextID"
                 android:layout_width="match_parent"
@@ -78,11 +85,10 @@
                 android:id="@+id/difficultyRecommendRangeSlider"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:stepSize="1"
                 android:valueFrom="1"
                 android:valueTo="5"
-                android:stepSize="1"
-                app:values="@array/rangeSliderValues"
-                />
+                app:values="@array/rangeSliderValues" />
 
             <TextView
                 android:id="@+id/terrainDifficultyTextID4"
@@ -96,10 +102,10 @@
                 android:id="@+id/terrainRecommendRangeSlider"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:stepSize="1"
                 android:valueFrom="1"
                 android:valueTo="5"
-                android:stepSize="1"
-                app:values="@array/rangeSliderValues"/>
+                app:values="@array/rangeSliderValues" />
 
             <TextView
                 android:id="@+id/cacheDistanceRadioText"
@@ -139,6 +145,46 @@
                     android:layout_weight="1"
                     android:includeFontPadding="false"
                     android:text="Vehicle" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/cacheTimeRadioText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select preferred time to cache"
+                android:textSize="16sp" />
+
+            <RadioGroup
+                android:id="@+id/cacheTimeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/tenMinuteRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:includeFontPadding="false"
+                    android:text="10 Minutes" />
+
+                <RadioButton
+                    android:id="@+id/twentyMinuteRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:includeFontPadding="false"
+                    android:text="20 Minutes" />
+
+                <RadioButton
+                    android:id="@+id/thirtyMinuteRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:includeFontPadding="false"
+                    android:text="30 Minutes" />
             </RadioGroup>
 
             <Button

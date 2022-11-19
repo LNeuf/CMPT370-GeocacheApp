@@ -1,14 +1,9 @@
 package com.cmpt370_geocacheapp;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -40,22 +35,28 @@ public class RecommendCacheFragment extends Fragment {
         // event handling stuff
         view.findViewById(R.id.cacheRecommendButton).setOnClickListener(this::getRecommendation);
         view.findViewById(R.id.clearRecommendationFiltersButton).setOnClickListener(this::clearFilters);
+        view.findViewById(R.id.recommendCloseButton).setOnClickListener(this::close);
 
         return view;
+    }
+
+    private void close(View view) {
+        //hide filter fragment on apply
+        FragmentManager fm = getParentFragmentManager();
+        fm.beginTransaction().hide(this).commit();
     }
 
     private void clearFilters(View view) {
         ChipGroup cacheSizeChipGroup = requireView().findViewById(R.id.cacheSizeRecommendChipGroup);
         List<Integer> ids = cacheSizeChipGroup.getCheckedChipIds();
-        for (Integer chipID : ids)
-        {
+        for (Integer chipID : ids) {
             Chip chip = requireView().findViewById(chipID);
             chip.setChecked(false);
         }
         RangeSlider difficultySlider = requireView().findViewById(R.id.difficultyRecommendRangeSlider);
-        difficultySlider.setValues(1f,5f);
+        difficultySlider.setValues(1f, 5f);
         RangeSlider terrainDifficultySlider = requireView().findViewById(R.id.terrainRecommendRangeSlider);
-        terrainDifficultySlider.setValues(1f,5f);
+        terrainDifficultySlider.setValues(1f, 5f);
         RadioButton walkingRadioButton = requireView().findViewById(R.id.closeRadioButton);
         walkingRadioButton.setChecked(true);
     }
@@ -102,21 +103,31 @@ public class RecommendCacheFragment extends Fragment {
             filters.add(terrainDifficultyFilter);
         }
 
-        // cache distance
+        // cache travel method
         RadioGroup rg = requireView().findViewById(R.id.cacheDistanceRadioGroup);
         int selectedID = rg.getCheckedRadioButtonId();
-        int distance = -1;
+        double speed = -1;
         if (selectedID == R.id.closeRadioButton)
-            distance = 1500;
+            speed = 2.5;
         if (selectedID == R.id.averageRadioButton)
-            distance = 3000;
+            speed = 10;
         if (selectedID == R.id.farRadioButton)
-            distance = 7500;
+            speed = 50;
 
-        // TODO: Add a time selector to give finer distance control. Eg: 10 minutes, 20 minutes, 30 minutes
+        // time to cache
+        rg = requireView().findViewById(R.id.cacheTimeRadioGroup);
+        selectedID = rg.getCheckedRadioButtonId();
+        double time = -1;
+        if (selectedID == R.id.tenMinuteRadioButton)
+            time = 1.0 / 6;
+        if (selectedID == R.id.twentyMinuteRadioButton)
+            time = 2.0 / 6;
+        if (selectedID == R.id.thirtyMinuteRadioButton)
+            time = 3.0 / 6;
+
 
         // get recommended cache
-        boolean success = controller.getRecommendedCache(filters, distance);
+        boolean success = controller.getRecommendedCache(filters, (int) ((speed * time) * 1000));
 
         if (success) {
             //hide filter fragment on apply

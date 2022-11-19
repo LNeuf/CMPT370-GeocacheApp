@@ -73,7 +73,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
             for(ListItem item : items)
             {
                 double dist = calculateCacheDistance(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude(), item.getLatitude(), item.getLongitude());
-                item.setCacheDistance(dist + " m");
+                item.setCacheDistance((int)dist + " m");
             }
 
             // refresh fragment data
@@ -88,7 +88,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         // create the listview items from current filtered caches - with with or without distance data
         this.items = (ArrayList<ListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
                 new ListItem(cacheObject.getCacheName(), cacheObject.getCacheSummary(), "Time", String.valueOf(cacheObject.getCacheID()),
-                        (iModel.getCurrentLocation() != null ? String.valueOf(calculateCacheDistance(cacheObject)) + " m" : "Distance not available."),
+                        (iModel.getCurrentLocation() != null ? String.valueOf((int)calculateCacheDistance(cacheObject)) + " m" : "Distance not available."),
                         cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())).collect(Collectors.toList());
 
 

@@ -38,8 +38,15 @@ public class FilterCacheFragment extends Fragment {
         // event handling stuff
         view.findViewById(R.id.cacheFilterButton).setOnClickListener(this::filterCaches);
         view.findViewById(R.id.clearFilterButton).setOnClickListener(this::clearFilters);
+        view.findViewById(R.id.filterCloseButton).setOnClickListener(this::close);
 
         return view;
+    }
+
+    private void close(View view) {
+        //hide filter fragment on apply
+        FragmentManager fm = getParentFragmentManager();
+        fm.beginTransaction().hide(this).commit();
     }
 
     private void clearFilters(View view) {
