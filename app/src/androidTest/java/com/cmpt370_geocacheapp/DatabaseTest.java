@@ -83,7 +83,7 @@ public class DatabaseTest {
     @Test
     public void testManyToOne() {
         // the user
-        User fungi2000 = new User();
+        com.cmpt370_geocacheapp.database.User fungi2000 = new com.cmpt370_geocacheapp.database.User();
         fungi2000.username = "fungi2000";
         fungi2000.password = "abc123";
         userDao.insertAll(fungi2000);
@@ -98,7 +98,7 @@ public class DatabaseTest {
         g = geocacheDao.getAll().get(0);
 
         // the geocache's creator
-        User thaCreator = new User();
+        com.cmpt370_geocacheapp.database.User thaCreator = new com.cmpt370_geocacheapp.database.User();
         thaCreator.username = "tha_creator666";
         thaCreator.password = "asdf";
         userDao.insertAll(thaCreator);
