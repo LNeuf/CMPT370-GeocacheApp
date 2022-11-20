@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -22,9 +21,8 @@ import java.util.stream.Collectors;
 public class ListFragment extends Fragment implements ModelListener, IModelListener{
     ListView lv;
 
-    private ListViewAdapter listViewAdapter;
-    private ArrayList<ListItem> items = new ArrayList<>();
-    String[] cacheNames = {};
+    private CacheListViewAdapter cacheListViewAdapter;
+    private ArrayList<CacheListItem> items = new ArrayList<>();
 
     ApplicationController controller;
     ApplicationModel model;
@@ -36,8 +34,8 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         //Initialize view
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         lv = view.findViewById(R.id.cacheListView);
-        listViewAdapter = new ListViewAdapter(this.getContext(),items);
-        lv.setAdapter(listViewAdapter);
+        cacheListViewAdapter = new CacheListViewAdapter(this.getContext(),items);
+        lv.setAdapter(cacheListViewAdapter);
 
         lv.setOnItemClickListener(this::handleCacheNameSelected);
 
@@ -70,7 +68,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         // update distances
         if (iModel.getCurrentLocation() != null)
         {
-            for(ListItem item : items)
+            for(CacheListItem item : items)
             {
                 double dist = calculateCacheDistance(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude(), item.getLatitude(), item.getLongitude());
                 item.setCacheDistance((int)dist + " m");
@@ -86,15 +84,15 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
     public void modelChanged() {
 
         // create the listview items from current filtered caches - with with or without distance data
-        this.items = (ArrayList<ListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
-                new ListItem(cacheObject.getCacheName(), cacheObject.getCacheSummary(), "Time", String.valueOf(cacheObject.getCacheID()),
+        this.items = (ArrayList<CacheListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
+                new CacheListItem(cacheObject.getCacheName(), cacheObject.getCacheSummary(), "Time", String.valueOf(cacheObject.getCacheID()),
                         (iModel.getCurrentLocation() != null ? String.valueOf((int)calculateCacheDistance(cacheObject)) + " m" : "Distance not available."),
                         cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())).collect(Collectors.toList());
 
 
-        if (listViewAdapter != null) {
-            listViewAdapter = new ListViewAdapter(this.getContext(),items);
-            lv.setAdapter(listViewAdapter);
+        if (cacheListViewAdapter != null) {
+            cacheListViewAdapter = new CacheListViewAdapter(this.getContext(),items);
+            lv.setAdapter(cacheListViewAdapter);
         }
     }
 

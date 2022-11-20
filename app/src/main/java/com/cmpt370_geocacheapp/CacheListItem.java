@@ -1,6 +1,6 @@
 package com.cmpt370_geocacheapp;
 
-public class ListItem {
+public class CacheListItem {
     private String cacheID;
     private String cacheName;
     private String cacheDescription;
@@ -10,7 +10,7 @@ public class ListItem {
     private double longitude;
 
 
-    public ListItem(String name, String description, String time, String id, String distance, double lat, double lon) {
+    public CacheListItem(String name, String description, String time, String id, String distance, double lat, double lon) {
         this.cacheName = name;
         this.cacheDescription = description;
         this.time = time;

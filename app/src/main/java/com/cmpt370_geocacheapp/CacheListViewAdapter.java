@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ListViewAdapter extends BaseAdapter {
+public class CacheListViewAdapter extends BaseAdapter {
 
-    private ArrayList<ListItem> items;
+    private ArrayList<CacheListItem> items;
     private Context context;
 
-    public ListViewAdapter(Context context,ArrayList<ListItem> items){
+    public CacheListViewAdapter(Context context, ArrayList<CacheListItem> items){
         this.context = context;
         this.items = items;
     }
@@ -41,7 +41,7 @@ public class ListViewAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(context).
-                    inflate(R.layout.listview, parent, false);
+                    inflate(R.layout.cache_listview, parent, false);
 
             holder.image = convertView.findViewById(R.id.image_item);
             holder.nameText = convertView.findViewById(R.id.item_name);
@@ -55,7 +55,7 @@ public class ListViewAdapter extends BaseAdapter {
         }
 
         // get current item to be displayed
-        ListItem currentItem = items.get(position);
+        CacheListItem currentItem = items.get(position);
 
         // assign item data to view
         // TODO: Assign an image

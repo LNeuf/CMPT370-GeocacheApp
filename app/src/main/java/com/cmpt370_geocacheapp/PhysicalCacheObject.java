@@ -196,4 +196,8 @@ public class PhysicalCacheObject {
         }
         System.out.println(testsPerformed + " tests were performed out of " + expectedTests);
     }
+
+    public String getCacheSizeString() {
+        return cacheSizeNames[cacheDifficulty - 1];
+    }
 }

@@ -3,9 +3,12 @@ package com.cmpt370_geocacheapp;
 import android.content.Context;
 
 import com.cmpt370_geocacheapp.database.AppDatabase;
+import com.cmpt370_geocacheapp.database.Comment;
 import com.cmpt370_geocacheapp.database.CommentDao;
 import com.cmpt370_geocacheapp.database.Geocache;
 import com.cmpt370_geocacheapp.database.GeocacheDao;
+import com.cmpt370_geocacheapp.database.RatingReview;
+import com.cmpt370_geocacheapp.database.RatingReviewDao;
 import com.cmpt370_geocacheapp.database.UserDao;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
@@ -25,6 +28,7 @@ public class ApplicationModel {
     private GeocacheDao geocacheDao;
     private AppDatabase db;
     private CommentDao commentDao;
+    private RatingReviewDao ratingDao;
 
     /**
      * Constructor of the applications model
@@ -40,6 +44,7 @@ public class ApplicationModel {
         geocacheDao = db.geocacheDao();
         userDao = db.userDao();
         commentDao = db.commentDao();
+        ratingDao = db.reviewDao();
     }
 
     public ArrayList<PhysicalCacheObject> getFilteredCacheList() {
@@ -215,5 +220,28 @@ public class ApplicationModel {
         this.filteredCacheList.add(newCache);
         notifySubscribers();
         return newCache;
+    }
+
+    public PhysicalCacheObject getCacheById(long cacheID) {
+        for (PhysicalCacheObject cache : unfilteredCacheList)
+        {
+            if (cache.getCacheID() == cacheID)
+                return cache;
+        }
+        return null;
+    }
+
+    public List<RatingReview> getCacheRatings(long cacheID) {
+         return ratingDao.getByCacheID(cacheID);
+
+    }
+
+    public void createNewRating(String username, String contents, int rating, long currentGeocacheID) {
+        RatingReview r = new RatingReview();
+        r.userUsername = username;
+        r.contents = contents;
+        r.rating = rating;
+        r.geocacheId = currentGeocacheID;
+        ratingDao.insertAll(r);
     }
 }

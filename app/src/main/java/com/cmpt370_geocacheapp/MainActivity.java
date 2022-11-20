@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     private RecommendCacheFragment recommendCacheFragment;
     private FilterCacheFragment filterCacheFragment;
     private SearchCacheFragment searchCacheFragment;
+    private DetailCacheFragment detailCacheFragment;
     private ApplicationController controller;
     private ApplicationModel model;
     private InteractionModel iModel;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         recommendCacheFragment = new RecommendCacheFragment();
         filterCacheFragment = new FilterCacheFragment();
         searchCacheFragment = new SearchCacheFragment();
+        detailCacheFragment = new DetailCacheFragment();
 
 
         // MVC linking
@@ -104,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         recommendCacheFragment.setController(controller);
         filterCacheFragment.setController(controller);
         searchCacheFragment.setController(controller);
+        detailCacheFragment.setController(controller);
+        detailCacheFragment.setModel(model);
+        detailCacheFragment.setIModel(iModel);
 
         model.addSubscriber(listFragment);
         model.addSubscriber(this);
@@ -121,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         fragmentTransaction.add(R.id.frame_layout, recommendCacheFragment);
         fragmentTransaction.add(R.id.frame_layout, filterCacheFragment);
         fragmentTransaction.add(R.id.frame_layout, searchCacheFragment);
+        fragmentTransaction.add(R.id.frame_layout, detailCacheFragment);
         fragmentTransaction.commit();
 
         // hide list and create fragments on startup - Google Map is always shown below
@@ -129,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         hideFragment(filterCacheFragment);
         hideFragment(recommendCacheFragment);
         hideFragment(searchCacheFragment);
+        hideFragment(detailCacheFragment);
 
         // setup bottom navigation events
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -208,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
         // Google map event handling
         gMap.setOnInfoWindowClickListener(this::infoWindowClicked);
+        gMap.setOnInfoWindowLongClickListener(this::infoWindowLongClicked);
         gMap.setOnMyLocationButtonClickListener(this);
         gMap.setOnMapLongClickListener(this::mapLongPress);
         gMap.setOnPolylineClickListener(this::lineClicked);
@@ -281,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
      */
     private void infoWindowClicked(Marker marker) {
         // TODO: Make a click on info window bring up cache detail fragment or window
-        Toast.makeText(this, "Show cache details for marker: " + marker.getSnippet(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Navigating to cache", Toast.LENGTH_SHORT).show();
         PhysicalCacheObject clickedCache = null;
         for (PhysicalCacheObject cache : model.getFilteredCacheList()) {
             if (String.valueOf(cache.getCacheID()).equals(marker.getSnippet()))
@@ -289,6 +297,12 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         }
         if (clickedCache != null)
             controller.setSelectedCache(clickedCache);
+    }
+
+    private void infoWindowLongClicked(Marker marker) {
+        // this needs to open a detail page
+        detailCacheFragment.setCacheID(marker.getSnippet());
+        showFragment(detailCacheFragment);
     }
 
     @Override

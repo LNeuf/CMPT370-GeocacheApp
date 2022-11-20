@@ -22,4 +22,11 @@ public interface RatingReviewDao {
 
     @Query("SELECT * FROM RatingReview")
     List<RatingReview> getAll();
+
+    @Query(
+            "SELECT * FROM RatingReview WHERE " +
+                    "geocacheId == :cacheID"
+
+    )
+    List<RatingReview> getByCacheID(long cacheID);
 }

@@ -29,6 +29,7 @@
             android:id="@+id/txtInfoDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
             android:text="@string/info_description"
             android:textColor="@color/LightGray"
             android:textStyle="bold" />
