@@ -55,7 +55,7 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
             return;
         }
 
-        // TODO: actually include proper user
+        // TODO: actually include proper user based on who is logged in
         String username = "Jesse";
 
         RadioGroup ratingRadioGroup = requireView().findViewById(R.id.ratingsRadioGroup);

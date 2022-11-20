@@ -24,8 +24,6 @@ public interface GeocacheDao {
     // 0 <= longitude <= 360
     // note that this is really specifying a trapezoidal-shaped region
     // cause latitude/longitude is weird
-    // TODO: might want to replace this with a more useful way of specifying a
-    //       region on a sphere
     @Query(
             "SELECT * FROM Geocache WHERE " +
                     ":latitudeMin <= latitude AND " +

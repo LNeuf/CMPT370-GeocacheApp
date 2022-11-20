@@ -136,8 +136,6 @@
                 android:layout_height="wrap_content"
                 android:text="Apply Filters" />
 
-            <!--            TODO: Button to get current location, so you dont have to type in the long/lat-->
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </FrameLayout>

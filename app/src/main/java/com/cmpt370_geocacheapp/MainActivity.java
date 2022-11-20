@@ -232,6 +232,10 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         controller.setSelectedCache(null);
     }
 
+    /**
+     * Handles when the "Current location" button is clicked on the google map
+     * @return - returns false to no prevent the default behaviour
+     */
     @Override
     public boolean onMyLocationButtonClick() {
         return false;
@@ -288,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
      * @param marker - The marker clicked
      */
     private void infoWindowClicked(Marker marker) {
-        // TODO: Make a click on info window bring up cache detail fragment or window
         Toast.makeText(this, "Navigating to cache", Toast.LENGTH_SHORT).show();
         PhysicalCacheObject clickedCache = null;
         for (PhysicalCacheObject cache : model.getFilteredCacheList()) {
@@ -299,15 +302,23 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             controller.setSelectedCache(clickedCache);
     }
 
+    /**
+     * Handles a long press on the info window - opens a detail page with the cache details and comemnts/ratings
+     * @param marker - The marker that was long-pressed
+     */
     private void infoWindowLongClicked(Marker marker) {
         // this needs to open a detail page
         detailCacheFragment.setCacheID(marker.getSnippet());
         showFragment(detailCacheFragment);
     }
 
+    /**
+     * Imodel changed - selected cache, location or both has changed
+     */
     @Override
     public void iModelChanged() {
         if (iModel.getCurrentLocation() != null && !receivedFirstLocationUpdate) {
+            // setting map to show first received location - center map on user
             setupMapAndCachesFromLocation();
         }
 
@@ -337,6 +348,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         }
     }
 
+    /**
+     * Initializes the model with caches nearby starting location
+     */
     private void setupMapAndCachesFromLocation() {
         // Set camera on user position
         CameraPosition currentPos = CameraPosition.builder().target(new LatLng(iModel.getCurrentLocation().getLatitude(), iModel.getCurrentLocation().getLongitude())).zoom(18).build();
@@ -353,6 +367,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         redrawMapItems();
     }
 
+    /**
+     * Re-draws polyline and all markers of the google map
+     */
     private void redrawMapItems() {
         // populate map with location markers and cache line
         if (gMap != null) {
@@ -427,6 +444,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         }
     }
 
+    /**
+     * When app resumes resume location updates
+     */
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
@@ -463,6 +483,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         client.removeLocationUpdates(locationCallback);
     }
 
+    /**
+     * Restarts location updates when app resumes
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -472,6 +495,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         }
     }
 
+    /**
+     * Pauses location updates when app get paused (moves to background)
+     */
     @Override
     protected void onPause() {
         super.onPause();
