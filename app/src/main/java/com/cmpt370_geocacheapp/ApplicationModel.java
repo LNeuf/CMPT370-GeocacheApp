@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,7 +31,6 @@ public class ApplicationModel {
     private ArrayList<PhysicalCacheObject> unfilteredCacheList;
     private ArrayList<PhysicalCacheObject> filteredCacheList;
     private ArrayList<ModelListener> subscribers;
-    AtomicInteger fakeCacheID = new AtomicInteger(); // TODO: remove when switching to actual cache database
     private UserDao userDao;
     private GeocacheDao geocacheDao;
     private AppDatabase db;
@@ -46,45 +46,10 @@ public class ApplicationModel {
     }
 
     public void initDatabase(Context context) {
-        db = Room.inMemoryDatabaseBuilder(context, AppDatabase.class).allowMainThreadQueries().build(); // TODO: currently uses main thread to build DB - should probably change so it doesn't lock up the UI
+        db = AppDatabase.getInstance(context);
         geocacheDao = db.geocacheDao();
         userDao = db.userDao();
         commentDao = db.commentDao();
-        try {
-            loadFakeData(context); // TODO: currently app creates a new database every time the app is launched; need to make DB persist
-        }
-        catch (IOException e)
-        {
-            Toast.makeText(context, "Error loading database data?", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void loadFakeData(Context context) throws IOException {
-        InputStream is = context.getAssets().open("caches_tab.txt");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        ArrayList<String> lines = (ArrayList<String>) reader.lines().collect(Collectors.toList());
-
-        for (String line : lines)
-        {
-            String[] items = line.split("\t");
-            try {
-                Geocache c = new Geocache();
-                c.id = Integer.parseInt(items[2]);
-                c.cacheName = items[0];
-                c.userUsername = items[1];
-                c.latitude = Float.parseFloat(items[3]);
-                c.longitude = Float.parseFloat(items[4]);
-                c.cacheDiff = Integer.parseInt(items[5]);
-                c.terrainDiff = Integer.parseInt(items[6]);
-                c.cacheSize = Integer.parseInt(items[7]);
-                geocacheDao.insertAll(c);
-            } catch (NumberFormatException e)
-            {
-                Log.d("database", "loadFakeData: create cache failed");
-            }
-        }
-
-
     }
 
     public ArrayList<PhysicalCacheObject> getFilteredCacheList() {
@@ -201,12 +166,25 @@ public class ApplicationModel {
     }
 
     public PhysicalCacheObject createNewCache(String cacheName,User cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
-        PhysicalCacheObject newCache = new PhysicalCacheObject(new CacheObject(cacheName, cacheCreator, fakeCacheID.incrementAndGet()),
-                latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
-        // TODO: Add cache to DB
-        // for now will just add it to the unfiltered cache list, and re-run filters
-        this.unfilteredCacheList.add(newCache);
-        this.updateFilteredCacheList(new ArrayList<>());
+        Geocache c = new Geocache();
+        c.cacheName = cacheName;
+        c.userUsername = cacheCreator.getUsername();
+        c.latitude = latitude;
+        c.longitude = longitude;
+        c.cacheDiff = cacheDifficulty;
+        c.terrainDiff = terrainDifficulty;
+        c.cacheSize = cacheSize;
+        geocacheDao.insertAll(c);
+
+        List<Geocache> cacheList = geocacheDao.getByLatLong(latitude,latitude,longitude,longitude); // should get a single cache
+        c = cacheList.get(0);
+        PhysicalCacheObject newCache = new PhysicalCacheObject(new CacheObject(c.cacheName,
+                new User(c.userUsername, "123", 123), c.id), c.latitude, c.longitude,
+                c.cacheDiff, c.terrainDiff, c.cacheSize);
+
+        // add new cache to filtered cache list - this way it will always be visible after creation
+        this.filteredCacheList.add(newCache);
+        notifySubscribers();
         return newCache;
     }
 }

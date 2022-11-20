@@ -43,7 +43,6 @@ public class ApplicationController {
 
     public void createCache(String cacheName,User cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
         PhysicalCacheObject newCache = model.createNewCache(cacheName,cacheCreator,latitude,longitude,cacheDifficulty,terrainDifficulty,cacheSize);
-        model.updateFilteredCacheList(iModel.getCurrentFilters());
         iModel.setCurrentlySelectedCache(newCache);
     }
 
