@@ -1,10 +1,6 @@
 package com.cmpt370_geocacheapp;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
-import androidx.room.Room;
 
 import com.cmpt370_geocacheapp.database.AppDatabase;
 import com.cmpt370_geocacheapp.database.CommentDao;
@@ -14,15 +10,9 @@ import com.cmpt370_geocacheapp.database.UserDao;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -71,7 +61,7 @@ public class ApplicationModel {
             CacheObject cacheObject = new CacheObject(dbCache.cacheName, new User(dbCache.userUsername, "123", 12345), dbCache.id);
             this.unfilteredCacheList.add(new PhysicalCacheObject(cacheObject, dbCache.latitude, dbCache.longitude, dbCache.cacheDiff, dbCache.terrainDiff, dbCache.cacheSize));
         }
-        this.filteredCacheList = unfilteredCacheList;
+        this.filteredCacheList = (ArrayList<PhysicalCacheObject>) unfilteredCacheList.clone();
         notifySubscribers();
     }
 
@@ -142,9 +132,48 @@ public class ApplicationModel {
 
     }
 
-    public PhysicalCacheObject SearchByID(String cacheID) {
-        // TODO: search whole DB for specific cache ID
-        return null;
+    public PhysicalCacheObject searchByCacheID(long cacheID) {
+        PhysicalCacheObject foundCache = null;
+        for (PhysicalCacheObject cache : unfilteredCacheList)
+        {
+            if (cache.getCacheID() == cacheID)
+                foundCache = cache;
+        }
+        return foundCache;
+    }
+
+    public boolean searchByAuthorName(String searchInput) {
+        List<Geocache> foundCaches = geocacheDao.getByAuthorString(searchInput);
+        this.filteredCacheList = new ArrayList<>();
+        for (PhysicalCacheObject loadedCache : unfilteredCacheList) // TODO: This sucks - maybe find another faster method
+        {
+            for (Geocache foundCache : foundCaches)
+            {
+                if (loadedCache.getCacheID() == foundCache.id) {
+                    filteredCacheList.add(loadedCache);
+                    break;
+                }
+            }
+        }
+        notifySubscribers();
+        return filteredCacheList.size() > 0;
+    }
+
+    public boolean searchByCacheName(String searchInput) {
+        List<Geocache> foundCaches = geocacheDao.getByCacheNameString(searchInput);
+        this.filteredCacheList = new ArrayList<>();
+        for (PhysicalCacheObject loadedCache : unfilteredCacheList) // TODO: This sucks - maybe find another faster method
+        {
+            for (Geocache foundCache : foundCaches)
+            {
+                if (loadedCache.getCacheID() == foundCache.id) {
+                    filteredCacheList.add(loadedCache);
+                    break;
+                }
+            }
+        }
+        notifySubscribers();
+        return filteredCacheList.size() > 0;
     }
 
     /**

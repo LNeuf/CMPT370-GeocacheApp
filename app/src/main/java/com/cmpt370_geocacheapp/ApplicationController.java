@@ -78,4 +78,27 @@ public class ApplicationController {
         }
         return false;
     }
+
+    public boolean searchByName(String searchInput) {
+        return model.searchByCacheName(searchInput);
+    }
+
+    public boolean searchByAuthorName(String searchInput) {
+        return model.searchByAuthorName(searchInput);
+    }
+
+    public boolean searchByCacheID(long searchID) {
+        PhysicalCacheObject foundCache = model.searchByCacheID(searchID);
+        if (foundCache != null)
+        {
+            model.updateFilteredCacheList(new ArrayList<>()); // clear filters to show all loaded caches
+            iModel.setCurrentlySelectedCache(foundCache);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
 }

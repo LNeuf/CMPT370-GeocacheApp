@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
     private CacheCreateFragment cacheCreateFragment;
     private RecommendCacheFragment recommendCacheFragment;
     private FilterCacheFragment filterCacheFragment;
+    private SearchCacheFragment searchCacheFragment;
     private ApplicationController controller;
     private ApplicationModel model;
     private InteractionModel iModel;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         cacheCreateFragment = new CacheCreateFragment();
         recommendCacheFragment = new RecommendCacheFragment();
         filterCacheFragment = new FilterCacheFragment();
+        searchCacheFragment = new SearchCacheFragment();
 
 
         // MVC linking
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         cacheCreateFragment.setController(controller);
         recommendCacheFragment.setController(controller);
         filterCacheFragment.setController(controller);
+        searchCacheFragment.setController(controller);
 
         model.addSubscriber(listFragment);
         model.addSubscriber(this);
@@ -117,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         fragmentTransaction.add(R.id.frame_layout, cacheCreateFragment);
         fragmentTransaction.add(R.id.frame_layout, recommendCacheFragment);
         fragmentTransaction.add(R.id.frame_layout, filterCacheFragment);
+        fragmentTransaction.add(R.id.frame_layout, searchCacheFragment);
         fragmentTransaction.commit();
 
         // hide list and create fragments on startup - Google Map is always shown below
@@ -124,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         hideFragment(cacheCreateFragment);
         hideFragment(filterCacheFragment);
         hideFragment(recommendCacheFragment);
+        hideFragment(searchCacheFragment);
 
         // setup bottom navigation events
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -150,10 +155,17 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
                 case R.id.filter_caches:
                     showFragment(filterCacheFragment);
                     hideFragment(recommendCacheFragment);
+                    hideFragment(searchCacheFragment);
                     break;
                 case R.id.recommend_caches:
                     showFragment(recommendCacheFragment);
                     hideFragment(filterCacheFragment);
+                    hideFragment(searchCacheFragment);
+                    break;
+                case R.id.search_caches:
+                    showFragment(searchCacheFragment);
+                    hideFragment(filterCacheFragment);
+                    hideFragment(recommendCacheFragment);
                     break;
             }
             return true;

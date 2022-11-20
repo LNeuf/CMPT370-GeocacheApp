@@ -10,7 +10,12 @@
     <item
         android:id="@+id/recommend_caches"
         android:icon="@android:drawable/btn_star_big_on"
-        android:title="Get Recommendation" />
+        android:title="Recommend Cache..." />
+
+    <item
+        android:id="@+id/search_caches"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="Search Caches..." />
 
 
 </menu>

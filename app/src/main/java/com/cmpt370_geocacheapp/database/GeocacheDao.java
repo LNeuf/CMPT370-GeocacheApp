@@ -38,6 +38,25 @@ public interface GeocacheDao {
                                 double longitudeMin, double longitudeMax);
 
     @Query(
+            "SELECT * FROM Geocache WHERE " +
+                    "id == :geocacheId"
+
+    )
+    Geocache getByCacheID(long geocacheId);
+
+    @Query(
+            "SELECT * FROM Geocache WHERE userUsername LIKE '%' || :authorText || '%'"
+
+    )
+    List<Geocache> getByAuthorString(String authorText);
+
+    @Query(
+            "SELECT * FROM Geocache WHERE cacheName LIKE '%' || :cacheNameText || '%'"
+
+    )
+    List<Geocache> getByCacheNameString(String cacheNameText);
+
+    @Query(
             "SELECT * FROM Geocache " +
                     "JOIN User ON Geocache.id = :geocacheId AND " +
                     "Geocache.userUsername = User.username"

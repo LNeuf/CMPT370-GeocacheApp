@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--TODO: This is a temporary file used for testing the search functionality-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CacheCreateFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/cacheCreateNestedScrollID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
+
+        <LinearLayout
+            android:id="@+id/cacheCreateLinearID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/searchCloseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+            <TextView
+                android:id="@+id/searchTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter Search Term:"
+                android:textSize="16sp" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchEditText"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPhonetic"
+                android:minHeight="48dp"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <RadioGroup
+                android:id="@+id/searchTypeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/searchNameRadioButton"
+                    android:layout_width="134dp"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Cache Name" />
+
+                <RadioButton
+                    android:id="@+id/searchAuthorRadioButton"
+                    android:layout_width="142dp"
+                    android:layout_height="wrap_content"
+                    android:text="Cache Author" />
+
+                <RadioButton
+                    android:id="@+id/searchIDRadioButton"
+                    android:layout_width="107dp"
+                    android:layout_height="wrap_content"
+                    android:text="Cache ID" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/cacheSearchButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Search Caches" />
+
+            <!--            TODO: Button to get current location, so you dont have to type in the long/lat-->
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>
