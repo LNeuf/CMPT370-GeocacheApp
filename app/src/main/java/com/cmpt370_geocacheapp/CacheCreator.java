@@ -3,8 +3,8 @@ package com.cmpt370_geocacheapp;
 import java.util.ArrayList;
 
 public class CacheCreator extends User {
-    private ArrayList<CacheObject> createdCaches = new ArrayList<>();
-    private ArrayList<PhysicalCacheObject> createdPhysicalCaches = new ArrayList<>();
+    private final ArrayList<CacheObject> createdCaches = new ArrayList<>();
+    private final ArrayList<PhysicalCacheObject> createdPhysicalCaches = new ArrayList<>();
 
     public CacheCreator(String username, String password, int creatorID) {
         super(username, password, creatorID);
