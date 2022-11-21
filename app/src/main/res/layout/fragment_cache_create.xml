@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.CacheCreateFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/cacheCreateNestedScrollID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
+
+        <LinearLayout
+            android:id="@+id/cacheCreateLinearID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/cacheNameTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setCacheName"
+                android:textSize="16sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cacheName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cacheNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/cacheLatTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setLatitude"
+                android:textSize="16sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cacheLat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:longClickable="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/latitudeEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned|numberDecimal"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/cacheLongTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setLongitude"
+                android:textSize="16sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cacheLong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/longitudeEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none|numberSigned|numberDecimal"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/cacheSizeTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/size"
+                android:textSize="16sp" />
+
+            <RadioGroup
+                android:id="@+id/cacheSizeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/cacheRadioSizeMicro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:paddingHorizontal="6dp"
+                    android:text="@string/microRadio"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/cacheRadioSizeSmall"
+                    android:layout_width="103dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:paddingHorizontal="6dp"
+                    android:text="@string/smallRadio"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/cacheRadioSizeRegular"
+                    android:layout_width="118dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:paddingHorizontal="6dp"
+                    android:text="@string/regularRadio"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/cacheRadioSizeLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="6dp"
+                    android:text="@string/largeRadio"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/cacheRadioSizeOther"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="6dp"
+                    android:text="@string/otherRadio"
+                    android:textSize="12sp" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/cacheDifficultyTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cacheDifficulty"
+                android:textSize="16sp" />
+
+            <SeekBar
+                android:id="@+id/cacheDifficultySeekBar"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:max="4"
+                android:progress="1"
+                android:scaleX="2"
+                android:scaleY="2" />
+
+            <TextView
+                android:id="@+id/terrainDifficultyTextID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/terrainDifficulty"
+                android:textSize="16sp" />
+
+            <SeekBar
+                android:id="@+id/terrainDifficultySeekBar"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:max="4"
+                android:progress="1"
+                android:scaleX="2"
+                android:scaleY="2" />
+
+            <Button
+                android:id="@+id/createCacheButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/createCache" />
+
+            <!--            TODO: Button to get current location, so you dont have to type in the long/lat-->
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>
