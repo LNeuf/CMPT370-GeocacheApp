@@ -1,5 +1,10 @@
 package com.cmpt370_geocacheapp;
 
+import com.cmpt370_geocacheapp.imodel.InteractionModel;
+import com.cmpt370_geocacheapp.model.CacheObject;
+import com.cmpt370_geocacheapp.model.PhysicalCacheObject;
+import com.cmpt370_geocacheapp.model.User;
+
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
