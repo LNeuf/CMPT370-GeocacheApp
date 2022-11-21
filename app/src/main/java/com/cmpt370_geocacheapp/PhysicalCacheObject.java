@@ -1,6 +1,6 @@
 package com.cmpt370_geocacheapp;
 
-//import javax.xml.stream.events.Comment;
+import java.util.Locale;
 
 public class PhysicalCacheObject {
     CacheObject cache;
@@ -52,7 +52,8 @@ public class PhysicalCacheObject {
 
     public String getCacheSummary()
     {
-        return String.format("%s | Dif:%d/5 | Ter:%d/5 | ID:%d", cacheSizeNames[cacheSize-1], cacheDifficulty, terrainDifficulty, cache.getCacheID());
+        return String.format(Locale.ENGLISH, "%s | Dif:%d/5 | Ter:%d/5 | ID:%d", cacheSizeNames[cacheSize-1],
+                cacheDifficulty, terrainDifficulty, cache.getCacheID());
     }
 
     public double[] getCacheCoordinates() {
