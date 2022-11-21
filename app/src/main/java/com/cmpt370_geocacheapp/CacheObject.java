@@ -10,6 +10,7 @@ public class CacheObject {
     private final String creationDate;
     private String dateLastAccessed;
     private String image;
+    private String cacheDescription;
 
     final private ArrayList<CacheComment> commentList = new ArrayList<>();
 
@@ -23,7 +24,7 @@ public class CacheObject {
         this.creationDate = date.toString();
     }
 
-    public CacheObject(String name, User author, long cacheID, String image) { // over loaded if there are images
+    public CacheObject(String name, User author, long cacheID, String image) { // over loaded if there is an image
         this.cacheID = cacheID;
         this.author = author;
         this.name = name;
@@ -31,6 +32,33 @@ public class CacheObject {
         this.creationDate = date.toString();
         this.image = image;
     }
+    public CacheObject(String name, User author, long cacheID, String image, String cacheDescription) { // over loaded if there is an image and description
+        this.cacheID = cacheID;
+        this.author = author;
+        this.name = name;
+        Date date = new Date();
+        this.creationDate = date.toString();
+        this.image = image;
+        this.cacheDescription = cacheDescription;
+    }
+
+    public CacheObject(String name, User author, String cacheDescription, long cacheID) { // over loaded if there is a description
+        this.cacheID = cacheID;
+        this.author = author;
+        this.name = name;
+        Date date = new Date();
+        this.creationDate = date.toString();
+        this.cacheDescription = cacheDescription;
+    }
+
+    public String getCacheDescription() {
+        return this.cacheDescription;
+    }
+
+    public void setCacheDescription(String cacheDescription) {
+        this.cacheDescription = cacheDescription;
+    }
+
     public String getImage() {
         return this.image;
     }
