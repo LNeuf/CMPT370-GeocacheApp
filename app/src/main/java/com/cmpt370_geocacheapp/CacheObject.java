@@ -9,6 +9,7 @@ public class CacheObject {
     private final long cacheID;
     private final String creationDate;
     private String dateLastAccessed;
+    private String image;
 
     final private ArrayList<CacheComment> commentList = new ArrayList<>();
 
@@ -20,6 +21,22 @@ public class CacheObject {
         this.name = name;
         Date date = new Date();
         this.creationDate = date.toString();
+    }
+
+    public CacheObject(String name, User author, long cacheID, String image) { // over loaded if there are images
+        this.cacheID = cacheID;
+        this.author = author;
+        this.name = name;
+        Date date = new Date();
+        this.creationDate = date.toString();
+        this.image = image;
+    }
+    public String getImage() {
+        return this.image;
+    }
+
+    public void setImage(String image_path) {
+        this.image = image_path;
     }
 
     public String getName() {
