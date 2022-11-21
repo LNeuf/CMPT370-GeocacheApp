@@ -1,9 +1,9 @@
 package com.cmpt370_geocacheapp;
 
 public class User {
-    private int userID;
+    private final int userID;
     private String password;
-    private String username;
+    private final String username;
 
     public User(String username, String password, int userID) {
         this.userID = userID;
@@ -30,7 +30,6 @@ public class User {
     }
 
     public static void main(String[] args) {
-        //TODO: testing for user
         User user = new User("Joel", "Pollak356",240);
         String username = "Joel";
         String password = "Pollak356";
