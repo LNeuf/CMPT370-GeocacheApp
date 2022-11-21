@@ -23,11 +23,10 @@ public class ApplicationModel {
     // Geocache attributes
     private ArrayList<PhysicalCacheObject> unfilteredCacheList;
     private ArrayList<PhysicalCacheObject> filteredCacheList;
-    private ArrayList<ModelListener> subscribers;
-    private UserDao userDao;
+    private final ArrayList<ModelListener> subscribers;
+    private UserDao userDao; // TODO: Implement user DB
     private GeocacheDao geocacheDao;
-    private AppDatabase db;
-    private CommentDao commentDao;
+    private CommentDao commentDao; // TODO: Implement separate comment DB
     private RatingReviewDao ratingDao;
 
     /**
@@ -43,7 +42,7 @@ public class ApplicationModel {
      * Initializes the database instance and sets up DAO's
      */
     public void initDatabase(Context context) {
-        db = AppDatabase.getInstance(context);
+        AppDatabase db = AppDatabase.getInstance(context);
         geocacheDao = db.geocacheDao();
         userDao = db.userDao();
         commentDao = db.commentDao();
@@ -67,6 +66,8 @@ public class ApplicationModel {
     public void updateNearbyCacheList(float latitude, float longitude, float distance) {
         // Latitude: 1 deg = 110.574 km
         // Longitude: 1 deg = 111.320*cos(latitude) km
+
+        unfilteredCacheList = new ArrayList<>();
 
         double distanceInLatitudeDegrees = (distance / 1000) /110.574;
         double distanceInLongitudeDegrees = (distance / 1000) / (111.320 * Math.cos(Math.toRadians(latitude)));
@@ -250,7 +251,8 @@ public class ApplicationModel {
      * @param cacheSize- Size of cache
      * @return - returns the created cache object
      */
-    public PhysicalCacheObject createNewCache(String cacheName,User cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
+    public long createNewCache(String cacheName,User cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
+
         Geocache c = new Geocache();
         c.cacheName = cacheName;
         c.userUsername = cacheCreator.getUsername();
@@ -261,16 +263,9 @@ public class ApplicationModel {
         c.cacheSize = cacheSize;
         geocacheDao.insertAll(c);
 
-        List<Geocache> cacheList = geocacheDao.getByLatLong(latitude,latitude,longitude,longitude); // should get a single cache
-        c = cacheList.get(0);
-        PhysicalCacheObject newCache = new PhysicalCacheObject(new CacheObject(c.cacheName,
-                new User(c.userUsername, "123", 123), c.id), c.latitude, c.longitude,
-                c.cacheDiff, c.terrainDiff, c.cacheSize);
+        List<Geocache> createdCache = geocacheDao.getByLatLong(latitude, latitude, longitude, longitude);
+        return createdCache.get(0).id;
 
-        // add new cache to filtered cache list - this way it will always be visible after creation
-        this.filteredCacheList.add(newCache);
-        notifySubscribers();
-        return newCache;
     }
 
     /**
@@ -311,5 +306,10 @@ public class ApplicationModel {
         r.rating = rating;
         r.geocacheId = currentGeocacheID;
         ratingDao.insertAll(r);
+    }
+
+    public void deleteCache(long currentGeocacheID) {
+        Geocache cacheToDelete = geocacheDao.getByCacheID(currentGeocacheID);
+        geocacheDao.deleteAll(cacheToDelete);
     }
 }

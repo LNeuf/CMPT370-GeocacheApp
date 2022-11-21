@@ -12,7 +12,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
@@ -30,7 +29,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -308,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
      */
     private void infoWindowLongClicked(Marker marker) {
         // this needs to open a detail page
-        detailCacheFragment.setCacheID(marker.getSnippet());
+        detailCacheFragment.setCacheInfo(marker.getSnippet());
         showFragment(detailCacheFragment);
     }
 

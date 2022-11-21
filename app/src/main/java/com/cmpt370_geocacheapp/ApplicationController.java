@@ -44,8 +44,9 @@ public class ApplicationController {
      * Creates a new cache
      */
     public void createCache(String cacheName, User cacheCreator, float latitude, float longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize) {
-        PhysicalCacheObject newCache = model.createNewCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
-        iModel.setCurrentlySelectedCache(newCache);
+        long createdCacheID = model.createNewCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
+        model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(), 5000);
+        iModel.setCurrentlySelectedCache(model.getCacheById(createdCacheID));
     }
 
     /**
@@ -143,5 +144,12 @@ public class ApplicationController {
      */
     public void createRating(String username, String contents, int rating, long currentGeocacheID) {
         model.createNewRating(username, contents, rating, currentGeocacheID);
+    }
+
+    public void deleteCache(long currentGeocacheID) {
+        iModel.setCurrentlySelectedCache(null);
+        model.deleteCache(currentGeocacheID);
+        model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(), 5000);
+
     }
 }

@@ -7,18 +7,32 @@
     android:orientation="vertical"
     tools:context=".ListFragment" >
 
-    <ImageButton
-        android:id="@+id/detailCloseButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:src="@android:drawable/ic_menu_close_clear_cancel" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cacheDeleteButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/delete_cache_detail" />
+
+        <ImageButton
+            android:id="@+id/detailCloseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:contentDescription="Close Button"
+            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/detailCacheNametextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Test Cache Name"
+        android:text="@string/cache_name_detail"
         android:textSize="20sp" />
 
     <LinearLayout
@@ -30,14 +44,34 @@
             android:id="@+id/detailAuthorView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Created By: " />
+            android:text="@string/created_by_detail" />
 
         <TextView
             android:id="@+id/detailAuthorEdit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TestAuthor" />
+            android:text="@string/author_value_detail" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/detailRatingScoreView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rating_name_detail" />
+
+        <TextView
+            android:id="@+id/detailRatingScoreEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/rating_value_detail" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,14 +83,14 @@
             android:id="@+id/detailDistanceView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Distance: " />
+            android:text="@string/distance_name_detail" />
 
         <TextView
             android:id="@+id/detailDistanceEdit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="1250m - test" />
+            android:text="@string/distance_value_detail" />
     </LinearLayout>
 
     <LinearLayout
@@ -68,14 +102,14 @@
             android:id="@+id/detailDiffTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cache Difficulty: " />
+            android:text="@string/difficulty_name_detail" />
 
         <TextView
             android:id="@+id/detailDiffEdit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="1 / 5 - test" />
+            android:text="@string/difficulty_rating_detail" />
     </LinearLayout>
 
     <LinearLayout
@@ -87,14 +121,14 @@
             android:id="@+id/detailTerrView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Terrain Difficulty: " />
+            android:text="@string/terrain_name_detail" />
 
         <TextView
             android:id="@+id/detailTerrEdit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="2 / 5 - test" />
+            android:text="@string/terrain_rating_detail" />
     </LinearLayout>
 
     <LinearLayout
@@ -106,14 +140,14 @@
             android:id="@+id/detailSizeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cache Size: " />
+            android:text="@string/cache_size_detail" />
 
         <TextView
             android:id="@+id/detailSizeEdit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Micro - test" />
+            android:text="@string/size_detail" />
 
     </LinearLayout>
 
@@ -124,10 +158,10 @@
 
         <TextView
             android:id="@+id/detailCommentView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cache Comments and Ratings" />
+            android:text="@string/comments_ratings_detail" />
 
     </LinearLayout>
 
@@ -145,10 +179,10 @@
 
         <TextView
             android:id="@+id/detailLeaveCommentView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Leave a Comment and Rating:" />
+            android:text="@string/Leave_rating_detail" />
 
     </LinearLayout>
 
@@ -160,12 +194,13 @@
 
         <EditText
             android:id="@+id/detailCommentEditTextTextMultiLine"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:autofillHints="" />
 
     </LinearLayout>
 
@@ -176,10 +211,10 @@
 
         <TextView
             android:id="@+id/detailRatingView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cache Rating:" />
+            android:text="@string/cache_rating_detail" />
 
     </LinearLayout>
 
@@ -197,42 +232,43 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="true"
-            android:text="1/5" />
+            android:text="@string/one_star_detail" />
 
         <RadioButton
             android:id="@+id/ratingsTwoRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="2/5" />
+            android:text="@string/two_star_detail" />
 
         <RadioButton
             android:id="@+id/ratingsThreeRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="3/5" />
+            android:text="@string/three_star_detail" />
 
         <RadioButton
             android:id="@+id/ratingsFourRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="4/5" />
+            android:text="@string/four_star_detail" />
 
         <RadioButton
             android:id="@+id/ratingsFiveRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="5/5" />
+            android:checked="true"
+            android:text="@string/five_star_detail" />
     </RadioGroup>
 
     <Button
         android:id="@+id/detailCreateCommentbutton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Comment and Rate" />
+        android:text="@string/comment_button_detail" />
 
 
 </LinearLayout>

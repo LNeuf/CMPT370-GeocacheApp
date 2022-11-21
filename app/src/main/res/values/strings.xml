@@ -39,5 +39,28 @@
     // Info window
     <string name="info_Title">Cache Name</string>
     <string name="info_description">Description</string>
+    <string name="cache_rating_detail">Cache Rating:</string>
+    <string name="Leave_rating_detail">Leave a Comment and Rating:</string>
+    <string name="comments_ratings_detail">Cache Comments and Ratings</string>
+    <string name="size_detail">Micro - test</string>
+    <string name="cache_size_detail">Cache Size:</string>
+    <string name="terrain_rating_detail">2 / 5 - test</string>
+    <string name="terrain_name_detail">Terrain Difficulty:</string>
+    <string name="difficulty_rating_detail">1 / 5 - test</string>
+    <string name="difficulty_name_detail">Cache Difficulty:</string>
+    <string name="distance_name_detail">Distance:</string>
+    <string name="distance_value_detail">1250m - test</string>
+    <string name="rating_value_detail">1.1 / 5 - test</string>
+    <string name="rating_name_detail">Rating score:</string>
+    <string name="author_value_detail">TestAuthor</string>
+    <string name="created_by_detail">Created By:</string>
+    <string name="cache_name_detail">Test Cache Name</string>
+    <string name="delete_cache_detail">Delete Cache</string>
+    <string name="one_star_detail">1/5</string>
+    <string name="two_star_detail">2/5</string>
+    <string name="three_star_detail">3/5</string>
+    <string name="four_star_detail">4/5</string>
+    <string name="five_star_detail">5/5</string>
+    <string name="comment_button_detail">Comment and Rate</string>
 
 </resources>

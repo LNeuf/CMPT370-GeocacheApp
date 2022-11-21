@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +28,6 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
 
     //TODO: This is just a temporary fragment for showing cache details
     ListView lv;
-    private CommentListViewAdapter listViewAdapter;
-    private ArrayList<CommentListItem> items = new ArrayList<>();
     ApplicationController controller;
     ApplicationModel model;
     InteractionModel iModel;
@@ -42,8 +42,14 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
         // event handling stuff
         view.findViewById(R.id.detailCreateCommentbutton).setOnClickListener(this::comment);
         view.findViewById(R.id.detailCloseButton).setOnClickListener(this::close);
+        view.findViewById(R.id.cacheDeleteButton).setOnClickListener(this::delete);
 
         return view;
+    }
+
+    private void delete(View view) {
+        controller.deleteCache(this.currentGeocacheID);
+        close(view);
     }
 
     private void comment(View view) {
@@ -112,12 +118,19 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
 
     }
 
-    public void setCacheID(String snippet) {
+    public void setCacheInfo(String snippet) {
+
+        boolean alreadyRated = false;
         // set cache detail information
         long cacheID = Long.parseLong(snippet);
         PhysicalCacheObject selectedCache = model.getCacheById(cacheID);
         TextView textToEdit = requireView().findViewById(R.id.detailCacheNametextView);
         textToEdit.setText(selectedCache.getCacheName());
+
+        // get all comments for a cache
+        ArrayList<CommentListItem> items = (ArrayList<CommentListItem>) this.model.getCacheRatings(cacheID).stream()
+                .map(rating -> new CommentListItem(rating.userUsername, rating.contents,
+                        rating.rating, rating.geocacheId)).collect(Collectors.toList());
 
         textToEdit = requireView().findViewById(R.id.detailDistanceEdit);
         String distanceString = "N/A";
@@ -127,9 +140,28 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
                             iModel.getCurrentLocation().getLongitude()),
                     new LatLng(selectedCache.getCacheLatitude(),
                             selectedCache.getCacheLongitude()));
-            distanceString = String.valueOf(distance) + " m";
+            distanceString = distance + " m";
         }
         textToEdit.setText(distanceString);
+
+        // calculate the caches rating
+        textToEdit = requireView().findViewById(R.id.detailRatingScoreEdit);
+        String ratingsScoreString;
+        double cacheRating = 0;
+        for (CommentListItem rating : items)
+        {
+            cacheRating+= rating.getRating();
+            if (rating.getAuthor().equals("Jesse")) // TODO: need to user signed in user's name
+            {
+                alreadyRated = true;
+            }
+        }
+        if (cacheRating != 0)
+        {
+            cacheRating = cacheRating / items.size();
+        }
+        ratingsScoreString = (items.size() > 0 ? String.format("%.1f / 5 - Out of %d ratings", cacheRating, items.size()):"0 / 5 - Not yet rated");
+        textToEdit.setText(ratingsScoreString);
 
         textToEdit = requireView().findViewById(R.id.detailAuthorEdit);
         textToEdit.setText(selectedCache.getCacheAuthor());
@@ -143,15 +175,34 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
         textToEdit = requireView().findViewById(R.id.detailSizeEdit);
         textToEdit.setText(selectedCache.getCacheSizeString());
 
-        // get all comments for a cache
-        this.items = (ArrayList<CommentListItem>) this.model.getCacheRatings(cacheID).stream()
-                .map(rating -> new CommentListItem(rating.userUsername, rating.contents,
-                        rating.rating, rating.geocacheId)).collect(Collectors.toList());
-
         // set cache comments
         lv = requireView().findViewById(R.id.detailCommentListView);
-        listViewAdapter = new CommentListViewAdapter(this.getContext(),items);
+        CommentListViewAdapter listViewAdapter = new CommentListViewAdapter(this.getContext(), items);
         lv.setAdapter(listViewAdapter);
+
+        // clear text
+        EditText commentEditText = requireView().findViewById(R.id.detailCommentEditTextTextMultiLine);
+        commentEditText.setText("");
+
+        RadioButton fiveRating = requireView().findViewById(R.id.ratingsFiveRadioButton);
+        fiveRating.setChecked(true);
+
+        Button deleteButton = requireView().findViewById(R.id.cacheDeleteButton);
+        deleteButton.setVisibility(View.INVISIBLE);
+        if (selectedCache.getCacheAuthor().equals("Jesse")) { // TODO: Needs to use signed in username
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+
+
+        Button commentButton = requireView().findViewById(R.id.detailCreateCommentbutton);
+        commentButton.setClickable(true);
+        commentButton.setText("Comment and Rate");
+        if (alreadyRated)
+        {
+            commentButton.setClickable(false);
+            commentButton.setText("Already Rated");
+        }
+
 
         this.currentGeocacheID = cacheID;
 
