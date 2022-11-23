@@ -151,6 +151,7 @@ public class ApplicationController {
      */
     public void createRating(String username, String contents, int rating, long currentGeocacheID) {
         model.createNewRating(username, contents, rating, currentGeocacheID);
+        model.updateNearbyCacheList((float)iModel.getCurrentLocation().getLatitude(), (float)iModel.getCurrentLocation().getLongitude(), 5000);
     }
 
     public void deleteCache(long currentGeocacheID) {

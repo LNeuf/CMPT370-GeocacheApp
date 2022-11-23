@@ -150,23 +150,19 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
         }
         textToEdit.setText(distanceString);
 
-        // calculate the caches rating
+        // get the caches rating, make sure it cant be rated twice by the same user
         textToEdit = requireView().findViewById(R.id.detailRatingScoreEdit);
         String ratingsScoreString;
-        double cacheRating = 0;
+        double cacheRating = selectedCache.getCacheRating();
         for (CommentListItem rating : items)
         {
-            cacheRating+= rating.getRating();
             if (rating.getAuthor().equals("Jesse")) // TODO: need to user signed in user's name
             {
                 alreadyRated = true;
+                break;
             }
         }
-        if (cacheRating != 0)
-        {
-            cacheRating = cacheRating / items.size();
-        }
-        ratingsScoreString = (items.size() > 0 ? String.format("%.1f / 5 - Out of %d ratings", cacheRating, items.size()):"0 / 5 - Not yet rated");
+        ratingsScoreString = (items.size() > 0 ? String.format("%.1f / 5.0 - Out of %d ratings", cacheRating, items.size()):"0.0 / 5.0 - Not yet rated");
         textToEdit.setText(ratingsScoreString);
 
         textToEdit = requireView().findViewById(R.id.detailAuthorEdit);

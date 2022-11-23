@@ -10,6 +10,7 @@ public class PhysicalCacheObject {
     private final int terrainDifficulty;
     private final int cacheSize;
     private final String[] cacheSizeNames = new String[] {"Micro","Small","Regular","Large","Other"};
+    private double currentCacheRating = 0.0;
 
     public PhysicalCacheObject(CacheObject cache, double latitude, double longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize) {
         this.latitude = latitude;
@@ -89,6 +90,16 @@ public class PhysicalCacheObject {
 
     public String getDateLastAccessed() {
         return this.cache.getDateLastAccessed();
+    }
+
+    public void setCacheRating(double newRating)
+    {
+        this.currentCacheRating = newRating;
+    }
+
+    public double getCacheRating()
+    {
+        return this.currentCacheRating;
     }
 
     public static void main(String[] args) {

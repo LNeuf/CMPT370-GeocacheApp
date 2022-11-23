@@ -1,7 +1,5 @@
 package com.cmpt370_geocacheapp.database;
 
-import android.webkit.GeolocationPermissions;
-
 import androidx.room.*;
 
 @Entity
@@ -23,5 +21,7 @@ public class Geocache {
     public String userUsername; // each geocache has one user
 
     public String cacheName;
+
+    public double cacheRating;
 
 }

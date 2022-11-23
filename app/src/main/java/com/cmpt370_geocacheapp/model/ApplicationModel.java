@@ -60,7 +60,7 @@ public class ApplicationModel {
      * Queries the cache database to get all caches in a roughly square region, centered on a specified location
      * @param latitude - center latitude
      * @param longitude - center longitude
-     * @param distance - side distance
+     * @param distance  - side distance
      */
     public void updateNearbyCacheList(float latitude, float longitude, float distance) {
         // Latitude: 1 deg = 110.574 km
@@ -68,15 +68,16 @@ public class ApplicationModel {
 
         unfilteredCacheList = new ArrayList<>();
 
-        double distanceInLatitudeDegrees = (distance / 1000) /110.574;
+        double distanceInLatitudeDegrees = (distance / 1000) / 110.574;
         double distanceInLongitudeDegrees = (distance / 1000) / (111.320 * Math.cos(Math.toRadians(latitude)));
         List<Geocache> cacheList = geocacheDao.getByLatLong(latitude - distanceInLatitudeDegrees,
-                latitude + distanceInLatitudeDegrees,  longitude - distanceInLongitudeDegrees,
+                latitude + distanceInLatitudeDegrees, longitude - distanceInLongitudeDegrees,
                 longitude + distanceInLongitudeDegrees); // get db geocache objects
-        for (Geocache dbCache : cacheList)
-        {
+        for (Geocache dbCache : cacheList) {
             CacheObject cacheObject = new CacheObject(dbCache.cacheName, new User(dbCache.userUsername, "123", 12345), dbCache.id);
-            this.unfilteredCacheList.add(new PhysicalCacheObject(cacheObject, dbCache.latitude, dbCache.longitude, dbCache.cacheDiff, dbCache.terrainDiff, dbCache.cacheSize));
+            PhysicalCacheObject newCache = new PhysicalCacheObject(cacheObject, dbCache.latitude, dbCache.longitude, dbCache.cacheDiff, dbCache.terrainDiff, dbCache.cacheSize);
+            newCache.setCacheRating(dbCache.cacheRating);
+            this.unfilteredCacheList.add(newCache);
         }
         this.filteredCacheList = (ArrayList<PhysicalCacheObject>) unfilteredCacheList.clone();
         notifySubscribers();
@@ -100,12 +101,12 @@ public class ApplicationModel {
 
     /**
      * Method to filter caches by distance to a latitude/longitude point
-     * @param currentLatitude - the latitude of the point to calculate distance to
+     *
+     * @param currentLatitude  - the latitude of the point to calculate distance to
      * @param currentLongitude - the longitude of the point to calculate distance to
      * @param distanceInMeters - the distance caches will be filtered by if they are further
      */
-    public void filterCachesByDistance(double currentLatitude, double currentLongitude, int distanceInMeters)
-    {
+    public void filterCachesByDistance(double currentLatitude, double currentLongitude, int distanceInMeters) {
         List<PhysicalCacheObject> result = this.filteredCacheList; // gets the current already filtered cache list
         Predicate<PhysicalCacheObject> filter = cacheObject -> distanceInMeters >= calculateCacheDistance(currentLatitude, currentLongitude, cacheObject);
         result = result.stream().filter(filter).collect(Collectors.toList()); // apply each filter
@@ -117,9 +118,10 @@ public class ApplicationModel {
 
     /**
      * Calculates the distance between a latitude and longitude to a cache object
-     * @param currentLatitude - point latitude
+     *
+     * @param currentLatitude  - point latitude
      * @param currentLongitude - point longitude
-     * @param cacheObject - the cache
+     * @param cacheObject      - the cache
      * @return - returns the distance in meters
      */
     private int calculateCacheDistance(double currentLatitude, double currentLongitude, PhysicalCacheObject cacheObject) {
@@ -140,8 +142,7 @@ public class ApplicationModel {
         }
 
         // factor in distance if provided a location
-        if (currentLocation != null)
-        {
+        if (currentLocation != null) {
             List<PhysicalCacheObject> distanceFilteredResult = result; // gets the current already filtered cache list
             Predicate<PhysicalCacheObject> distanceFilter = cacheObject -> maxDistance >= calculateCacheDistance(currentLocation.latitude, currentLocation.longitude, cacheObject);
             distanceFilteredResult = distanceFilteredResult.stream().filter(distanceFilter).collect(Collectors.toList()); // apply distance filter
@@ -164,13 +165,13 @@ public class ApplicationModel {
 
     /**
      * Searches the loaded caches by cache ID and returns a physical cache object
+     *
      * @param cacheID - the ID to search for
      * @return - the cache, null if no cache found
      */
     public PhysicalCacheObject searchByCacheID(long cacheID) {
         PhysicalCacheObject foundCache = null;
-        for (PhysicalCacheObject cache : unfilteredCacheList)
-        {
+        for (PhysicalCacheObject cache : unfilteredCacheList) {
             if (cache.getCacheID() == cacheID)
                 foundCache = cache;
         }
@@ -179,6 +180,7 @@ public class ApplicationModel {
 
     /**
      * Queries the database to find all caches that match or are close to the input author name string
+     *
      * @param searchInput - the search string
      * @return - true if more than once cache matched and was added to the filtered list, false otherwise
      */
@@ -187,8 +189,7 @@ public class ApplicationModel {
         this.filteredCacheList = new ArrayList<>();
         for (PhysicalCacheObject loadedCache : unfilteredCacheList) // TODO: This sucks - maybe find another faster method
         {
-            for (Geocache foundCache : foundCaches)
-            {
+            for (Geocache foundCache : foundCaches) {
                 if (loadedCache.getCacheID() == foundCache.id) {
                     filteredCacheList.add(loadedCache);
                     break;
@@ -201,6 +202,7 @@ public class ApplicationModel {
 
     /**
      * Queries the database to find all caches that match or are close to the input cache name string
+     *
      * @param searchInput - the search string
      * @return - true if more than once cache matched and was added to the filtered list, false otherwise
      */
@@ -209,8 +211,7 @@ public class ApplicationModel {
         this.filteredCacheList = new ArrayList<>();
         for (PhysicalCacheObject loadedCache : unfilteredCacheList) // TODO: This sucks - maybe find another faster method
         {
-            for (Geocache foundCache : foundCaches)
-            {
+            for (Geocache foundCache : foundCaches) {
                 if (loadedCache.getCacheID() == foundCache.id) {
                     filteredCacheList.add(loadedCache);
                     break;
@@ -241,16 +242,17 @@ public class ApplicationModel {
 
     /**
      * Creates a new cache, and adds it to the database
-     * @param cacheName - Name of cache
-     * @param cacheCreator - User who created
-     * @param latitude - Latitude of cache
-     * @param longitude - Longitude of cache
-     * @param cacheDifficulty - Difficulty of cache
+     *
+     * @param cacheName         - Name of cache
+     * @param cacheCreator      - User who created
+     * @param latitude          - Latitude of cache
+     * @param longitude         - Longitude of cache
+     * @param cacheDifficulty   - Difficulty of cache
      * @param terrainDifficulty - Terrain difficulty of cache
-     * @param cacheSize- Size of cache
+     * @param cacheSize-        Size of cache
      * @return - returns the created cache object
      */
-    public long createNewCache(String cacheName,User cacheCreator,float latitude,float longitude,int cacheDifficulty,int terrainDifficulty,int cacheSize) {
+    public long createNewCache(String cacheName, User cacheCreator, float latitude, float longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize) {
 
         Geocache c = new Geocache();
         c.cacheName = cacheName;
@@ -260,6 +262,7 @@ public class ApplicationModel {
         c.cacheDiff = cacheDifficulty;
         c.terrainDiff = terrainDifficulty;
         c.cacheSize = cacheSize;
+        c.cacheRating = 0.0;
         geocacheDao.insertAll(c);
 
         List<Geocache> createdCache = geocacheDao.getByLatLong(latitude, latitude, longitude, longitude);
@@ -299,16 +302,28 @@ public class ApplicationModel {
      * @param currentGeocacheID - the cacheID of the associated cache
      */
     public void createNewRating(String username, String contents, int rating, long currentGeocacheID) {
+        // add rating
         RatingReview r = new RatingReview();
         r.userUsername = username;
         r.contents = contents;
         r.rating = rating;
         r.geocacheId = currentGeocacheID;
         ratingDao.insertAll(r);
+
+        // Update the cache to store the newest value for average rating
+        List<RatingReview> cacheRatings = ratingDao.getByCacheID(currentGeocacheID);
+        double total = 0.0;
+        for (RatingReview cacheRating : cacheRatings) {
+            total += cacheRating.rating;
+        }
+        Geocache cacheToUpdate = geocacheDao.getByCacheID(currentGeocacheID);
+        cacheToUpdate.cacheRating = total / cacheRatings.size();
+        geocacheDao.updateAll(cacheToUpdate);
     }
 
     /**
      * Deletes a cache from the database
+     *
      * @param currentGeocacheID - the ID of the cache to delete
      */
     public void deleteCache(long currentGeocacheID) {
