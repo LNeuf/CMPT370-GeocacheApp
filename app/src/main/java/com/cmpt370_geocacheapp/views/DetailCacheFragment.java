@@ -30,9 +30,8 @@ import com.google.maps.android.SphericalUtil;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class DetailCacheFragment extends Fragment implements ModelListener {
+public class DetailCacheFragment extends Fragment {
 
-    //TODO: This is just a temporary fragment for showing cache details
     ListView lv;
     ApplicationController controller;
     ApplicationModel model;
@@ -46,23 +45,28 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
         View view = inflater.inflate(R.layout.fragment_cache_detail, container, false);
 
         // event handling stuff
-        view.findViewById(R.id.detailCreateCommentbutton).setOnClickListener(this::comment);
-        view.findViewById(R.id.detailCloseButton).setOnClickListener(this::close);
-        view.findViewById(R.id.cacheDeleteButton).setOnClickListener(this::delete);
+        view.findViewById(R.id.detailCreateCommentbutton).setOnClickListener(this::createComment);
+        view.findViewById(R.id.detailCloseButton).setOnClickListener(this::closeWindow);
+        view.findViewById(R.id.cacheDeleteButton).setOnClickListener(this::deleteCache);
 
         return view;
     }
 
-    private void delete(View view) {
+    /**
+     * Deletes the current cache
+     */
+    private void deleteCache(View view) {
         controller.deleteCache(this.currentGeocacheID);
-        close(view);
+        closeWindow(view);
     }
 
-    private void comment(View view) {
+    /**
+     * Creates a new comment from rating selected and text input
+     */
+    private void createComment(View view) {
         EditText contentsEditText = requireView().findViewById(R.id.detailCommentEditTextTextMultiLine);
         String contents = contentsEditText.getText().toString();
-        if (contents.equals(""))
-        {
+        if (contents.equals("")) {
             Toast.makeText(this.getContext(), "Please enter a comment", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -87,10 +91,13 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
         // actually create a new rating/comment
         controller.createRating(username, contents, rating, currentGeocacheID);
 
-        close(view);
+        closeWindow(view);
     }
 
-    private void close(View view) {
+    /**
+     * CLoses the detail window for this cache
+     */
+    private void closeWindow(View view) {
         // hide keyboard on close
         try {
             this.getContext();
@@ -105,8 +112,6 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
     }
 
 
-
-
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }
@@ -119,11 +124,11 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
         this.iModel = newIModel;
     }
 
-    @Override
-    public void modelChanged() {
-
-    }
-
+    /**
+     * Sets the detail fragments information to show correct information from the proper cache
+     *
+     * @param snippet - The snippet from the map marker which contains the cache ID
+     */
     public void setCacheInfo(String snippet) {
 
         boolean alreadyRated = false;
@@ -154,15 +159,14 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
         textToEdit = requireView().findViewById(R.id.detailRatingScoreEdit);
         String ratingsScoreString;
         double cacheRating = selectedCache.getCacheRating();
-        for (CommentListItem rating : items)
-        {
+        for (CommentListItem rating : items) {
             if (rating.getAuthor().equals("Jesse")) // TODO: need to user signed in user's name
             {
                 alreadyRated = true;
                 break;
             }
         }
-        ratingsScoreString = (items.size() > 0 ? String.format("%.1f / 5.0 - Out of %d ratings", cacheRating, items.size()):"0.0 / 5.0 - Not yet rated");
+        ratingsScoreString = (items.size() > 0 ? String.format("%.1f / 5.0 - Out of %d ratings", cacheRating, items.size()) : "0.0 / 5.0 - Not yet rated");
         textToEdit.setText(ratingsScoreString);
 
         textToEdit = requireView().findViewById(R.id.detailAuthorEdit);
@@ -199,15 +203,11 @@ public class DetailCacheFragment extends Fragment implements ModelListener {
         Button commentButton = requireView().findViewById(R.id.detailCreateCommentbutton);
         commentButton.setClickable(true);
         commentButton.setText("Comment and Rate");
-        if (alreadyRated)
-        {
+        if (alreadyRated) {
             commentButton.setClickable(false);
             commentButton.setText("Already Rated");
         }
 
-
         this.currentGeocacheID = cacheID;
-
-
     }
 }

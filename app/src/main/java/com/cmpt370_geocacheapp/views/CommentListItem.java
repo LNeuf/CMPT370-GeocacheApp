@@ -1,10 +1,10 @@
 package com.cmpt370_geocacheapp.views;
 
 public class CommentListItem {
-    private String author;
-    private String contents;
-    private int rating;
-    private long cacheID;
+    private final String author;
+    private final String contents;
+    private final int rating;
+    private final long cacheID;
 
 
     public CommentListItem(String author, String contents, int rating, long id) {

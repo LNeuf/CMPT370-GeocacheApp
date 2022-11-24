@@ -11,7 +11,8 @@ public class RatingReview {
 
     public String contents;
 
-    public String userUsername; // each review belongs to one user, one cache
-    public long geocacheId;
+    public String userUsername;
+
+    public long geocacheId; // the id of the associated cache
 
 }

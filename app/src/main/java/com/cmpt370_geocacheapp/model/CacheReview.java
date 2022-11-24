@@ -2,10 +2,12 @@ package com.cmpt370_geocacheapp.model;
 
 public class CacheReview extends CacheComment {
     private int rating;
+
     public CacheReview(String commentBody, User author, long reviewID, int rating) {
         super(commentBody, author, reviewID);
         this.rating = rating;
     }
+
     public long getReviewID() {
         return this.getCommentID();
     }
@@ -19,8 +21,8 @@ public class CacheReview extends CacheComment {
     }
 
     public static void main(String[] args) {
-        User author = new User("Peanut", "butter",548);
-        CacheReview review = new CacheReview("This is the review body!", author,399, 5);
+        User author = new User("Peanut", "butter", 548);
+        CacheReview review = new CacheReview("This is the review body!", author, 399, 5);
         int expectedRating = 5;
         String reviewBody = "This is the review body!";
         long reviewID = 399;

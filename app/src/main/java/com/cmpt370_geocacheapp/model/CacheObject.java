@@ -13,7 +13,6 @@ public class CacheObject {
     private String cacheDescription;
 
 
-
     final private ArrayList<CacheComment> commentList = new ArrayList<>();
 
     final private ArrayList<CacheReview> reviewList = new ArrayList<>();
@@ -34,6 +33,7 @@ public class CacheObject {
         this.creationDate = date.toString();
         this.image = image;
     }
+
     public CacheObject(String name, User author, long cacheID, String image, String cacheDescription) { // over loaded if there is an image and description
         this.cacheID = cacheID;
         this.author = author;

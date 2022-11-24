@@ -18,7 +18,7 @@ public class Geocache {
 
     public int cacheSize;
 
-    public String userUsername; // each geocache has one user
+    public String userUsername;
 
     public String cacheName;
 

@@ -1,9 +1,12 @@
 package com.cmpt370_geocacheapp.views;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -24,8 +27,6 @@ import java.util.function.Predicate;
 
 public class RecommendCacheFragment extends Fragment {
 
-    //TODO: This is just a temporary fragment used for ensuring that the cache recommendation is working correctly
-
     ApplicationController controller;
 
 
@@ -43,12 +44,26 @@ public class RecommendCacheFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Close the recommended cache window
+     */
     private void close(View view) {
+        // hide keyboard on close
+        try {
+            this.getContext();
+            InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            // keyboard wasn't up
+        }
         //hide filter fragment on apply
         FragmentManager fm = getParentFragmentManager();
         fm.beginTransaction().hide(this).commit();
     }
 
+    /**
+     * Clears the current filter settings in this view
+     */
     private void clearFilters(View view) {
         ChipGroup cacheSizeChipGroup = requireView().findViewById(R.id.cacheSizeRecommendChipGroup);
         List<Integer> ids = cacheSizeChipGroup.getCheckedChipIds();
@@ -64,6 +79,9 @@ public class RecommendCacheFragment extends Fragment {
         walkingRadioButton.setChecked(true);
     }
 
+    /**
+     * Gets a cache recommendation using the current filter criteria
+     */
     private void getRecommendation(View view) {
         ArrayList<Predicate<PhysicalCacheObject>> filters = new ArrayList<>();
 
@@ -133,18 +151,14 @@ public class RecommendCacheFragment extends Fragment {
         boolean success = controller.getRecommendedCache(filters, (int) ((speed * time) * 1000));
 
         if (success) {
-            //hide filter fragment on apply
-            FragmentManager fm = getParentFragmentManager();
-            fm.beginTransaction().hide(this).commit();
+            close(view);
         } else {
             Toast.makeText(this.getContext(), "No caches matching criteria, please adjust filters and try again.", Toast.LENGTH_LONG).show();
         }
     }
 
-
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }
-
 
 }

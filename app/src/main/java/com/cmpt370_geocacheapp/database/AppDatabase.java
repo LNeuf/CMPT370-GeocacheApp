@@ -7,7 +7,7 @@ import androidx.room.*;
 @Database(entities = {User.class, Geocache.class, Comment.class, RatingReview.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static AppDatabase dbInstance;
+    private static volatile AppDatabase dbInstance;
 
     static final String DATABASE_NAME = "cache_db";
 

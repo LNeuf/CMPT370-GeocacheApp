@@ -51,6 +51,7 @@ public class ApplicationModel {
 
     /**
      * Returns the list of caches that have ben filtered from the unfiltered list
+     *
      * @return - Filtered cache list
      */
     public ArrayList<PhysicalCacheObject> getFilteredCacheList() {
@@ -59,7 +60,8 @@ public class ApplicationModel {
 
     /**
      * Queries the cache database to get all caches in a roughly square region, centered on a specified location
-     * @param latitude - center latitude
+     *
+     * @param latitude  - center latitude
      * @param longitude - center longitude
      * @param distance  - side distance
      */
@@ -273,12 +275,12 @@ public class ApplicationModel {
 
     /**
      * Gets a loaded cache by cacheID
+     *
      * @param cacheID - the cache ID to search for
      * @return - returns teh cache object of cache found, null otherwise
      */
     public PhysicalCacheObject getCacheById(long cacheID) {
-        for (PhysicalCacheObject cache : unfilteredCacheList)
-        {
+        for (PhysicalCacheObject cache : unfilteredCacheList) {
             if (cache.getCacheID() == cacheID)
                 return cache;
         }
@@ -287,19 +289,21 @@ public class ApplicationModel {
 
     /**
      * Returns a list of ratings associated with a specified cache id
+     *
      * @param cacheID - the cache id to get the rating list for
      * @return - Returns a list of ratings for a specified cache
      */
     public List<RatingReview> getCacheRatings(long cacheID) {
-         return ratingDao.getByCacheID(cacheID);
+        return ratingDao.getByCacheID(cacheID);
 
     }
 
     /**
      * Creates a new cache rating/comment
-     * @param username - The user who created the rating
-     * @param contents - The contents of the comment
-     * @param rating - The rating out of five - 1-5 valid
+     *
+     * @param username          - The user who created the rating
+     * @param contents          - The contents of the comment
+     * @param rating            - The rating out of five - 1-5 valid
      * @param currentGeocacheID - the cacheID of the associated cache
      */
     public void createNewRating(String username, String contents, int rating, long currentGeocacheID) {
@@ -332,6 +336,11 @@ public class ApplicationModel {
         geocacheDao.deleteAll(cacheToDelete);
     }
 
+    /**
+     * Sorts the filtered caches based on the sort method index
+     *
+     * @param sortMethodIndex - The sort method to use
+     */
     public void sortCaches(long sortMethodIndex) {
         /*
         <item>Cache ID: Low to High</item>
@@ -343,19 +352,19 @@ public class ApplicationModel {
         <item>Popularity: Low to High</item>
         <item>Popularity: High to Low</item>
          */
-        if (sortMethodIndex == 0){
+        if (sortMethodIndex == 0) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheID));
         } else if (sortMethodIndex == 1) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheID).reversed());
-        } else if (sortMethodIndex == 2){
+        } else if (sortMethodIndex == 2) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheDifficulty));
         } else if (sortMethodIndex == 3) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheDifficulty).reversed());
-        } else if (sortMethodIndex == 4){
+        } else if (sortMethodIndex == 4) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheSize));
         } else if (sortMethodIndex == 5) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheSize).reversed());
-        } else if (sortMethodIndex == 6){
+        } else if (sortMethodIndex == 6) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheRating));
         } else if (sortMethodIndex == 7) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheRating).reversed());

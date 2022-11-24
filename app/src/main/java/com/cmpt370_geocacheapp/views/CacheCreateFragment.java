@@ -19,7 +19,7 @@ import com.cmpt370_geocacheapp.imodel.InteractionModel;
 import com.cmpt370_geocacheapp.R;
 import com.cmpt370_geocacheapp.model.User;
 
-public class CacheCreateFragment extends Fragment{
+public class CacheCreateFragment extends Fragment {
 
     ApplicationController controller;
     ApplicationModel model;
@@ -98,8 +98,7 @@ public class CacheCreateFragment extends Fragment{
         SeekBar terrainDifficultySeekBar = requireView().findViewById(R.id.terrainDifficultySeekBar);
         int terrainDifficulty = terrainDifficultySeekBar.getProgress() + 1;
 
-        // TODO: Assign creator name based on who is logged in
-        User cacheCreator = new User("Jesse","TestPass",123);
+        User cacheCreator = new User("Jesse", "TestPass", 123);// TODO: Assign creator name based on who is logged in
 
 
         controller.createCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
@@ -131,13 +130,11 @@ public class CacheCreateFragment extends Fragment{
         this.controller = newController;
     }
 
-    public void setModel(ApplicationModel newModel)
-    {
+    public void setModel(ApplicationModel newModel) {
         this.model = newModel;
     }
 
-    public void setIModel(InteractionModel newIModel)
-    {
+    public void setIModel(InteractionModel newIModel) {
         this.iModel = newIModel;
     }
 

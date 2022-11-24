@@ -1,13 +1,13 @@
 package com.cmpt370_geocacheapp.views;
 
 public class CacheListItem {
-    private String cacheID;
-    private String cacheName;
-    private String cacheDescription;
-    private String time;
+    private final String cacheID;
+    private final String cacheName;
+    private final String cacheDescription;
+    private final String time;
     private String cacheDistance;
-    private double latitude;
-    private double longitude;
+    private final double latitude;
+    private final double longitude;
 
 
     public CacheListItem(String name, String description, String time, String id, String distance, double lat, double lon) {
@@ -49,5 +49,7 @@ public class CacheListItem {
         return this.cacheDistance;
     }
 
-    public void setCacheDistance(String dist) {this.cacheDistance = dist;}
+    public void setCacheDistance(String dist) {
+        this.cacheDistance = dist;
+    }
 }

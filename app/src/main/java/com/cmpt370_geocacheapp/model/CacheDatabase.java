@@ -46,6 +46,7 @@ public class CacheDatabase {
             physicalCacheList.remove(indx);
         }
     }
+
     private double squared(double num) {
         return num * num;
     }
@@ -76,14 +77,14 @@ public class CacheDatabase {
 
     public static void main(String[] args) {
         CacheDatabase database = new CacheDatabase();
-        User user = new User("Hilbert", "Json5",99);
+        User user = new User("Hilbert", "Json5", 99);
 
-        CacheObject cache1Object = new CacheObject("Saskatoon Cache", user,801);
-        PhysicalCacheObject cache1 = new PhysicalCacheObject(cache1Object,14.007, 14.003, 5, 3, 1);
+        CacheObject cache1Object = new CacheObject("Saskatoon Cache", user, 801);
+        PhysicalCacheObject cache1 = new PhysicalCacheObject(cache1Object, 14.007, 14.003, 5, 3, 1);
         database.addPhysicalCache(cache1);
 
-        CacheObject cache2Object = new CacheObject("Regina Cache", user,802);
-        PhysicalCacheObject cache2 = new PhysicalCacheObject(cache2Object,15.032, 16.704, 1, 1, 2);
+        CacheObject cache2Object = new CacheObject("Regina Cache", user, 802);
+        PhysicalCacheObject cache2 = new PhysicalCacheObject(cache2Object, 15.032, 16.704, 1, 1, 2);
         database.addPhysicalCache(cache2);
 
         int totalTests = 0;

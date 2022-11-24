@@ -48,8 +48,7 @@ public class CacheComment {
     public String getLastEditDate() {
         if (this.wasEdited) {
             return this.lastEditDate;
-        }
-        else {
+        } else {
             return this.creationDate;
         }
     }
@@ -111,8 +110,7 @@ public class CacheComment {
         completedTests++;
         totalTests++;
 
-        System.out.println( completedTests + " out of " + totalTests + " were successful.");
-
+        System.out.println(completedTests + " out of " + totalTests + " were successful.");
 
 
     }
