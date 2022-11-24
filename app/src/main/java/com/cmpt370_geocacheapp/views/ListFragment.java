@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.cmpt370_geocacheapp.controller.ApplicationController;
 import com.cmpt370_geocacheapp.model.ApplicationModel;
@@ -25,8 +26,9 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 
-public class ListFragment extends Fragment implements ModelListener, IModelListener {
+public class ListFragment extends Fragment implements ModelListener, IModelListener, AdapterView.OnItemSelectedListener {
     ListView lv;
+    Spinner sortSpinner;
 
     private CacheListViewAdapter cacheListViewAdapter;
     private ArrayList<CacheListItem> items = new ArrayList<>();
@@ -44,7 +46,10 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         cacheListViewAdapter = new CacheListViewAdapter(this.getContext(),items);
         lv.setAdapter(cacheListViewAdapter);
 
+        sortSpinner = view.findViewById(R.id.sortSpinner);
+
         lv.setOnItemClickListener(this::handleCacheNameSelected);
+        sortSpinner.setOnItemSelectedListener(this);
 
         return view;
     }
@@ -113,5 +118,16 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
     {
 
         return SphericalUtil.computeDistanceBetween(new LatLng(lat1, long1), new LatLng(lat2, long2));
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        long selectedIndex = adapterView.getSelectedItemId();
+        controller.sortCaches(selectedIndex);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

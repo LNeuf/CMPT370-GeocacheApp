@@ -63,4 +63,17 @@
     <string name="five_star_detail">5/5</string>
     <string name="comment_button_detail">Comment and Rate</string>
 
+    <string-array
+        name="list_fragment_items">
+        <item>Cache ID: Low to High</item>
+        <item>Cache ID: High to Low</item>
+        <item>Difficulty: Easy to Hard</item>
+        <item>Difficulty: Hard to Easy</item>
+        <item>Size: Small to Large</item>
+        <item>Size: Large to Small</item>
+        <item>Popularity: Low to High</item>
+        <item>Popularity: High to Low</item>
+    </string-array>
+
+
 </resources>

@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -329,5 +330,37 @@ public class ApplicationModel {
     public void deleteCache(long currentGeocacheID) {
         Geocache cacheToDelete = geocacheDao.getByCacheID(currentGeocacheID);
         geocacheDao.deleteAll(cacheToDelete);
+    }
+
+    public void sortCaches(long sortMethodIndex) {
+        /*
+        <item>Cache ID: Low to High</item>
+        <item>Cache ID: High to Low</item>
+        <item>Difficulty: Easy to Hard</item>
+        <item>Difficulty: Hard to Easy</item>
+        <item>Size: Small to Large</item>
+        <item>Size: Large to Small</item>
+        <item>Popularity: Low to High</item>
+        <item>Popularity: High to Low</item>
+         */
+        if (sortMethodIndex == 0){
+            filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheID));
+        } else if (sortMethodIndex == 1) {
+            filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheID).reversed());
+        } else if (sortMethodIndex == 2){
+            filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheDifficulty));
+        } else if (sortMethodIndex == 3) {
+            filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheDifficulty).reversed());
+        } else if (sortMethodIndex == 4){
+            filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheSize));
+        } else if (sortMethodIndex == 5) {
+            filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheSize).reversed());
+        } else if (sortMethodIndex == 6){
+            filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheRating));
+        } else if (sortMethodIndex == 7) {
+            filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheRating).reversed());
+        }
+
+        notifySubscribers();
     }
 }

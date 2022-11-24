@@ -176,4 +176,8 @@ public class ApplicationController {
     public void setCurrentCacheLine(Polyline lineToCache) {
         iModel.setCurrentCacheLine(lineToCache);
     }
+
+    public void sortCaches(long sortMethodIndex) {
+        model.sortCaches(sortMethodIndex);
+    }
 }
