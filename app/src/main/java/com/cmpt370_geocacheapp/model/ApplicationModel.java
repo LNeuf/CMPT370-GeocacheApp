@@ -1,17 +1,28 @@
 package com.cmpt370_geocacheapp.model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.cmpt370_geocacheapp.database.AppDatabase;
 import com.cmpt370_geocacheapp.database.CommentDao;
 import com.cmpt370_geocacheapp.database.Geocache;
 import com.cmpt370_geocacheapp.database.GeocacheDao;
+import com.cmpt370_geocacheapp.database.Picture;
+import com.cmpt370_geocacheapp.database.PictureDao;
 import com.cmpt370_geocacheapp.database.RatingReview;
 import com.cmpt370_geocacheapp.database.RatingReviewDao;
 import com.cmpt370_geocacheapp.database.UserDao;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,6 +39,7 @@ public class ApplicationModel {
     private GeocacheDao geocacheDao;
     private CommentDao commentDao; // TODO: Implement separate comment DB
     private RatingReviewDao ratingDao;
+    private PictureDao pictureDao;
 
     /**
      * Constructor of the applications model
@@ -47,6 +59,42 @@ public class ApplicationModel {
         userDao = db.userDao();
         commentDao = db.commentDao();
         ratingDao = db.reviewDao();
+        pictureDao = db.pictureDao();
+//        try {
+//            loadFakeData(context);
+//        }
+//        catch (IOException e)
+//        {
+//            Toast.makeText(context, "Error loading database data?", Toast.LENGTH_SHORT).show();
+//        }
+    }
+
+    public void loadFakeData(Context context) throws IOException {
+        InputStream is = context.getAssets().open("caches_tab.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        ArrayList<String> lines = (ArrayList<String>) reader.lines().collect(Collectors.toList());
+
+        for (String line : lines)
+        {
+            String[] items = line.split("\t");
+            try {
+                Geocache c = new Geocache();
+                c.id = Integer.parseInt(items[2]);
+                c.cacheName = items[0];
+                c.userUsername = items[1];
+                c.latitude = Float.parseFloat(items[3]);
+                c.longitude = Float.parseFloat(items[4]);
+                c.cacheDiff = Integer.parseInt(items[5]);
+                c.terrainDiff = Integer.parseInt(items[6]);
+                c.cacheSize = Integer.parseInt(items[7]);
+                geocacheDao.insertAll(c);
+            } catch (NumberFormatException e)
+            {
+                Log.d("database", "loadFakeData: create cache failed");
+            }
+        }
+
+
     }
 
     /**
@@ -80,6 +128,14 @@ public class ApplicationModel {
             CacheObject cacheObject = new CacheObject(dbCache.cacheName, new User(dbCache.userUsername, "123", 12345), dbCache.id);
             PhysicalCacheObject newCache = new PhysicalCacheObject(cacheObject, dbCache.latitude, dbCache.longitude, dbCache.cacheDiff, dbCache.terrainDiff, dbCache.cacheSize);
             newCache.setCacheRating(dbCache.cacheRating);
+            // find pic if there
+            byte[] blob = pictureDao.getByCacheID(newCache.getCacheID());
+            if (blob != null)
+            {
+                // convert blob to bitmap
+                Bitmap pic = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+                newCache.setCachePicture(pic);
+            }
             this.unfilteredCacheList.add(newCache);
         }
         this.filteredCacheList = (ArrayList<PhysicalCacheObject>) unfilteredCacheList.clone();
@@ -255,8 +311,7 @@ public class ApplicationModel {
      * @param cacheSize-        Size of cache
      * @return - returns the created cache object
      */
-    public long createNewCache(String cacheName, User cacheCreator, float latitude, float longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize) {
-
+    public long createNewCache(String cacheName, User cacheCreator, float latitude, float longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize, Bitmap pic) {
         Geocache c = new Geocache();
         c.cacheName = cacheName;
         c.userUsername = cacheCreator.getUsername();
@@ -269,7 +324,17 @@ public class ApplicationModel {
         geocacheDao.insertAll(c);
 
         List<Geocache> createdCache = geocacheDao.getByLatLong(latitude, latitude, longitude, longitude);
-        return createdCache.get(0).id;
+        long cacheID = createdCache.get(0).id;
+
+        Picture p = new Picture();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        pic.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] bArray = bos.toByteArray();
+        p.pictureBlob = bArray;
+        p.geocacheId = cacheID;
+        pictureDao.insertAll(p);
+
+        return cacheID;
 
     }
 

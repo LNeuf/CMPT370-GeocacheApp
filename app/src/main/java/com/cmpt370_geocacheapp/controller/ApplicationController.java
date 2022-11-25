@@ -1,5 +1,6 @@
 package com.cmpt370_geocacheapp.controller;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 
 import com.cmpt370_geocacheapp.imodel.InteractionModel;
@@ -50,8 +51,8 @@ public class ApplicationController {
     /**
      * Creates a new cache
      */
-    public void createCache(String cacheName, User cacheCreator, float latitude, float longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize) {
-        long createdCacheID = model.createNewCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
+    public void createCache(String cacheName, User cacheCreator, float latitude, float longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize, Bitmap pic) {
+        long createdCacheID = model.createNewCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize, pic);
         model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(), 5000);
         iModel.setCurrentlySelectedCache(model.getCacheById(createdCacheID));
     }

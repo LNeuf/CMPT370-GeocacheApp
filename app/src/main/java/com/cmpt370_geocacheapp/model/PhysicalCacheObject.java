@@ -1,5 +1,7 @@
 package com.cmpt370_geocacheapp.model;
 
+import android.graphics.Bitmap;
+
 public class PhysicalCacheObject {
     CacheObject cache;
     private final double latitude;
@@ -9,6 +11,7 @@ public class PhysicalCacheObject {
     private final int cacheSize;
     private final String[] cacheSizeNames = new String[]{"Micro", "Small", "Regular", "Large", "Other"};
     private double currentAverageCacheRating = 0.0;
+    private Bitmap picture;
 
     public PhysicalCacheObject(CacheObject cache, double latitude, double longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize) {
         this.latitude = latitude;
@@ -209,5 +212,13 @@ public class PhysicalCacheObject {
             System.out.println("Average reviews not what was expected.");
         }
         System.out.println(testsPerformed + " tests were performed out of " + expectedTests);
+    }
+
+    public void setCachePicture(Bitmap pic) {
+        this.picture = pic;
+    }
+
+    public Bitmap getCacheImage() {
+        return this.picture;
     }
 }

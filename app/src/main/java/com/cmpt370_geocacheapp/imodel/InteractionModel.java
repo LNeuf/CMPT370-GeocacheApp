@@ -1,5 +1,6 @@
 package com.cmpt370_geocacheapp.imodel;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 
 import com.cmpt370_geocacheapp.model.PhysicalCacheObject;
@@ -18,6 +19,7 @@ public class InteractionModel {
     private boolean selectedCachedChanged = false;
     private Location currentLocation;
     private Polyline currentCacheLine;
+    private Bitmap currentlyLoadedImage;
 
     /**
      * Constructor of the Interaction Model
@@ -156,5 +158,17 @@ public class InteractionModel {
      */
     public int getMaxDistance() {
         return maxDistance;
+    }
+
+    public void setLoadedPicture(Bitmap bitmap) {
+        this.currentlyLoadedImage = bitmap;
+    }
+
+    public void clearLoadedPicture() {
+        this.currentlyLoadedImage = null;
+    }
+
+    public Bitmap getLoadedPicture() {
+        return this.currentlyLoadedImage;
     }
 }

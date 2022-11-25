@@ -1,10 +1,17 @@
 package com.cmpt370_geocacheapp.views;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +26,15 @@ import com.cmpt370_geocacheapp.imodel.InteractionModel;
 import com.cmpt370_geocacheapp.R;
 import com.cmpt370_geocacheapp.model.User;
 
+import java.io.IOException;
+
 public class CacheCreateFragment extends Fragment {
 
     ApplicationController controller;
     ApplicationModel model;
     InteractionModel iModel;
+
+    int SELECT_PIC = 200;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,8 +46,49 @@ public class CacheCreateFragment extends Fragment {
         view.findViewById(R.id.latitudeEditText).setOnLongClickListener(this::enterCurrentLatitude);
         view.findViewById(R.id.longitudeEditText).setOnLongClickListener(this::enterCurrentLongitude);
         view.findViewById(R.id.createCacheButton).setOnClickListener(this::createCache);
+        view.findViewById(R.id.addImageButton).setOnClickListener(this::selectImage);
         return view;
     }
+
+    private void selectImage(View view) {
+        // create an instance of the
+        // intent of the type image
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+
+        // pass the constant to compare it
+        // with the returned requestCode
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PIC);
+    }
+
+    // this function is triggered when user
+    // selects the image from the imageChooser
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            if (requestCode == SELECT_PIC) {
+                // Get the url of the image from data
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    // update the preview image in the layout
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), selectedImageUri);
+                        iModel.setLoadedPicture(bitmap);
+                        Toast.makeText(this.getContext(), "Actually added a picture!", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }
+    }
+
 
     /**
      * Handles the input checking for creating a new cache, makes controller create a cache if all inputs are good
@@ -101,7 +153,8 @@ public class CacheCreateFragment extends Fragment {
         User cacheCreator = new User("Jesse", "TestPass", 123);// TODO: Assign creator name based on who is logged in
 
 
-        controller.createCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
+        controller.createCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize, iModel.getLoadedPicture());
+        iModel.clearLoadedPicture();
     }
 
     /**

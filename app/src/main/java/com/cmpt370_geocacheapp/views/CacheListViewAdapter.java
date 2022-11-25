@@ -60,7 +60,9 @@ public class CacheListViewAdapter extends BaseAdapter {
         CacheListItem currentItem = items.get(position);
 
         // assign item data to view
-        // TODO: Assign an image
+        if (currentItem.getPicture() != null) {
+            holder.image.setImageBitmap(currentItem.getPicture());
+        }
         holder.nameText.setText(currentItem.getCacheName());
         holder.descriptionText.setText(currentItem.getCacheDescription());
         holder.distanceText.setText(currentItem.getCacheDistance());

@@ -95,7 +95,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         this.items = (ArrayList<CacheListItem>) this.model.getFilteredCacheList().stream().map(cacheObject ->
                 new CacheListItem(cacheObject.getCacheName(), cacheObject.getCacheSummary(), "Time", String.valueOf(cacheObject.getCacheID()),
                         (iModel.getCurrentLocation() != null ? (int) calculateCacheDistance(cacheObject) + " m" : "Distance not available."),
-                        cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude())).collect(Collectors.toList());
+                        cacheObject.getCacheLatitude(), cacheObject.getCacheLongitude(), cacheObject.getCacheImage())).collect(Collectors.toList());
 
 
         if (cacheListViewAdapter != null) {

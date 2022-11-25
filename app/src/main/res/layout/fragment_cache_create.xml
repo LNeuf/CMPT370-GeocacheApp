@@ -176,6 +176,12 @@
                 android:scaleY="2" />
 
             <Button
+                android:id="@+id/addImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Image" />
+
+            <Button
                 android:id="@+id/createCacheButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
