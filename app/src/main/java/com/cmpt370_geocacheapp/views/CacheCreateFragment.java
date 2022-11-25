@@ -4,14 +4,13 @@ import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import com.cmpt370_geocacheapp.R;
 import com.cmpt370_geocacheapp.model.User;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class CacheCreateFragment extends Fragment {
 
@@ -77,9 +77,8 @@ public class CacheCreateFragment extends Fragment {
                 if (null != selectedImageUri) {
                     // update the preview image in the layout
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), selectedImageUri);
-                        iModel.setLoadedPicture(bitmap);
-                        Toast.makeText(this.getContext(), "Actually added a picture!", Toast.LENGTH_SHORT).show();
+                        iModel.setLoadedPicture(getSmallImage(selectedImageUri));
+                        Toast.makeText(this.getContext(), "Picture added!", Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -89,6 +88,49 @@ public class CacheCreateFragment extends Fragment {
         }
     }
 
+    /**
+     * Takes the URI and returns a bitmap - down-sampled if the image is too large
+     */
+    public Bitmap getSmallImage(Uri uri) throws IOException {
+        InputStream in = this.getContext().getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options boundsOptions = new BitmapFactory.Options();
+        boundsOptions.inJustDecodeBounds = true;
+        boundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        BitmapFactory.decodeStream(in, null, boundsOptions);
+        in.close();
+
+        if ((boundsOptions.outWidth == -1) || (boundsOptions.outHeight == -1)) {
+            return null;
+        }
+
+        int originalMaxSize = Math.max(boundsOptions.outHeight, boundsOptions.outWidth);
+
+        double ratio = (originalMaxSize > 500.0) ? (originalMaxSize / 500.0) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = calculateSampleSize(ratio);
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        in = this.getContext().getContentResolver().openInputStream(uri);
+        Bitmap resizedBitmap = BitmapFactory.decodeStream(in, null, bitmapOptions);
+        in.close();
+        return resizedBitmap;
+    }
+
+    /**
+     * Gets the takes resize ratio and calculates the proper sample size to reduce the input image
+     */
+    private int calculateSampleSize(double ratio) {
+        int power = Integer.highestOneBit( (int) Math.floor(ratio) );
+        if (power == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return power;
+        }
+    }
 
     /**
      * Handles the input checking for creating a new cache, makes controller create a cache if all inputs are good
