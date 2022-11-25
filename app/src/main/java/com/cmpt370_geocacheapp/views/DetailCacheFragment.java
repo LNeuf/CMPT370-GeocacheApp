@@ -2,6 +2,7 @@ package com.cmpt370_geocacheapp.views;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -166,7 +168,16 @@ public class DetailCacheFragment extends Fragment {
                 break;
             }
         }
-        ratingsScoreString = (items.size() > 0 ? String.format("%.1f / 5.0 - Out of %d ratings", cacheRating, items.size()) : "0.0 / 5.0 - Not yet rated");
+
+        // set image
+        ImageView imageView = requireView().findViewById(R.id.cacheDetailImageView);
+        if (selectedCache.getCacheImage() == null)
+        {
+            imageView.setImageResource(R.mipmap.image1);
+        } else {
+            imageView.setImageBitmap(selectedCache.getCacheImage());
+        }
+        ratingsScoreString = (items.size() > 0 ? String.format("%.1f / 5.0 - %d ratings", cacheRating, items.size()) : "0.0 / 5.0 - 0 ratings");
         textToEdit.setText(ratingsScoreString);
 
         textToEdit = requireView().findViewById(R.id.detailAuthorEdit);
