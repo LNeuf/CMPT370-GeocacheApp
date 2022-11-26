@@ -1,4 +1,4 @@
-package com.cmpt370_geocacheapp.model;
+package com.cmpt370_geocacheapp;
 
 import java.util.Date;
 import java.util.ArrayList;
@@ -13,8 +13,6 @@ public class CacheObject {
     private String cacheDescription;
     private double totalReviews;
     private double totalRatings;
-
-
 
     final private ArrayList<CacheComment> commentList = new ArrayList<>();
 
