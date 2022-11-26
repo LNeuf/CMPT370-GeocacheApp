@@ -14,13 +14,14 @@ import java.util.ArrayList;
 
 public class CacheListViewAdapter extends BaseAdapter {
 
-    private ArrayList<CacheListItem> items;
-    private Context context;
+    private final ArrayList<CacheListItem> items;
+    private final Context context;
 
-    public CacheListViewAdapter(Context context, ArrayList<CacheListItem> items){
+    public CacheListViewAdapter(Context context, ArrayList<CacheListItem> items) {
         this.context = context;
         this.items = items;
     }
+
     @Override
     public int getCount() {
         return items.size(); //returns total of items in the list
@@ -51,8 +52,7 @@ public class CacheListViewAdapter extends BaseAdapter {
             holder.distanceText = convertView.findViewById(R.id.item_distance);
 
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
@@ -60,7 +60,9 @@ public class CacheListViewAdapter extends BaseAdapter {
         CacheListItem currentItem = items.get(position);
 
         // assign item data to view
-        // TODO: Assign an image
+        if (currentItem.getPicture() != null) {
+            holder.image.setImageBitmap(currentItem.getPicture());
+        }
         holder.nameText.setText(currentItem.getCacheName());
         holder.descriptionText.setText(currentItem.getCacheDescription());
         holder.distanceText.setText(currentItem.getCacheDistance());
@@ -70,7 +72,7 @@ public class CacheListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    class ViewHolder {
         TextView nameText;
         TextView descriptionText;
         TextView distanceText;

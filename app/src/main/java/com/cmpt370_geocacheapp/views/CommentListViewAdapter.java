@@ -13,13 +13,14 @@ import java.util.ArrayList;
 
 public class CommentListViewAdapter extends BaseAdapter {
 
-    private ArrayList<CommentListItem> items;
-    private Context context;
+    private final ArrayList<CommentListItem> items;
+    private final Context context;
 
-    public CommentListViewAdapter(Context context, ArrayList<CommentListItem> items){
+    public CommentListViewAdapter(Context context, ArrayList<CommentListItem> items) {
         this.context = context;
         this.items = items;
     }
+
     @Override
     public int getCount() {
         return items.size(); //returns total of items in the list
@@ -49,8 +50,7 @@ public class CommentListViewAdapter extends BaseAdapter {
             holder.ratingAuthor = convertView.findViewById(R.id.rating_author);
 
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
@@ -68,7 +68,7 @@ public class CommentListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder{
+    class ViewHolder {
         TextView ratingRating;
         TextView ratingContents;
         TextView ratingAuthor;

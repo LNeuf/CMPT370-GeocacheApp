@@ -1,5 +1,6 @@
 package com.cmpt370_geocacheapp.controller;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 
 import com.cmpt370_geocacheapp.imodel.InteractionModel;
@@ -50,8 +51,8 @@ public class ApplicationController {
     /**
      * Creates a new cache
      */
-    public void createCache(String cacheName, User cacheCreator, float latitude, float longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize) {
-        long createdCacheID = model.createNewCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
+    public void createCache(String cacheName, User cacheCreator, float latitude, float longitude, int cacheDifficulty, int terrainDifficulty, int cacheSize, Bitmap pic) {
+        long createdCacheID = model.createNewCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize, pic);
         model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(), 5000);
         iModel.setCurrentlySelectedCache(model.getCacheById(createdCacheID));
     }
@@ -151,6 +152,7 @@ public class ApplicationController {
      */
     public void createRating(String username, String contents, int rating, long currentGeocacheID) {
         model.createNewRating(username, contents, rating, currentGeocacheID);
+        model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(), 5000);
     }
 
     public void deleteCache(long currentGeocacheID) {
@@ -162,6 +164,7 @@ public class ApplicationController {
 
     /**
      * Sets the iModel current location
+     *
      * @param lastLocation - the last location received
      */
     public void setCurrentLocation(Location lastLocation) {
@@ -170,9 +173,19 @@ public class ApplicationController {
 
     /**
      * Sets the iModels currrent polyline connecting users location and the selected cache
+     *
      * @param lineToCache - the polyline to set
      */
     public void setCurrentCacheLine(Polyline lineToCache) {
         iModel.setCurrentCacheLine(lineToCache);
+    }
+
+    /**
+     * Sorts the filtered caches
+     *
+     * @param sortMethodIndex - the index of the sort method to use
+     */
+    public void sortCaches(long sortMethodIndex) {
+        model.sortCaches(sortMethodIndex);
     }
 }

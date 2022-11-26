@@ -27,7 +27,7 @@ public class ApplicationControllerTest extends TestCase {
         testController.setModel(testModel);
         InteractionModel testIModel = new InteractionModel();
         testController.setInteractionModel(testIModel);
-        testController.createCache("TestName", new User("TestAuthor","TEstPass",123), 50,80,1,2,3);
+        testController.createCache("TestName", new User("TestAuthor","TEstPass",123), 50,80,1,2,3,null);
         assertEquals(testIModel.getCurrentlySelectedCache(), testModel.getFilteredCacheList().get(29)); // Controller makes model create cache, then sets IModel to select that cache
     }
 }

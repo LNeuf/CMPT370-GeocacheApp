@@ -239,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     /**
      * Handles when the "Current location" button is clicked on the google map
+     *
      * @return - returns false to no prevent the default behaviour
      */
     @Override
@@ -309,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
 
     /**
      * Handles a long press on the info window - opens a detail page with the cache details and comemnts/ratings
+     *
      * @param marker - The marker that was long-pressed
      */
     private void infoWindowLongClicked(Marker marker) {

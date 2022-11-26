@@ -13,6 +13,7 @@ public class Comment {
 
     public String contents;
 
-    public String userUsername; // each comment belongs to one user, one cache
-    public long geocacheId;
+    public String userUsername;
+
+    public long geocacheId; // The id of the associated cache
 }

@@ -16,7 +16,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.cmpt370_geocacheapp.R;
 import com.cmpt370_geocacheapp.controller.ApplicationController;
-import com.cmpt370_geocacheapp.imodel.InteractionModel;
 import com.cmpt370_geocacheapp.model.ApplicationModel;
 
 public class SearchCacheFragment extends Fragment {
@@ -25,7 +24,6 @@ public class SearchCacheFragment extends Fragment {
 
     ApplicationController controller;
     ApplicationModel model;
-    InteractionModel iModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +38,9 @@ public class SearchCacheFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Performs a search using the selected search method and search input
+     */
     private void search(View view) {
         EditText searchEditText = requireView().findViewById(R.id.searchEditText);
         String searchInput = searchEditText.getText().toString();
@@ -58,30 +59,21 @@ public class SearchCacheFragment extends Fragment {
         else if (selectedId == R.id.searchIDRadioButton)
             searchType = 3;
 
-        if (searchType == 1)
-        {
-            if (!controller.searchByName(searchInput))
-            {
+        if (searchType == 1) {
+            if (!controller.searchByName(searchInput)) {
                 Toast.makeText(this.getContext(), "No caches found", Toast.LENGTH_SHORT).show();
                 return;
             }
-        }
-        else if (searchType == 2)
-        {
-            if (!controller.searchByAuthorName(searchInput))
-            {
+        } else if (searchType == 2) {
+            if (!controller.searchByAuthorName(searchInput)) {
                 Toast.makeText(this.getContext(), "No caches found", Toast.LENGTH_SHORT).show();
                 return;
             }
-        }
-        else if (searchType == 3)
-        {
+        } else if (searchType == 3) {
             long searchID;
-            try{
+            try {
                 searchID = Long.parseLong(searchInput);
-            }
-            catch (NumberFormatException e)
-            {
+            } catch (NumberFormatException e) {
                 Toast.makeText(this.getContext(), "Please enter a valid cacheID so search by", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -93,6 +85,9 @@ public class SearchCacheFragment extends Fragment {
         close(view);
     }
 
+    /**
+     * Closes the search view
+     */
     private void close(View view) {
         // hide keyboard on close
         try {
@@ -107,19 +102,12 @@ public class SearchCacheFragment extends Fragment {
         fm.beginTransaction().hide(this).commit();
     }
 
-
-
-
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }
 
     public void setModel(ApplicationModel newModel) {
         this.model = newModel;
-    }
-
-    public void setIModel(InteractionModel newIModel) {
-        this.iModel = newIModel;
     }
 
 }

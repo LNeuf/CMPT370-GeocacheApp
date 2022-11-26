@@ -1,5 +1,11 @@
 package com.cmpt370_geocacheapp.views;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatEditText;
@@ -19,11 +25,16 @@ import com.cmpt370_geocacheapp.imodel.InteractionModel;
 import com.cmpt370_geocacheapp.R;
 import com.cmpt370_geocacheapp.model.User;
 
-public class CacheCreateFragment extends Fragment{
+import java.io.IOException;
+import java.io.InputStream;
+
+public class CacheCreateFragment extends Fragment {
 
     ApplicationController controller;
     ApplicationModel model;
     InteractionModel iModel;
+
+    int SELECT_PIC = 200;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,7 +46,90 @@ public class CacheCreateFragment extends Fragment{
         view.findViewById(R.id.latitudeEditText).setOnLongClickListener(this::enterCurrentLatitude);
         view.findViewById(R.id.longitudeEditText).setOnLongClickListener(this::enterCurrentLongitude);
         view.findViewById(R.id.createCacheButton).setOnClickListener(this::createCache);
+        view.findViewById(R.id.addImageButton).setOnClickListener(this::selectImage);
         return view;
+    }
+
+    private void selectImage(View view) {
+        // create an instance of the
+        // intent of the type image
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+
+        // pass the constant to compare it
+        // with the returned requestCode
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PIC);
+    }
+
+    // this function is triggered when user
+    // selects the image from the imageChooser
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            if (requestCode == SELECT_PIC) {
+                // Get the url of the image from data
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    // update the preview image in the layout
+                    try {
+                        iModel.setLoadedPicture(getSmallImage(selectedImageUri));
+                        Toast.makeText(this.getContext(), "Picture added!", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }
+    }
+
+    /**
+     * Takes the URI and returns a bitmap - down-sampled if the image is too large
+     */
+    public Bitmap getSmallImage(Uri uri) throws IOException {
+        InputStream in = this.getContext().getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options boundsOptions = new BitmapFactory.Options();
+        boundsOptions.inJustDecodeBounds = true;
+        boundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        BitmapFactory.decodeStream(in, null, boundsOptions);
+        in.close();
+
+        if ((boundsOptions.outWidth == -1) || (boundsOptions.outHeight == -1)) {
+            return null;
+        }
+
+        int originalMaxSize = Math.max(boundsOptions.outHeight, boundsOptions.outWidth);
+
+        double ratio = (originalMaxSize > 500.0) ? (originalMaxSize / 500.0) : 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = calculateSampleSize(ratio);
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        in = this.getContext().getContentResolver().openInputStream(uri);
+        Bitmap resizedBitmap = BitmapFactory.decodeStream(in, null, bitmapOptions);
+        in.close();
+        return resizedBitmap;
+    }
+
+    /**
+     * Gets the takes resize ratio and calculates the proper sample size to reduce the input image
+     */
+    private int calculateSampleSize(double ratio) {
+        int power = Integer.highestOneBit( (int) Math.floor(ratio) );
+        if (power == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return power;
+        }
     }
 
     /**
@@ -98,11 +192,11 @@ public class CacheCreateFragment extends Fragment{
         SeekBar terrainDifficultySeekBar = requireView().findViewById(R.id.terrainDifficultySeekBar);
         int terrainDifficulty = terrainDifficultySeekBar.getProgress() + 1;
 
-        // TODO: Assign creator name based on who is logged in
-        User cacheCreator = new User("Jesse","TestPass",123);
+        User cacheCreator = new User("Jesse", "TestPass", 123);// TODO: Assign creator name based on who is logged in
 
 
-        controller.createCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize);
+        controller.createCache(cacheName, cacheCreator, latitude, longitude, cacheDifficulty, terrainDifficulty, cacheSize, iModel.getLoadedPicture());
+        iModel.clearLoadedPicture();
     }
 
     /**
@@ -131,13 +225,11 @@ public class CacheCreateFragment extends Fragment{
         this.controller = newController;
     }
 
-    public void setModel(ApplicationModel newModel)
-    {
+    public void setModel(ApplicationModel newModel) {
         this.model = newModel;
     }
 
-    public void setIModel(InteractionModel newIModel)
-    {
+    public void setIModel(InteractionModel newIModel) {
         this.iModel = newIModel;
     }
 

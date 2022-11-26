@@ -34,6 +34,7 @@ public class CacheObject {
         this.creationDate = date.toString();
         this.image = image;
     }
+
     public CacheObject(String name, User author, long cacheID, String image, String cacheDescription) { // over loaded if there is an image and description
         this.cacheID = cacheID;
         this.author = author;

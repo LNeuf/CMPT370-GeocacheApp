@@ -30,7 +30,7 @@ public class User {
     }
 
     public static void main(String[] args) {
-        User user = new User("Joel", "Pollak356",240);
+        User user = new User("Joel", "Pollak356", 240);
         String username = "Joel";
         String password = "Pollak356";
         String newPassword = "Pollak999";
@@ -59,7 +59,7 @@ public class User {
         totalTests++;
         successfulTests++;
 
-        user.changePassword(password ,newPassword);
+        user.changePassword(password, newPassword);
 
         if (!user.getPassword().equals(newPassword)) {
             successfulTests--;

@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.cmpt370_geocacheapp.controller.ApplicationController;
 import com.cmpt370_geocacheapp.model.ApplicationModel;
-import com.cmpt370_geocacheapp.imodel.InteractionModel;
 import com.cmpt370_geocacheapp.model.PhysicalCacheObject;
 import com.cmpt370_geocacheapp.R;
 import com.google.android.material.chip.Chip;
@@ -28,11 +27,8 @@ import java.util.function.Predicate;
 
 public class FilterCacheFragment extends Fragment {
 
-    //TODO: This is just a temporary fragment used for ensuring that the filter-applying code could be applied correctly
-
     ApplicationController controller;
     ApplicationModel model;
-    InteractionModel iModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,12 +44,26 @@ public class FilterCacheFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Closes the filter window
+     */
     private void close(View view) {
+        // hide keyboard on close
+        try {
+            this.getContext();
+            InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            // keyboard wasn't up
+        }
         //hide filter fragment on apply
         FragmentManager fm = getParentFragmentManager();
         fm.beginTransaction().hide(this).commit();
     }
 
+    /**
+     * Clears the filter settings for this fragment - shows all nearby caches
+     */
     private void clearFilters(View view) {
         ChipGroup cacheSizeChipGroup = requireView().findViewById(R.id.cacheSizeChipGroup);
         List<Integer> ids = cacheSizeChipGroup.getCheckedChipIds();
@@ -78,11 +88,12 @@ public class FilterCacheFragment extends Fragment {
         } catch (Exception e) {
             // keyboard wasn't up
         }
-        //hide filter fragment on apply
-        FragmentManager fm = getParentFragmentManager();
-        fm.beginTransaction().hide(this).commit();
+        close(view);
     }
 
+    /**
+     * Applies the current filters
+     */
     private void filterCaches(View view) {
         ArrayList<Predicate<PhysicalCacheObject>> filters = new ArrayList<>();
 
@@ -125,7 +136,6 @@ public class FilterCacheFragment extends Fragment {
             filters.add(terrainDifficultyFilter);
         }
 
-
         EditText distanceInput = requireView().findViewById(R.id.distanceEditText);
         int distance = -1;
         if (!distanceInput.getText().toString().equals("")) {
@@ -136,7 +146,6 @@ public class FilterCacheFragment extends Fragment {
                 return;
             }
         }
-
 
         // apply the filters
         controller.setSelectedCache(null);
@@ -150,9 +159,7 @@ public class FilterCacheFragment extends Fragment {
         } catch (Exception e) {
             // keyboard wasn't up
         }
-        //hide filter fragment on apply
-        FragmentManager fm = getParentFragmentManager();
-        fm.beginTransaction().hide(this).commit();
+        close(view);
     }
 
 
@@ -164,8 +171,5 @@ public class FilterCacheFragment extends Fragment {
         this.model = newModel;
     }
 
-    public void setIModel(InteractionModel newIModel) {
-        this.iModel = newIModel;
-    }
 
 }
