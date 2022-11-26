@@ -16,6 +16,10 @@ public class CommentListViewAdapter extends BaseAdapter {
     private final ArrayList<CommentListItem> items;
     private final Context context;
 
+    /**
+     * Adapter for adapting a Comment into an item in a ListView
+     * @param items
+     */
     public CommentListViewAdapter(Context context, ArrayList<CommentListItem> items) {
         this.context = context;
         this.items = items;
@@ -36,6 +40,10 @@ public class CommentListViewAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Setsup the ListView item to have the comments contents
+     * @param position - The index in the listview
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;

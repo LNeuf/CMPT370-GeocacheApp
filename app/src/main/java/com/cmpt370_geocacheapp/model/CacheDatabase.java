@@ -9,10 +9,17 @@ public class CacheDatabase {
         this.physicalCacheList = new ArrayList<>();
     }
 
+    /**
+     * Returns the whole cache list
+     */
     public ArrayList<PhysicalCacheObject> getPhysicalCacheList() {
         return this.physicalCacheList;
     }
 
+    /**
+     * Returns a specific cache from the cache ID
+     * @param cacheID -The id of the cache to return
+     */
     public PhysicalCacheObject getPhysicalCache(long cacheID) {
         int indx = -1;
         for (int i = 0; i < physicalCacheList.size(); i++) {
@@ -26,15 +33,23 @@ public class CacheDatabase {
         return null;
     }
 
-
+    /**
+     * Adds a new cache to the cache list
+     */
     public void addPhysicalCache(PhysicalCacheObject newCache) {
         physicalCacheList.add(newCache);
     }
 
+    /**
+     * Removes a cache from teh cache list
+     */
     public void removePhysicalCache(PhysicalCacheObject cache) {
         physicalCacheList.remove(cache);
     }
 
+    /**
+     * Removes a cache object from teh cache list
+     */
     public void removeCacheObject(long cacheID) {
         int indx = -1;
         for (int i = 0; i < physicalCacheList.size(); i++) {
@@ -47,13 +62,19 @@ public class CacheDatabase {
         }
     }
 
+    /**
+     * Helper method for squaring a number
+     * @param num - The number to square
+     */
     private double squared(double num) {
         return num * num;
     }
 
-    /*
-    filterCacheDistance has an equivalent with the other filters. It will be removed at a later date with the final
-        product after making sure nothing depends on it.
+    /**
+     * Filters caches based on distance and position
+     * @param maxDistance - The max distance a cache can be to not be filtered
+     * @param currentLatitude - The position latitude
+     * @param currentLongitude - The position Longitude
      */
     public ArrayList<PhysicalCacheObject> filterCacheDistance(double maxDistance, double currentLatitude, double currentLongitude) {
         ArrayList<PhysicalCacheObject> distanceFilteredCaches = new ArrayList<>();

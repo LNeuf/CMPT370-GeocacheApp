@@ -18,10 +18,17 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
     View myView;
 
+    /**
+     * Constructor to create the InfoWindow
+     */
     public CustomInfoWindow(Context context) {
         myView = LayoutInflater.from(context).inflate(R.layout.info_window, null);
     }
 
+    /**
+     * Gets the marker info and assigns it to the custom info window
+     * @param marker -The marker that was pressed to display the info window
+     */
     @Override
     public View getInfoWindow(Marker marker) {
         TextView txtInfoName = myView.findViewById(R.id.txtInfoName);

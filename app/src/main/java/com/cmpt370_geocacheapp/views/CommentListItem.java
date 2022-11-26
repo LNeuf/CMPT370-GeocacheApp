@@ -6,7 +6,13 @@ public class CommentListItem {
     private final int rating;
     private final long cacheID;
 
-
+    /**
+     * An object for displaying a cache's comment in a ListView
+     * @param author - The comments author
+     * @param contents - The Comment contents
+     * @param rating - The comments rating
+     * @param id - The comments ID
+     */
     public CommentListItem(String author, String contents, int rating, long id) {
         this.author = author;
         this.contents = contents;

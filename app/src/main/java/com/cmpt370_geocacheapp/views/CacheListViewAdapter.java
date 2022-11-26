@@ -17,6 +17,11 @@ public class CacheListViewAdapter extends BaseAdapter {
     private final ArrayList<CacheListItem> items;
     private final Context context;
 
+    /**
+     * An adapter for adapting the CacheListItem to view in a ListView
+     * @param context
+     * @param items
+     */
     public CacheListViewAdapter(Context context, ArrayList<CacheListItem> items) {
         this.context = context;
         this.items = items;
@@ -37,6 +42,10 @@ public class CacheListViewAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Sets up the view of each ListItem
+     * @param position - The index in the listview
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;

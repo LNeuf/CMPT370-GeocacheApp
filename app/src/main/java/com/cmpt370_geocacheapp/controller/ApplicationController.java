@@ -155,11 +155,14 @@ public class ApplicationController {
         model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(), 5000);
     }
 
+    /**
+     * Deletes a cache
+     * @param currentGeocacheID - The ID of the cache to delete
+     */
     public void deleteCache(long currentGeocacheID) {
         iModel.setCurrentlySelectedCache(null);
         model.deleteCache(currentGeocacheID);
         model.updateNearbyCacheList((float) iModel.getCurrentLocation().getLatitude(), (float) iModel.getCurrentLocation().getLongitude(), 5000);
-
     }
 
     /**

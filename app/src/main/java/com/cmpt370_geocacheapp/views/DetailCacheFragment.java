@@ -40,6 +40,9 @@ public class DetailCacheFragment extends Fragment {
     InteractionModel iModel;
     long currentGeocacheID;
 
+    /**
+     * Setup for a new Detail Window
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,15 +116,23 @@ public class DetailCacheFragment extends Fragment {
         fm.beginTransaction().hide(this).commit();
     }
 
-
+    /**
+     * Sets the fragments controller
+     */
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }
 
+    /**
+     * Sets the fragments model
+     */
     public void setModel(ApplicationModel newModel) {
         this.model = newModel;
     }
 
+    /**
+     * Sets the fragments IModel
+     */
     public void setIModel(InteractionModel newIModel) {
         this.iModel = newIModel;
     }

@@ -15,7 +15,6 @@ public class CacheObject {
     private double totalRatings;
 
 
-
     final private ArrayList<CacheComment> commentList = new ArrayList<>();
 
     final private ArrayList<CacheReview> reviewList = new ArrayList<>();
@@ -144,7 +143,7 @@ public class CacheObject {
     }
 
     public double getAverageReviews() {
-        return totalRatings/totalReviews;
+        return totalRatings / totalReviews;
     }
 }
 

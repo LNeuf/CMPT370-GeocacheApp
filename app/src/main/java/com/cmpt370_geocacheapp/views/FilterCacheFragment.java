@@ -67,15 +67,14 @@ public class FilterCacheFragment extends Fragment {
     private void clearFilters(View view) {
         ChipGroup cacheSizeChipGroup = requireView().findViewById(R.id.cacheSizeChipGroup);
         List<Integer> ids = cacheSizeChipGroup.getCheckedChipIds();
-        for (Integer chipID : ids)
-        {
+        for (Integer chipID : ids) {
             Chip chip = requireView().findViewById(chipID);
             chip.setChecked(false);
         }
         RangeSlider difficultySlider = requireView().findViewById(R.id.difficultyRangeSlider);
-        difficultySlider.setValues(1f,5f);
+        difficultySlider.setValues(1f, 5f);
         RangeSlider terrainDifficultySlider = requireView().findViewById(R.id.terrainRangeSlider);
-        terrainDifficultySlider.setValues(1f,5f);
+        terrainDifficultySlider.setValues(1f, 5f);
         EditText distanceInput = requireView().findViewById(R.id.distanceEditText);
         distanceInput.setText("");
         controller.setMaxDistance(-1);
@@ -162,11 +161,16 @@ public class FilterCacheFragment extends Fragment {
         close(view);
     }
 
-
+    /**
+     * Sets the fragments controller
+     */
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }
 
+    /**
+     * Sets the fragments model
+     */
     public void setModel(ApplicationModel newModel) {
         this.model = newModel;
     }

@@ -11,14 +11,27 @@ public class CacheCreator extends User {
 
     }
 
+    /**
+     * Creates a cache object
+     * @param name - The name of the Cache
+     * @param author - The author of the cache
+     * @param cacheID - The id of the cache
+     */
     public void createCache(String name, User author, long cacheID) {
         createdCaches.add(new CacheObject(name, author, cacheID));
     }
 
+    /**
+     * Creates a cache and adds to the list of created caches
+     */
     public void createPhysicalCache(CacheObject cache, double latitude, double longitude, int difficulty, int terrain, int size) {
         createdPhysicalCaches.add(new PhysicalCacheObject(cache, latitude, longitude, difficulty, terrain, size));
     }
 
+    /**
+     * Deletes a cache from a users list of created caches
+     * @param cacheID - the id of the cache to delete
+     */
     public void deletePhysicalCache(long cacheID) {
         int cacheIndx = -1;
         for (int i = 0; i < createdPhysicalCaches.size(); i++) {
@@ -31,7 +44,10 @@ public class CacheCreator extends User {
         }
     }
 
-
+    /**
+     * Deletes a cache object by cache ID
+     * @param cacheID - Teh ID of the cache object to delete
+     */
     public void deleteCache(long cacheID) {
         int cacheIndx = -1;
         for (int i = 0; i < createdCaches.size(); i++) {
@@ -44,6 +60,11 @@ public class CacheCreator extends User {
         }
     }
 
+    /**
+     * Returns a cache by cache ID
+     * @param cacheID - Teh id of the cache object to return
+     * @return - THe cache
+     */
     public CacheObject getCache(long cacheID) {
         int indx = -1;
         for (int i = 0; i < createdCaches.size(); i++) {

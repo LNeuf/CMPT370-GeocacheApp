@@ -369,6 +369,9 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
         receivedFirstLocationUpdate = true;
     }
 
+    /**
+     * Cache items have changed - need to redraw map items
+     */
     @Override
     public void modelChanged() {
         redrawMapItems();
@@ -411,8 +414,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
      */
     @SuppressLint("MissingPermission")
     private void enableMyLocation() {
-        // [START maps_check_location_permission]
-        // 1. Check if permissions are granted, if so, enable the my location layer
+        // check if permissions are granted, then enable the my location layer
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION)
@@ -422,9 +424,8 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             return;
         }
 
-        // 2. Otherwise, request location permissions from the user.
+        // Request location permissions from the user.
         PermissionUtils.requestLocationPermissions(this, LOCATION_PERMISSION_REQUEST_CODE, true);
-        // [END maps_check_location_permission]
     }
 
 
@@ -444,10 +445,7 @@ public class MainActivity extends AppCompatActivity implements IModelListener, M
             enableMyLocation();
         } else {
             // Permission was denied. Display an error message
-            // [START_EXCLUDE]
-            // Display the missing permission error dialog when the fragments resume.
             permissionDenied = true;
-            // [END_EXCLUDE]
         }
     }
 

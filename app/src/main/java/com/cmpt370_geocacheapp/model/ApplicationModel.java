@@ -60,15 +60,13 @@ public class ApplicationModel {
         commentDao = db.commentDao();
         ratingDao = db.reviewDao();
         pictureDao = db.pictureDao();
-//        try {
-//            loadFakeData(context);
-//        }
-//        catch (IOException e)
-//        {
-//            Toast.makeText(context, "Error loading database data?", Toast.LENGTH_SHORT).show();
-//        }
     }
 
+    /**
+     * Helper method for loading fake data into the database - Only used once to load and create the database used in the application
+     * @param context - The current context
+     * @throws IOException - Throws if a cache data line is improperly formatted
+     */
     public void loadFakeData(Context context) throws IOException {
         InputStream is = context.getAssets().open("caches_tab.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -93,8 +91,6 @@ public class ApplicationModel {
                 Log.d("database", "loadFakeData: create cache failed");
             }
         }
-
-
     }
 
     /**
@@ -407,15 +403,15 @@ public class ApplicationModel {
      * @param sortMethodIndex - The sort method to use
      */
     public void sortCaches(long sortMethodIndex) {
-        /*
-        <item>Cache ID: Low to High</item>
-        <item>Cache ID: High to Low</item>
-        <item>Difficulty: Easy to Hard</item>
-        <item>Difficulty: Hard to Easy</item>
-        <item>Size: Small to Large</item>
-        <item>Size: Large to Small</item>
-        <item>Popularity: Low to High</item>
-        <item>Popularity: High to Low</item>
+        /* The filtering methods: See strings.xml
+        0: Cache ID: Low to High
+        1: Cache ID: High to Low
+        2: Difficulty: Easy to Hard</item>
+        3: Difficulty: Hard to Easy</item>
+        4: Size: Small to Large</item>
+        5: Size: Large to Small</item>
+        6: Popularity: Low to High</item>
+        7: Popularity: High to Low</item>
          */
         if (sortMethodIndex == 0) {
             filteredCacheList.sort(Comparator.comparing(PhysicalCacheObject::getCacheID));
