@@ -22,6 +22,7 @@ public class PhysicalCacheObject {
         this.cache = cache;
     }
 
+
     public String getCacheName() {
         return this.cache.getName();
     }
@@ -33,7 +34,6 @@ public class PhysicalCacheObject {
     public String getCacheAuthor() {
         return this.cache.getAuthor().getUsername();
     }
-
 
     public double getCacheLatitude() {
         return this.latitude;
@@ -59,10 +59,18 @@ public class PhysicalCacheObject {
         return this.cacheSize;
     }
 
+    /**
+     * Returns a formatted short summary of the cache with some important information
+     * @return - A summary of the cache suitable for printing
+     */
     public String getCacheSummary() {
         return String.format("%s | Dif:%d/5 | Ter:%d/5 | ID:%d", cacheSizeNames[cacheSize - 1], cacheDifficulty, terrainDifficulty, cache.getCacheID());
     }
 
+    /**
+     * Returns the cache coordinates as a double array
+     * @return - the coordinates of the cache, latitude and longitude
+     */
     public double[] getCacheCoordinates() {
         double[] cacheCoordinates = new double[2];
         cacheCoordinates[0] = this.latitude;
@@ -70,11 +78,16 @@ public class PhysicalCacheObject {
         return cacheCoordinates;
     }
 
-
+    /**
+     * Associates a comment with this cache
+     */
     public void addComment(CacheComment commentToAdd) {
         cache.addComment(commentToAdd);
     }
 
+    /**
+     * Returns a specific comment based on comment ID
+     */
     public CacheComment readComment(long commentID) {
         int indx = -1;
         for (int i = 0; i < this.cache.getCommentList().size(); i++) {

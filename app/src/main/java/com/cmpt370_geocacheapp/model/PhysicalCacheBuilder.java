@@ -9,10 +9,24 @@ public class PhysicalCacheBuilder implements CacheBuilder {
         this.database = databaseToLink;
     }
 
+    /**
+     * Creates a new cache
+     * @param name - The cache name
+     * @param author - The cache author
+     * @param cacheID - The cache ID
+     */
     public void buildCache(String name, User author, long cacheID) {
         this.cache = new CacheObject(name, author, cacheID);
     }
 
+    /**
+     * Creates a new cache and adds to DB
+     * @param latitude - Latitude
+     * @param longitude - Longitude
+     * @param cacheDif - Difficulty
+     * @param terrainDif - Terrain Difficulty
+     * @param cacheSize - Cache size
+     */
     public void buildPhysicalCache(double latitude, double longitude, int cacheDif, int terrainDif, int cacheSize) {
         this.database.addPhysicalCache(new PhysicalCacheObject(this.cache, latitude, longitude, cacheDif, terrainDif, cacheSize));
     }

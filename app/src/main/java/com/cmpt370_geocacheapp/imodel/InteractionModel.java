@@ -160,14 +160,25 @@ public class InteractionModel {
         return maxDistance;
     }
 
+    /**
+     * Sets the iModels currently loaded picture for cache creation
+     * @param bitmap - The loaded picture that will be used in cache creation
+     */
     public void setLoadedPicture(Bitmap bitmap) {
         this.currentlyLoadedImage = bitmap;
     }
 
+    /**
+     * Clears any loaded picture
+     */
     public void clearLoadedPicture() {
         this.currentlyLoadedImage = null;
     }
 
+    /**
+     * Returns the currently loaded picture for cache creation
+     * @return - The loaded picture
+     */
     public Bitmap getLoadedPicture() {
         return this.currentlyLoadedImage;
     }

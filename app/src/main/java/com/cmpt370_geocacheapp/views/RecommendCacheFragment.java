@@ -157,6 +157,9 @@ public class RecommendCacheFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the fragments controller
+     */
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }

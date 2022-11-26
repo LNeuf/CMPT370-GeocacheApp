@@ -20,8 +20,6 @@ import com.cmpt370_geocacheapp.model.ApplicationModel;
 
 public class SearchCacheFragment extends Fragment {
 
-    //TODO: This is just a temporary fragment used for ensuring that the cache search code could be applied correctly
-
     ApplicationController controller;
     ApplicationModel model;
 
@@ -102,10 +100,16 @@ public class SearchCacheFragment extends Fragment {
         fm.beginTransaction().hide(this).commit();
     }
 
+    /**
+     * Sets the fragments controller
+     */
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }
 
+    /**
+     * Sets the fragments model
+     */
     public void setModel(ApplicationModel newModel) {
         this.model = newModel;
     }

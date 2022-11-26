@@ -18,6 +18,10 @@ public class CacheComment {
         this.creationDate = date.toString();
     }
 
+    /**
+     * Replaces the comments text with new text
+     * @param commentBody - The new text
+     */
     public void replaceCommentBody(String commentBody) {
         Date date = new Date();
         this.commentBody = commentBody;

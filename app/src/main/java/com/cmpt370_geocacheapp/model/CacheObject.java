@@ -1,4 +1,4 @@
-package com.cmpt370_geocacheapp;
+package com.cmpt370_geocacheapp.model;
 
 import java.util.Date;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ public class CacheObject {
     private String cacheDescription;
     private double totalReviews;
     private double totalRatings;
+
 
     final private ArrayList<CacheComment> commentList = new ArrayList<>();
 
@@ -142,7 +143,7 @@ public class CacheObject {
     }
 
     public double getAverageReviews() {
-        return totalRatings/totalReviews;
+        return totalRatings / totalReviews;
     }
 }
 

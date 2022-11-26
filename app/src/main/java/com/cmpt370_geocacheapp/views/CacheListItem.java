@@ -12,7 +12,17 @@ public class CacheListItem {
     private final double longitude;
     private Bitmap picture;
 
-
+    /**
+     * An object for helping to display caches in a ListView
+     * @param name - Cache name
+     * @param description - Description
+     * @param time - Created time
+     * @param id - Cache ID
+     * @param distance - Current distance
+     * @param lat - Latitude
+     * @param lon - Longitude
+     * @param pic - The cache's picture
+     */
     public CacheListItem(String name, String description, String time, String id, String distance, double lat, double lon, Bitmap pic) {
         this.cacheName = name;
         this.cacheDescription = description;

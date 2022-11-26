@@ -34,7 +34,7 @@ public class CacheCreateFragment extends Fragment {
     ApplicationModel model;
     InteractionModel iModel;
 
-    int SELECT_PIC = 200;
+    int SELECT_PIC = 200; // Select picture request code for choosing a photo from gallery
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,20 +50,26 @@ public class CacheCreateFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Begins the select image process
+     * @param view - The current view
+     */
     private void selectImage(View view) {
-        // create an instance of the
-        // intent of the type image
+        // create an instance of the intent of the type get image
         Intent i = new Intent();
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
 
-        // pass the constant to compare it
-        // with the returned requestCode
+        // compare it with the returned requestCode
         startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PIC);
     }
 
-    // this function is triggered when user
-    // selects the image from the imageChooser
+    /**
+     * Selects an image with an image chooser
+     * @param requestCode - The request code of the activity
+     * @param resultCode - The result code after the activity has a result
+     * @param data - The data returned
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -89,9 +95,9 @@ public class CacheCreateFragment extends Fragment {
     }
 
     /**
-     * Takes the URI and returns a bitmap - down-sampled if the image is too large
+     * Helper method - Takes the URI and returns a bitmap down-sampled if the image is too large
      */
-    public Bitmap getSmallImage(Uri uri) throws IOException {
+    private Bitmap getSmallImage(Uri uri) throws IOException {
         InputStream in = this.getContext().getContentResolver().openInputStream(uri);
 
         BitmapFactory.Options boundsOptions = new BitmapFactory.Options();
@@ -118,7 +124,7 @@ public class CacheCreateFragment extends Fragment {
     }
 
     /**
-     * Gets the takes resize ratio and calculates the proper sample size to reduce the input image
+     * Helper method - Gets the takes resize ratio and calculates the proper sample size to reduce the input image
      */
     private int calculateSampleSize(double ratio) {
         int power = Integer.highestOneBit( (int) Math.floor(ratio) );
@@ -221,14 +227,26 @@ public class CacheCreateFragment extends Fragment {
         return true;
     }
 
+    /**
+     * Sets the current controller for this fragment
+     * @param newController
+     */
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }
 
+    /**
+     * Sets the model for this fragment
+     * @param newModel
+     */
     public void setModel(ApplicationModel newModel) {
         this.model = newModel;
     }
 
+    /**
+     * Sets the Interaction Model for this fragment
+     * @param newIModel
+     */
     public void setIModel(InteractionModel newIModel) {
         this.iModel = newIModel;
     }

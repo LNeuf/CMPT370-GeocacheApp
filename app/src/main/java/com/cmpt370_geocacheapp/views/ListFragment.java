@@ -63,18 +63,30 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         controller.setSelectedCache(selectedCache);
     }
 
+    /**
+     * Sets the fragments controller
+     */
     public void setController(ApplicationController newController) {
         this.controller = newController;
     }
 
+    /**
+     * Sets the fragments model
+     */
     public void setModel(ApplicationModel newModel) {
         this.model = newModel;
     }
 
+    /**
+     * Sets the fragments IModel
+     */
     public void setIModel(InteractionModel newIModel) {
         this.iModel = newIModel;
     }
 
+    /**
+     * Apply changes after the Interaction model changes - updates distance values
+     */
     @Override
     public void iModelChanged() {
         // update distances
@@ -89,6 +101,9 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
         }
     }
 
+    /**
+     * Recreates the listview items as the items have changed
+     */
     @Override
     public void modelChanged() {
         // create the listview items from current filtered caches - with with or without distance data
@@ -106,6 +121,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
 
     /**
      * Helper method for calculating cache distance
+     *
      * @param cache - the cache to calculate for
      * @return - the distance in meters
      */
@@ -116,6 +132,7 @@ public class ListFragment extends Fragment implements ModelListener, IModelListe
 
     /**
      * Helper method for calculating distance from two lat/long pairs
+     *
      * @return - The distance in meters
      */
     private double calculateCacheDistance(double lat1, double long1, double lat2, double long2) {
