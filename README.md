@@ -11,6 +11,5 @@
  
  Cache Creation:
 
-
-#Setup
+# Setup
  *Run ___ in Android Studio using virtual device or configured physical Android device
