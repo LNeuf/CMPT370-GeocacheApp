@@ -18,5 +18,6 @@ Cache Creation:
 
 
 # Setup
- Requires Android Studio
- *Run "MainActivity.java" in Android Studio using virtual device or configured physical Android device
+Requires Android Studio
+
+* Run "MainActivity.java" in Android Studio using virtual device or configured physical Android device
